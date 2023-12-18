@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import logo1 from '../icons/logo1.png';
 import './signup.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { TextField, Modal, Typography } from '@mui/material';
 
@@ -16,6 +16,7 @@ const SignupForm = () => {
   const [isErrorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSignup = async () => {
     if (!studentID || !firstName || !lastName || !course || !email || !password) {
@@ -49,6 +50,7 @@ const SignupForm = () => {
       if (response.ok) {
         console.log('User created successfully');
         setSuccessModalOpen(true);
+
       } else {
         const errorResponse = await response.text();
         setErrorMessage(errorResponse);
@@ -62,6 +64,8 @@ const SignupForm = () => {
 
   const handleCloseModal = () => {
     setSuccessModalOpen(false);
+    navigate('/');
+
     // Additional logic if needed
   };
   const handleCloseErrorModal = () => {

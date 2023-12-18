@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
    }
    
-   .App {
+   .App1 {
     display: flex;
     /* justify-content: center;
     align-items: center; */
@@ -11,51 +11,47 @@ body {
     
    }
 
-   .left-side {
+   .left-side1 {
     /* background-color: aqua; */
     display: flex;
     flex-direction: column;
     width: 50%;
+    margin-top: 5%;
     
    }
 
    .form1 {
     /* background-color: antiquewhite; */
-    display: flex;
+    display: flex;  
     flex-direction: column;
     width: 50%;
-    padding-top: 10%;
-    margin-left: 10%;
+    margin-left: 20%;
     margin-right: 10%;
-    
+    margin-top: 15%;
     
    }
    
-   .login-container {
+   .login-container1 {
     background-color: #ffffff;
     border-radius: 5px;
     box-shadow: 0 5px 5px 5px rgb(157, 157, 157);
-    width: 100%;
-    max-width: 800px;
-    height: 500px;
+    width: 70%;
+    height: 90%;
     display: flex;
     margin: auto
     
    }
    
-   .Logo {
-    display: block;
-    width: 400px;
-    height: 300px;
-    margin-left: 40px;
-    margin-top: 20px;
+   .Logo1 {
+    width: 150%;
+    height: 70%; 
    }
    
    label {
     margin-bottom: 10px;
    }
    
-   .input {
+   .input1 {
     
     margin-bottom: 15px;
     border-radius: 3px;

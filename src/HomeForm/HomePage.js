@@ -1,4 +1,4 @@
-const HomePageForm = () => {
+const HomePage = () => {
 
     return(
 <h2>Hello</h2>
@@ -6,5 +6,5 @@ const HomePageForm = () => {
     )
 }
 
-export default HomePageForm;
+export default HomePage;
 

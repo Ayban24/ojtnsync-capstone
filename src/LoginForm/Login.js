@@ -9,7 +9,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 
 const LoginForm = () => {
   const [studentID, setStudentID] = useState('');
@@ -17,34 +17,40 @@ const LoginForm = () => {
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleLogin = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/getByUserid?studentID=${studentID}&password=${password}`);
-      const data = await response.json();
-
-      if (response.ok) {    
-        setLoggedInUser(data);
-        setError(null);
-      } else {
-        setLoggedInUser(null);
-        setError('Input the following fields');
-      }
-    } catch (error) {
-      setError('Log in Failed');
+const navigate=useNavigate();
+const handleLogin = async () => {
+  try {
+    if (!studentID || !password) {
+      setError('Input all fields!');
+      return;
     }
-  };
+
+    const response = await fetch(`http://localhost:8080/getByUserid?studentID=${studentID}&password=${password}`);
+    const data = await response.json();
+
+    if (response.ok) {
+      setLoggedInUser(data);
+      setError(null);
+      navigate('/homepage');
+      
+    } else {
+      setLoggedInUser(null);
+    }
+  } catch (error) {
+    setError('Incorrect credentials. Please try again!');
+  }
+};
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   return (
-    <div className= "App">
+    <div className= "App1">
     
-    <div className= "login-container">
-    <div className= "left-side">
-    <img className='Logo' img src={logo1} alt="Logo" />
+    <div className= "login-container1">
+    <div className= "left-side1">
+    <img className='Logo1' img src={logo1} alt="Logo" />
     <Link to="/signup">
     <h3>Create an Account</h3>
     </Link>
@@ -52,11 +58,11 @@ const LoginForm = () => {
     
     
     <div className= "form1">
-    <div className='input'>
+    <div className='input1'>
  
       <h2>Login</h2>
       
-      <div className='input'>
+      <div className='input1'>
               <TextField
                 id="outlined-basic"
                 label="Student ID"
@@ -76,7 +82,7 @@ const LoginForm = () => {
               />
             </div>
 
-            <div className='input'>
+            <div className='input1'>
               <TextField
                 id="outlined-basic"
                 label="Password"
