@@ -60,7 +60,7 @@ const handleLogin = async () => {
     <div className= "form1">
     <div className='input1'>
  
-      <h2>Login</h2>
+      <h2>Faculty Login</h2>
       
       <div className='input1'>
               <TextField

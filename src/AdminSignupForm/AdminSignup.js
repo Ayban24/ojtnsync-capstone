@@ -4,6 +4,8 @@ import './signup.css';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { TextField, Modal, Typography } from '@mui/material';
+import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+
 
 const SignupForm = () => {
   const [facultyId, setFacultyId] = useState('');
@@ -121,14 +123,19 @@ const SignupForm = () => {
         </div>
         
         <div className='input'>
-          <TextField htmlFor="course" label="Course" variant="outlined"
-            type="text"
-            id="department"
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-            style={{ width: '100%', height: '100%'}}>
-          </TextField>
-        </div>
+  <FormControl fullWidth>
+    <InputLabel id="course-label">Department</InputLabel>
+    <Select
+      labelId="course-label"
+      id="course"
+      value={department}
+      onChange={(e) => setDepartment(e.target.value)}
+    >
+      <MenuItem value={'BSIT'}>NLO</MenuItem>
+      <MenuItem value={'BSCS'}>CCS</MenuItem>
+    </Select>
+  </FormControl>
+</div>
 
         <div className='input'>
           <TextField htmlFor="email" label="Email" variant="outlined" 

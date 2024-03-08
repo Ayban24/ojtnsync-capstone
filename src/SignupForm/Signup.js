@@ -4,6 +4,7 @@ import './signup.css';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { TextField, Modal, Typography } from '@mui/material';
+import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 
 const SignupForm = () => {
   const [studentID, setStudentID] = useState('');
@@ -22,7 +23,7 @@ const SignupForm = () => {
     if (!studentID || !firstName || !lastName || !course || !email || !password) {
       setErrorMessage('Input all fields!');
       setErrorModalOpen(true);
-      return; // Stop execution if any field is empty
+      return;
     }
     if (password !== confirmPassword) {
       setErrorMessage("Password and Confirm Password don't match");
@@ -66,11 +67,11 @@ const SignupForm = () => {
     setSuccessModalOpen(false);
     navigate('/');
 
-    // Additional logic if needed
+    
   };
   const handleCloseErrorModal = () => {
     setErrorModalOpen(false);
-    // Additional logic if needed
+    
   };
   return (
     <div className= "App">
@@ -121,14 +122,19 @@ const SignupForm = () => {
         </div>
         
         <div className='input'>
-          <TextField htmlFor="course" label="Course" variant="outlined"
-            type="text"
-            id="course"
-            value={course}
-            onChange={(e) => setCourse(e.target.value)}
-            style={{ width: '100%', height: '100%'}}>
-          </TextField>
-        </div>
+  <FormControl fullWidth>
+    <InputLabel id="course-label">Course</InputLabel>
+    <Select
+      labelId="course-label"
+      id="course"
+      value={course}
+      onChange={(e) => setCourse(e.target.value)}
+    >
+      <MenuItem value={'BSIT'}>BSIT</MenuItem>
+      <MenuItem value={'BSCS'}>BSCS</MenuItem>
+    </Select>
+  </FormControl>
+</div>
 
         <div className='input'>
           <TextField htmlFor="email" label="Email" variant="outlined" 

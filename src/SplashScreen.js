@@ -11,7 +11,7 @@ const SplashScreen = () => {
       <Link to="/adminloginform" style={styles.button}>
         Login as Admin
       </Link>
-      <Link to="/" style={styles.button}>
+      <Link to="/login" style={styles.button}>
         Login as User
       </Link>
     </div>
@@ -28,8 +28,8 @@ const styles = {
     height: '100vh',
   },
   logo: {
-    width: 300,
-    height: 300,
+    width: 500,
+    height: 400,
     
     marginBottom: 20,
   },
