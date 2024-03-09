@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './styles.css';
-import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 export default function Submission() {
     const [isUploadModalOpen, setUploadModalOpen] = useState(false);
     const [isStatusModalOpen, setStatusModalOpen] = useState(false);
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [document, setDocument] = useState(null);
   
     const openUploadModal = () => setUploadModalOpen(true);
     const closeUploadModal = () => setUploadModalOpen(false);
@@ -13,32 +13,44 @@ export default function Submission() {
     const openStatusModal = () => setStatusModalOpen(true);
     const closeStatusModal = () => setStatusModalOpen(false);
 
+    const auth = Cookies.get('auth');
+
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
       
         if (file) {
-            console.log('File Name:', file.name);
-            console.log('File Type:', file.type);
-            console.log('File Size:', file.size);
         
             try {
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('title', 'static title');
                 formData.append('description', 'static description');
+                formData.append('userId',JSON.parse(auth).userid)
         
                 const response = await fetch('http://localhost:8080/upload', {
                     method: 'POST',
                     body: formData,
-                });
+                })
         
                 if (response.ok) {
-                    const result = await response.text();
-                    console.log('Upload successful:', result);
-                    // Handle success, e.g., display a success message to the user
+                    try {
+                        const result = await response.json();
+                        setDocument(result.document)
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                        // Handle unexpected JSON parsing error
+                    }
                 } else {
                     console.error('Upload failed:', response.status, response.statusText);
-                    // Handle failure, e.g., display an error message to the user
+                    try {
+                        const result = await response.json();
+                        // Access specific properties from the result if needed
+                        console.log('Error Message:', result.message);
+                        // Handle failure, e.g., display an error message to the user
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                        // Handle unexpected JSON parsing error
+                    }
                 }
             } catch (error) {
                 console.error('Error during file upload:', error);
@@ -56,10 +68,10 @@ export default function Submission() {
                     <h2>Deed of Undertaking</h2>
                     <h4>Attach Files</h4>
                     <div className='attached-container'>
-                        {selectedFile && (
-                            <div className='file-info'>{selectedFile.name} <a className='delete-btn' onClick={() => {setSelectedFile(null)}}>Delete</a></div>
+                        {document && (
+                            <div className='file-info'>{document.fileName} <a className='delete-btn' onClick={() => {setDocument(null)}}>Delete</a></div>
                         )}
-                        {!selectedFile && (
+                        {!document && (
                             <div className='file-container'>
                                 <a type='button' className='file-upload'>Upload Document</a>
                                 <input

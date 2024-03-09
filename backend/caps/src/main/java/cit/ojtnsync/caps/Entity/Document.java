@@ -21,7 +21,7 @@ public class Document {
 
     private String fileName;
 
-    private Timestamp created_at;
+    private Timestamp createdAt;
 
     // Constructors, getters, and setters (omitted for brevity)
 
@@ -30,15 +30,54 @@ public class Document {
     }
 
     // Parameterized constructor
-    public Document(String title, String description, String fileName, Timestamp created_at) {
+    public Document(String title, String description, String fileName, Timestamp createdAt) {
         this.title = title;
         this.description = description;
         this.fileName = fileName;
-        this.created_at = created_at;
+        this.createdAt = createdAt;
     }
 
     // Getters and Setters (generated using your IDE)
+    
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+    
     // Omitted for brevity
 }
-

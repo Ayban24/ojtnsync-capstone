@@ -35,6 +35,42 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Log-in invalid");
         }
     }
+
+    @GetMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+            @RequestParam(name = "studentID", required = false, defaultValue = "0") String studentID,
+            @RequestParam(name = "password", required = false, defaultValue = "0") String password) {
+
+        UserEntity user = userService.findByStudentID(studentID);
+
+        if (user != null && user.getPassword().equals(password)) {
+            // User authentication successful
+            LoginResponse response = new LoginResponse("Login successful", user);
+            return ResponseEntity.ok(response);
+        } else {
+            // User authentication failed
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("Login invalid", null));
+        }
+    }
+
+    // Custom class to represent the login response
+    private static class LoginResponse {
+        private final String message;
+        private final UserEntity user;
+
+        public LoginResponse(String message, UserEntity user) {
+            this.message = message;
+            this.user = user;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public UserEntity getUser() {
+            return user;
+        }
+    }
 	
 	@PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody UserEntity user) {

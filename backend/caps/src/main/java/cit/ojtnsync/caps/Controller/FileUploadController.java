@@ -1,7 +1,11 @@
 package cit.ojtnsync.caps.Controller;
 
 import cit.ojtnsync.caps.Entity.Document;
+import cit.ojtnsync.caps.Entity.SubmittedDocument;
+import cit.ojtnsync.caps.Entity.UserEntity;
 import cit.ojtnsync.caps.Repository.DocumentRepository;
+import cit.ojtnsync.caps.Repository.SubmittedDocumentRepository;
+import cit.ojtnsync.caps.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,19 +24,42 @@ public class FileUploadController {
     private String uploadDirectory;
 
     private final DocumentRepository documentRepository;
+    private final SubmittedDocumentRepository submittedDocumentRepository;
+    private final UserRepository userRepository;
 
-    public FileUploadController(DocumentRepository documentRepository) {
+    public FileUploadController(DocumentRepository documentRepository, SubmittedDocumentRepository submittedDocumentRepository, UserRepository userRepository) {
         this.documentRepository = documentRepository;
+        this.submittedDocumentRepository = submittedDocumentRepository;
+        this.userRepository = userRepository;
+    }
+
+    static class UploadResponse {
+        private final String message;
+        private final Document document;
+
+        public UploadResponse(String message, Document document) {
+            this.message = message;
+            this.document = document;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public Document getDocument() {
+            return document;
+        }
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(
+    public ResponseEntity<UploadResponse> handleFileUpload(
             @RequestParam("file") MultipartFile file,
             @RequestParam("title") String title,
-            @RequestParam("description") String description) {
+            @RequestParam("description") String description,
+            @RequestParam("userId") Long userId) {
 
         if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("Please select a file to upload");
+            return ResponseEntity.badRequest().body(new UploadResponse("Please select a file to upload", null));
         }
 
         try {
@@ -44,13 +71,20 @@ public class FileUploadController {
 
             // Save information about the uploaded file into a Document entity
             Document document = new Document(title, description, fileName, new Timestamp(System.currentTimeMillis()));
+            document = documentRepository.save(document);
 
-            documentRepository.save(document);
+            UserEntity user = userRepository.findByUserid(userId);
 
-            return ResponseEntity.ok("File uploaded successfully");
+            // Create and save a SubmittedDocument entity
+            SubmittedDocument submittedDocument = new SubmittedDocument(document, user, null, "Pending", null, 
+                    new Timestamp(System.currentTimeMillis()));
+            submittedDocumentRepository.save(submittedDocument);
+
+            UploadResponse response = new UploadResponse("File uploaded successfully", document);
+            return ResponseEntity.ok(response);
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("File upload failed");
+            return ResponseEntity.status(500).body(new UploadResponse("File upload failed", null));
         }
     }
 }
