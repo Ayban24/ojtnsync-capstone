@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+### static ###
+/backend/caps/src/main/resources/static
+
+# vscode
+.vscode

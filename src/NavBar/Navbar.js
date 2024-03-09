@@ -11,7 +11,7 @@ const Navbar = () => {
             <div className={`nav-items ${isOpen && "open"}`}>
                 <Link to="/homepage">Home</Link>
                 <Link to="/homepage">About Us</Link>
-                <Link to="/homepage">Templates</Link>
+                <Link to="/templates">Templates</Link>
             </div>
             <div className={`nav-toggle ${isOpen && "open"}`} 
             onClick={() =>setIsOpen(!isOpen)}>
