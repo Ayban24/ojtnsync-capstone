@@ -1,11 +1,7 @@
 package cit.ojtnsync.caps.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import java.sql.Timestamp;
+import jakarta.persistence.*;
 
 @Entity
 public class Document {
@@ -21,7 +17,19 @@ public class Document {
 
     private String fileName;
 
+    private String extName;
+
+    @Column(nullable = true)
+    private String hashedFileName;
+
+    @Column(nullable = true)
+    private String status;
+
     private Timestamp createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requirement_id")
+    private Requirement requirement;
 
     // Constructors, getters, and setters (omitted for brevity)
 
@@ -30,15 +38,19 @@ public class Document {
     }
 
     // Parameterized constructor
-    public Document(String title, String description, String fileName, Timestamp createdAt) {
+    public Document(String title, String description, String fileName, String extName, String hashedFileName, String status, Requirement requirement, Timestamp createdAt) {
         this.title = title;
         this.description = description;
         this.fileName = fileName;
+        this.extName = extName;
+        this.hashedFileName = hashedFileName;
+        this.requirement = requirement;
         this.createdAt = createdAt;
+        this.status = status;
     }
 
     // Getters and Setters (generated using your IDE)
-    
+
     public int getId() {
         return id;
     }
@@ -71,13 +83,43 @@ public class Document {
         this.fileName = fileName;
     }
 
+    public String getExtName() {
+        return extName;
+    }
+
+    public void setExtName(String extName) {
+        this.extName = extName;
+    }
+
+    public String getHashedFileName() {
+        return hashedFileName;
+    }
+
+    public void setHashedFileName(String hashedFileName) {
+        this.hashedFileName = hashedFileName;
+    }
+
     public Timestamp getCreatedAt() {
         return createdAt;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
-    
-    // Omitted for brevity
+
+    public Requirement getRequirement() {
+        return requirement;
+    }
+
+    public void setRequirement(Requirement requirement) {
+        this.requirement = requirement;
+    }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles.css';
 import Cookies from 'js-cookie';
 
@@ -6,6 +6,7 @@ export default function Submission() {
     const [isUploadModalOpen, setUploadModalOpen] = useState(false);
     const [isStatusModalOpen, setStatusModalOpen] = useState(false);
     const [document, setDocument] = useState(null);
+    const [requirements, setRequirements] = useState(null)
   
     const openUploadModal = () => setUploadModalOpen(true);
     const closeUploadModal = () => setUploadModalOpen(false);
@@ -15,49 +16,92 @@ export default function Submission() {
 
     const auth = Cookies.get('auth');
 
-    const handleFileChange = async (event) => {
-        const file = event.target.files[0];
-      
-        if (file) {
-        
+    const fetchRequirements = async () => {
+        const response = await fetch('http://localhost:8080/api/requirements', {
+            method: 'GET',
+        })
+
+        if (response.ok) {
             try {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('title', 'static title');
-                formData.append('description', 'static description');
-                formData.append('userId',JSON.parse(auth).userid)
-        
-                const response = await fetch('http://localhost:8080/upload', {
-                    method: 'POST',
-                    body: formData,
-                })
-        
-                if (response.ok) {
-                    try {
-                        const result = await response.json();
-                        setDocument(result.document)
-                    } catch (error) {
-                        console.error('Error parsing JSON:', error);
-                        // Handle unexpected JSON parsing error
-                    }
-                } else {
-                    console.error('Upload failed:', response.status, response.statusText);
-                    try {
-                        const result = await response.json();
-                        // Access specific properties from the result if needed
-                        console.log('Error Message:', result.message);
-                        // Handle failure, e.g., display an error message to the user
-                    } catch (error) {
-                        console.error('Error parsing JSON:', error);
-                        // Handle unexpected JSON parsing error
-                    }
-                }
+                const result = await response.json();
+                setRequirements(result)
+                console.log("response: ",result)
             } catch (error) {
-                console.error('Error during file upload:', error);
-                // Handle unexpected errors
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Upload failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
             }
         }
+    }
+
+    const showRequirements = () => {
+        return (
+            requirements && <ul>
+                {requirements.map((item, index) => (
+                    <li key={index} onClick={openUploadModal}>{item.title}</li>
+                ))}
+            </ul>
+        );
+    }
+
+    const handleFileChange = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setDocument(file)
+        }
     };
+
+    const submitHandler = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('file', document);
+            formData.append('title', 'static title');
+            formData.append('description', 'static description');
+            formData.append('userId',JSON.parse(auth).userid);
+            formData.append('requirementId', 1);
+    
+            const response = await fetch('http://localhost:8080/upload', {
+                method: 'POST',
+                body: formData,
+            })
+    
+            if (response.ok) {
+                try {
+                    const result = await response.json();
+                    console.log("response: ",result.document)
+                    setDocument(null)
+                    closeUploadModal()
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    // Handle unexpected JSON parsing error
+                }
+            } else {
+                console.error('Upload failed:', response.status, response.statusText);
+                try {
+                    const result = await response.json();
+                    // Access specific properties from the result if needed
+                    console.log('Error Message:', result.message);
+                    // Handle failure, e.g., display an error message to the user
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    // Handle unexpected JSON parsing error
+                }
+            }
+        } catch (error) {
+            console.error('Error during file upload:', error);
+            // Handle unexpected errors
+        }
+    }
       
 
     const UploadModal = ({ closeModal, children }) => {
@@ -69,7 +113,10 @@ export default function Submission() {
                     <h4>Attach Files</h4>
                     <div className='attached-container'>
                         {document && (
-                            <div className='file-info'>{document.fileName} <a className='delete-btn' onClick={() => {setDocument(null)}}>Delete</a></div>
+                            <div>
+                                <div className='file-info'>{document.name} <a className='delete-btn' onClick={() => {setDocument(null)}}>Delete</a></div>
+                                <a className='btn-submit' href='javascript:;' onClick={submitHandler}>Submit</a>
+                            </div>
                         )}
                         {!document && (
                             <div className='file-container'>
@@ -118,6 +165,9 @@ export default function Submission() {
         );
     };
 
+    useEffect(() => {
+        fetchRequirements()
+    }, []);
   
     return (
         <div id='submission'>
@@ -125,14 +175,7 @@ export default function Submission() {
                 <h1>IT DEPARTMENT</h1>
                 <section>
                     <h2>PRELIM REQUIREMENTS</h2>
-                    <ul>
-                        <li onClick={openUploadModal}>
-                            Endorsement Letter
-                        </li>
-                        <li onClick={openStatusModal}>
-                            Endorsement Letter
-                        </li>
-                    </ul>
+                    {showRequirements()}
                 </section>
             </div>
             

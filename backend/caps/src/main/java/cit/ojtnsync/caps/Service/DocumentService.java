@@ -23,8 +23,9 @@ public class DocumentService {
         return documentRepository.findAll();
     }
 
-    public Optional<Document> getDocumentById(int id) {
-        return documentRepository.findById(id);
+    public Document getDocumentById(int id) {
+        return documentRepository.findById(id)
+                .orElse(null);
     }
 
     public Document saveDocument(Document document) {

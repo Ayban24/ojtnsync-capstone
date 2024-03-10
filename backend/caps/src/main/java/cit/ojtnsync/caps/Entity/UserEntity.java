@@ -1,11 +1,11 @@
 package cit.ojtnsync.caps.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="tbl_user")
@@ -17,30 +17,29 @@ public class UserEntity {
     private Long userid;
 
     @Column(name = "student_id", nullable = false, unique = true)
-    
     private String studentID;
+
     private String firstName;
     private String lastName;
     private String course;
     private String email;
     private String password;
-    
+
     
     public UserEntity() {
     	
     }
     
 	public UserEntity(Long userid, String studentID, String firstName, String lastName, String course, String email,
-			String password) {
-		super();
-		this.userid = userid;
-		this.studentID = studentID;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.course = course;
-		this.email = email;
-		this.password = password;
-	}
+                      String password) {
+        this.userid = userid;
+        this.studentID = studentID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.course = course;
+        this.email = email;
+        this.password = password;
+    }
 
 	public Long getUserid() {
 		return userid;

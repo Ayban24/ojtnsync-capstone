@@ -31,7 +31,7 @@ const handleLogin = async () => {
 
     if (response.ok) {
       setLoggedInUser(data);
-      Cookies.set('auth', JSON.stringify(data));
+      Cookies.set('auth', JSON.stringify(data.user));
       setError(null);
       navigate('/homepage');
       
