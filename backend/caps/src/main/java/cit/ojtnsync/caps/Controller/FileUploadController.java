@@ -62,7 +62,8 @@ public class FileUploadController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("userId") Long userId,
-            @RequestParam("requirementId") int requirementId) {
+            @RequestParam("requirementId") int requirementId,
+            @RequestParam("isReUpload") boolean isReUpload) {
 
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(new UploadResponse("Please select a file to upload", null));
@@ -76,7 +77,7 @@ public class FileUploadController {
             Requirement requirement = requirementService.getRequirementById(requirementId);
             
             // Save information about the uploaded file into a Document entity
-            Document document = new Document(title, description, fileName, fileExt, null, "Pending", /*submittedBy,*/ requirement, new Timestamp(System.currentTimeMillis()));
+            Document document = new Document(title, description, fileName, fileExt, null, "Pending", requirement, submittedBy, new Timestamp(System.currentTimeMillis()));
             document = documentRepository.save(document);
 
             String hashedFileName = "";

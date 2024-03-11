@@ -9,4 +9,6 @@ import cit.ojtnsync.caps.Entity.Requirement;
 
 public interface RequirementRepository extends JpaRepository<Requirement, Integer> {
 
+    @Query(value = "SELECT * FROM Requirement", nativeQuery = true)
+    List<Requirement> findAllRequirements();
 }

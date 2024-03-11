@@ -2,9 +2,12 @@ package cit.ojtnsync.caps.Service;
 
 import org.springframework.stereotype.Service;
 
+import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
 import cit.ojtnsync.caps.Repository.RequirementRepository;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -17,7 +20,26 @@ public class RequirementService {
     }
 
     public List<Requirement> getAllRequirements() {
-        return requirementRepository.findAll();
+        return requirementRepository.findAllRequirements();
+    }
+
+    // Add a method to filter documents for a specific requirement based on userid
+    public List<Document> getFilteredDocumentsForRequirement(int requirementId, long userid) {
+        Requirement requirement = requirementRepository.findById(requirementId).orElse(null);
+
+        if (requirement != null) {
+            List<Document> filteredDocuments = new ArrayList<>();
+
+            for (Document document : requirement.getDocuments()) {
+                if (document.getSubmittedBy() != null && document.getSubmittedBy().getUserid() == userid) {
+                    filteredDocuments.add(document);
+                }
+            }
+
+            return filteredDocuments;
+        }
+
+        return Collections.emptyList();
     }
 
     public Requirement getRequirementById(int id) {

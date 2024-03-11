@@ -7,9 +7,11 @@ export default function Submission() {
     const [isStatusModalOpen, setStatusModalOpen] = useState(false);
     const [document, setDocument] = useState(null);
     const [requirements, setRequirements] = useState(null)
+    const [selectedRequirement, setSelectedRequirement] = useState(null)
+    const [isReUpload, setIsReUpload] = useState(false)
   
     const openUploadModal = () => setUploadModalOpen(true);
-    const closeUploadModal = () => setUploadModalOpen(false);
+    const closeUploadModal = () => {setUploadModalOpen(false);setIsReUpload(false)};
 
     const openStatusModal = () => setStatusModalOpen(true);
     const closeStatusModal = () => setStatusModalOpen(false);
@@ -17,7 +19,7 @@ export default function Submission() {
     const auth = Cookies.get('auth');
 
     const fetchRequirements = async () => {
-        const response = await fetch('http://localhost:8080/api/requirements', {
+        const response = await fetch('http://localhost:8080/api/requirements?userid=1', {
             method: 'GET',
         })
 
@@ -48,7 +50,19 @@ export default function Submission() {
         return (
             requirements && <ul>
                 {requirements.map((item, index) => (
-                    <li key={index} onClick={openUploadModal}>{item.title}</li>
+                    <li 
+                        key={index} 
+                        onClick={() => {
+                            // open upload modal if status is not available for this document
+                            if(item.documents.length == 0)
+                                openUploadModal();
+                            else
+                                openStatusModal();
+                            setSelectedRequirement(item)
+                        }}>
+                            {item.title} 
+                        <span>{(item.documents.length > 0 && item.documents[0].status)}</span>
+                    </li>
                 ))}
             </ul>
         );
@@ -69,6 +83,7 @@ export default function Submission() {
             formData.append('description', 'static description');
             formData.append('userId',JSON.parse(auth).userid);
             formData.append('requirementId', 1);
+            formData.append('isReUpload',isReUpload)
     
             const response = await fetch('http://localhost:8080/upload', {
                 method: 'POST',
@@ -104,12 +119,12 @@ export default function Submission() {
     }
       
 
-    const UploadModal = ({ closeModal, children }) => {
+    const UploadModal = ({ closeModal, title }) => {
         return (
             <div className="modal-container">
                 <div onClick={closeModal}><span>&lt;</span>IT Department</div>
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                    <h2>Deed of Undertaking</h2>
+                    <h2>{title}</h2>
                     <h4>Attach Files</h4>
                     <div className='attached-container'>
                         {document && (
@@ -139,7 +154,7 @@ export default function Submission() {
           <div className="modal-container">
             <div onClick={closeModal}><span>&lt;</span>IT Department</div>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <h2 className='status-title'>Deed of Undertaking</h2>
+                <h2 className='status-title'>{selectedRequirement.title}</h2>
                 <h3>Submission Status</h3>
                 <table>
                     <tr>
@@ -148,18 +163,18 @@ export default function Submission() {
                     </tr>
                     <tr>
                         <td>Approval Status</td>
-                        <td>Pending</td>
+                        <td>{selectedRequirement.documents[0].status}</td>
                     </tr>
                     <tr>
                         <td>File</td>
-                        <td>deedofundertaking.pdf</td>
+                        <td>{selectedRequirement.documents[0].fileName}</td>
                     </tr>
                     <tr>
                         <td>Comments</td>
-                        <td>Comments</td>
+                        <td>Static comment</td>
                     </tr>
                 </table>
-                <button type='button'>Re-Upload</button>
+                <button type='button'onClick={() => {setIsReUpload(true); closeStatusModal(); openUploadModal();}}>Re-Upload</button>
             </div>
           </div>
         );
@@ -181,15 +196,11 @@ export default function Submission() {
             
             {/* modals */}
             {isUploadModalOpen && (
-                <UploadModal closeModal={closeUploadModal}>
-                    <h3>Upload modal</h3>
-                </UploadModal>
+                <UploadModal closeModal={closeUploadModal} title={selectedRequirement.title} />
             )}
 
             {isStatusModalOpen && (
-                <StatusModal closeModal={closeStatusModal}>
-                    <h3>Status modal</h3>
-                </StatusModal>
+                <StatusModal closeModal={closeStatusModal} />
             )}
             {/* end modals */}
         </div>

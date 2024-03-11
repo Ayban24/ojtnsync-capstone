@@ -1,6 +1,10 @@
 package cit.ojtnsync.caps.Entity;
 
 import java.sql.Timestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.*;
 
 @Entity
@@ -31,6 +35,11 @@ public class Document {
     @JoinColumn(name = "requirement_id")
     private Requirement requirement;
 
+    @ManyToOne()
+    @JoinColumn(name = "submitted_by")
+    @Nullable
+    private UserEntity submittedBy;
+
     // Constructors, getters, and setters (omitted for brevity)
 
     // Default constructor
@@ -38,13 +47,14 @@ public class Document {
     }
 
     // Parameterized constructor
-    public Document(String title, String description, String fileName, String extName, String hashedFileName, String status, Requirement requirement, Timestamp createdAt) {
+    public Document(String title, String description, String fileName, String extName, String hashedFileName, String status, Requirement requirement, UserEntity submittedBy, Timestamp createdAt) {
         this.title = title;
         this.description = description;
         this.fileName = fileName;
         this.extName = extName;
         this.hashedFileName = hashedFileName;
         this.requirement = requirement;
+        this.submittedBy = submittedBy;
         this.createdAt = createdAt;
         this.status = status;
     }
@@ -121,5 +131,13 @@ public class Document {
 
     public void setRequirement(Requirement requirement) {
         this.requirement = requirement;
+    }
+
+    public UserEntity getSubmittedBy() {
+        return this.submittedBy;
+    }
+
+    public void setSubmittedBy(UserEntity submittedBy) {
+        this.submittedBy = submittedBy;
     }
 }

@@ -3,6 +3,7 @@ package cit.ojtnsync.caps.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
 import cit.ojtnsync.caps.Service.RequirementService;
 
@@ -20,8 +21,15 @@ public class RequirementController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Requirement>> getAllRequirements() {
+    public ResponseEntity<List<Requirement>> getAllRequirements(long userid) {
         List<Requirement> requirements = requirementService.getAllRequirements();
+
+        // Filter documents for each requirement based on userid
+        for (Requirement requirement : requirements) {
+            List<Document> filteredDocuments = requirementService.getFilteredDocumentsForRequirement(requirement.getId(), userid);
+            requirement.setDocuments(filteredDocuments);
+        }
+
         return ResponseEntity.ok(requirements);
     }
 
