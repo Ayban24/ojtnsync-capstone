@@ -9,20 +9,31 @@ import cit.ojtnsync.caps.Service.RequirementService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 
 @RestController
-public class FileUploadController {
+@RequestMapping("/file")
+public class FileController {
 
     @Value("${upload.directory}")
     private String uploadDirectory;
@@ -33,7 +44,7 @@ public class FileUploadController {
     @Autowired
 	private RequirementService requirementService;
 
-    public FileUploadController(DocumentRepository documentRepository, UserRepository userRepository) {
+    public FileController(DocumentRepository documentRepository, UserRepository userRepository) {
         this.documentRepository = documentRepository;
         this.userRepository = userRepository;
     }
@@ -62,8 +73,7 @@ public class FileUploadController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("userId") Long userId,
-            @RequestParam("requirementId") int requirementId,
-            @RequestParam("isReUpload") boolean isReUpload) {
+            @RequestParam("requirementId") int requirementId) {
 
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(new UploadResponse("Please select a file to upload", null));
@@ -102,6 +112,96 @@ public class FileUploadController {
             return ResponseEntity.status(500).body(new UploadResponse("File upload failed", null));
         }
     }
+
+
+    @PostMapping("/reupload")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<UploadResponse> handleFileReupload(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("documentId") int documentId,
+            @RequestParam("userId") Long userId) {
+
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(new UploadResponse("Please select a file to upload", null));
+        }
+
+        try {
+            UserEntity submittedBy = userRepository.findByUserid(userId);
+            Document existingDocument = documentRepository.findById(documentId).orElse(null);
+
+            if (existingDocument == null) {
+                return ResponseEntity.badRequest().body(new UploadResponse("Document not found", null));
+            }
+
+            // Delete the old static file
+            String oldFilePath = uploadDirectory + File.separator + existingDocument.getHashedFileName() + "." + existingDocument.getExtName();
+            Files.deleteIfExists(Paths.get(oldFilePath));
+
+            // Update information about the existing document
+            String fileName = file.getOriginalFilename();
+            String fileExt = getFileExtension(fileName);
+
+            existingDocument.setTitle(fileName);
+            existingDocument.setFileName(fileName);
+            existingDocument.setExtName(fileExt);
+            existingDocument.setSubmittedBy(submittedBy);
+
+            String hashedFileName = "";
+            try {
+                // Ensures that the hashed filename is a unique filename to prevent the same file name saving
+                hashedFileName = hashFilename(fileName + existingDocument.getId());
+                existingDocument.setHashedFileName(hashedFileName);
+                documentRepository.save(existingDocument);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+            String filePath = uploadDirectory + File.separator + hashedFileName + "." + fileExt;
+
+            // Save the updated file to the specified directory
+            file.transferTo((new File(filePath)).toPath());
+
+            UploadResponse response = new UploadResponse("File reuploaded successfully", existingDocument);
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new UploadResponse("File reupload failed", null));
+        }
+    }
+
+
+    @GetMapping("/download/{documentId}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable int documentId) {
+        Document document = documentRepository.findById(documentId).orElse(null);
+
+        if (document == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String hashedFileName = document.getHashedFileName();
+        String fileExtension = document.getExtName();
+
+        String filePath = uploadDirectory + File.separator + hashedFileName + "." + fileExtension;
+
+
+        // Create a FileSystemResource from the file path
+        Resource fileResource = new FileSystemResource(filePath);
+
+        if (!fileResource.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Set the content type and attachment header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", fileResource.getFilename());
+
+        // Return the file as ResponseEntity
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(fileResource);
+    }
+
 
     // Helper method to hash the filename
     private String hashFilename(String filename) throws NoSuchAlgorithmException {

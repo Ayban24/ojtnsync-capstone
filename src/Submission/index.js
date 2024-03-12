@@ -19,7 +19,7 @@ export default function Submission() {
     const auth = Cookies.get('auth');
 
     const fetchRequirements = async () => {
-        const response = await fetch('http://localhost:8080/api/requirements?userid=1', {
+        const response = await fetch('http://localhost:8080/api/requirements?userid='+JSON.parse(auth).userid, {
             method: 'GET',
         })
 
@@ -61,7 +61,7 @@ export default function Submission() {
                             setSelectedRequirement(item)
                         }}>
                             {item.title} 
-                        <span>{(item.documents.length > 0 && item.documents[0].status)}</span>
+                        <span className={"status-"+item.documents[0].status.toLowerCase()}>{(item.documents.length > 0 && item.documents[0].status)}</span>
                     </li>
                 ))}
             </ul>
@@ -78,14 +78,23 @@ export default function Submission() {
     const submitHandler = async () => {
         try {
             const formData = new FormData();
-            formData.append('file', document);
-            formData.append('title', 'static title');
-            formData.append('description', 'static description');
-            formData.append('userId',JSON.parse(auth).userid);
-            formData.append('requirementId', 1);
-            formData.append('isReUpload',isReUpload)
+            let uploadUrl = "http://localhost:8080/file/upload"
+            if(!isReUpload) {
+                formData.append('file', document);
+                formData.append('title', 'static title');
+                formData.append('description', 'static description');
+                formData.append('userId',JSON.parse(auth).userid);
+                formData.append('requirementId', selectedRequirement.id);
+                formData.append('isReUpload',isReUpload)
+            }
+            else {
+                formData.append('file', document);
+                formData.append('documentId', selectedRequirement.documents[0].id)
+                formData.append('userId',JSON.parse(auth).userid);
+                uploadUrl = "http://localhost:8080/file/reupload"
+            }
     
-            const response = await fetch('http://localhost:8080/upload', {
+            const response = await fetch(uploadUrl, {
                 method: 'POST',
                 body: formData,
             })
@@ -95,7 +104,7 @@ export default function Submission() {
                     const result = await response.json();
                     console.log("response: ",result.document)
                     setDocument(null)
-                    closeUploadModal()
+                    window.location.reload()
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
                     // Handle unexpected JSON parsing error
@@ -174,7 +183,15 @@ export default function Submission() {
                         <td>Static comment</td>
                     </tr>
                 </table>
-                <button type='button'onClick={() => {setIsReUpload(true); closeStatusModal(); openUploadModal();}}>Re-Upload</button>
+                {
+                    selectedRequirement.documents[0].status != "Approved" ? (
+                        <button type='button' onClick={() => {
+                            setIsReUpload(true); 
+                            closeStatusModal(); 
+                            openUploadModal();
+                        }}>Re-Upload</button>
+                    ) : null
+                }
             </div>
           </div>
         );

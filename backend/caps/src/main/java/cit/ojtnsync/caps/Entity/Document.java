@@ -31,7 +31,7 @@ public class Document {
 
     private Timestamp createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "requirement_id")
     private Requirement requirement;
 

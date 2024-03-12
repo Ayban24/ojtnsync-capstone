@@ -1,18 +1,11 @@
 package cit.ojtnsync.caps.Entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 public class Requirement {
@@ -25,7 +18,11 @@ public class Requirement {
 
     private Timestamp created_at;
 
-    @OneToMany(mappedBy = "requirement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne()
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @OneToMany(mappedBy = "requirement", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("requirement")
     private List<Document> documents = new ArrayList<>();
 
@@ -36,9 +33,10 @@ public class Requirement {
     }
 
     // Parameterized constructor
-    public Requirement(String title, Timestamp created_at) {
+    public Requirement(String title, Timestamp created_at, Course course) {
         this.title = title;
         this.created_at = created_at;
+        this.course = course;
     }
 
     // Getters and Setters (generated using your IDE)
@@ -67,9 +65,18 @@ public class Requirement {
         this.created_at = created_at;
     }
 
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
     public List<Document> getDocuments() {
         return this.documents;
     }
+
     public void setDocuments(List<Document> documents) {
         this.documents = documents;
     }

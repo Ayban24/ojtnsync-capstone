@@ -32,6 +32,12 @@
   bottom: 30px;
   text-decoration: none !important;
 }
+#submission .status-approved {
+  color: green;
+}
+#submission .status-declined {
+  color: red;
+}
 
 
 
