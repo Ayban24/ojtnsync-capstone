@@ -2,17 +2,11 @@ package cit.ojtnsync.caps.Entity;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 @Entity
 @Table(name="tbl_user")
-
 public class UserEntity {
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userid;
 
@@ -21,17 +15,18 @@ public class UserEntity {
 
     private String firstName;
     private String lastName;
-    private String course;
+
+    @ManyToOne()
+    @JoinColumn(name = "course_id")
+    private Course course;
+
     private String email;
     private String password;
 
-    
     public UserEntity() {
-    	
     }
-    
-	public UserEntity(Long userid, String studentID, String firstName, String lastName, String course, String email,
-                      String password) {
+
+    public UserEntity(Long userid, String studentID, String firstName, String lastName, Course course, String email, String password) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
@@ -41,47 +36,64 @@ public class UserEntity {
         this.password = password;
     }
 
-	public Long getUserid() {
-		return userid;
-	}
-	
-	public String getStudentID() {
-		return studentID;
-	}
-	public void setStudentID(String studentID) {
-		this.studentID = studentID;
-	}
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-	public String getCourse() {
-		return course;
-	}
-	public void setCourse(String course) {
-		this.course = course;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-    
-    
-}
+	public UserEntity(String studentID, String firstName, String lastName, Course course, String email, String password) {
+        this.studentID = studentID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.course = course;
+        this.email = email;
+        this.password = password;
+    }
 
+    public Long getUserid() {
+        return userid;
+    }
+
+    public String getStudentID() {
+        return studentID;
+    }
+
+    public void setStudentID(String studentID) {
+        this.studentID = studentID;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}

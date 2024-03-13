@@ -1,6 +1,7 @@
 package cit.ojtnsync.caps.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 
+import cit.ojtnsync.caps.Entity.Course;
 import cit.ojtnsync.caps.Entity.UserEntity;
+import cit.ojtnsync.caps.Service.CourseService;
 import cit.ojtnsync.caps.Service.UserService;
 
 @RestController
@@ -21,6 +24,9 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+
+    @Autowired
+    private CourseService courseService;
 	
 	@GetMapping("/getByUserid")
     public ResponseEntity findByUserid(
@@ -73,7 +79,17 @@ public class UserController {
     }
 	
 	@PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody UserEntity user) {
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<String> signup(
+        @RequestParam("studentID") String studentID,
+        @RequestParam("firstName") String firstName,
+        @RequestParam("lastName") String lastName,
+        @RequestParam("course_id") int course_id,
+        @RequestParam("email") String email,
+        @RequestParam("password") String password) {
+
+        Course course = courseService.getCourseById(course_id);
+        UserEntity user = new UserEntity(studentID, firstName, lastName, course, email, password);
         // Check if the studentID already exists
         if (userService.existsByStudentID(user.getStudentID())) {
             return new ResponseEntity<>("StudentID already exists", HttpStatus.BAD_REQUEST);

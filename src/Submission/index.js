@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles.css';
 import Cookies from 'js-cookie';
+import { useLocation } from 'react-router-dom';
 
 export default function Submission() {
     const [isUploadModalOpen, setUploadModalOpen] = useState(false);
@@ -17,9 +18,14 @@ export default function Submission() {
     const closeStatusModal = () => setStatusModalOpen(false);
 
     const auth = Cookies.get('auth');
+    const location = useLocation();
 
     const fetchRequirements = async () => {
-        const response = await fetch('http://localhost:8080/api/requirements?userid='+JSON.parse(auth).userid, {
+        
+        const searchParams = new URLSearchParams(location.search);
+        const department_id = searchParams.get('dep');
+
+        const response = await fetch('http://localhost:8080/api/requirements?userid='+JSON.parse(auth).userid+'&department_id='+department_id, {
             method: 'GET',
         })
 
