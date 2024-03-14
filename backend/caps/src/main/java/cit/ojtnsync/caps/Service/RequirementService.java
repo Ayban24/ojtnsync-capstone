@@ -9,6 +9,7 @@ import cit.ojtnsync.caps.Repository.RequirementRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RequirementService {
@@ -40,6 +41,13 @@ public class RequirementService {
         }
 
         return Collections.emptyList();
+    }
+
+    // Get requirements based on department
+    public List<Requirement> getRequirementsByDepartment(int departmentId) {
+        return requirementRepository.findAll().stream()
+                .filter(requirement -> requirement.getDepartment().getId() == departmentId)
+                .collect(Collectors.toList());
     }
 
     public Requirement getRequirementById(int id) {

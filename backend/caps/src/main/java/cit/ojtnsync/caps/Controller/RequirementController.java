@@ -58,4 +58,17 @@ public class RequirementController {
         requirementService.deleteRequirement(id);
         return ResponseEntity.noContent().build();
     }
+    
+    // Mapping to get requirements by department
+    @GetMapping("/department/{departmentId}")
+    public ResponseEntity<List<Requirement>> getRequirementsByDepartment(long userid, @PathVariable int departmentId) {
+        List<Requirement> requirements = requirementService.getRequirementsByDepartment(departmentId);
+        
+        // Filter documents for each requirement based on userid
+        for (Requirement requirement : requirements) {
+            List<Document> filteredDocuments = requirementService.getFilteredDocumentsForRequirement(requirement.getId(), userid);
+            requirement.setDocuments(filteredDocuments);
+        }
+        return ResponseEntity.ok(requirements);
+    }
 }

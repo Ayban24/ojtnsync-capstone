@@ -126,7 +126,7 @@ const handleLogin = async () => {
         <div>
           <h3>Welcome, {loggedInUser.firstName} {loggedInUser.lastName}!</h3>
           <p>Email: {loggedInUser.email}</p>
-          <p>Course: {loggedInUser.course}</p>
+          <p>Course: {loggedInUser.department}</p>
         </div>
       )}
 

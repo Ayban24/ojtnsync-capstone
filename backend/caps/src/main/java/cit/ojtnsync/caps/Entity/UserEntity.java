@@ -1,5 +1,7 @@
 package cit.ojtnsync.caps.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -17,8 +19,9 @@ public class UserEntity {
     private String lastName;
 
     @ManyToOne()
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @JsonIgnore
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     private String email;
     private String password;
@@ -26,21 +29,21 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public UserEntity(Long userid, String studentID, String firstName, String lastName, Course course, String email, String password) {
+    public UserEntity(Long userid, String studentID, String firstName, String lastName, Department department, String email, String password) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.course = course;
+        this.department = department;
         this.email = email;
         this.password = password;
     }
 
-	public UserEntity(String studentID, String firstName, String lastName, Course course, String email, String password) {
+	public UserEntity(String studentID, String firstName, String lastName, Department department, String email, String password) {
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.course = course;
+        this.department = department;
         this.email = email;
         this.password = password;
     }
@@ -73,12 +76,12 @@ public class UserEntity {
         this.lastName = lastName;
     }
 
-    public Course getCourse() {
-        return course;
+    public Department getDepartment() {
+        return department;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public String getEmail() {

@@ -1,6 +1,8 @@
 package cit.ojtnsync.caps.Entity;
 
 import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.sql.Timestamp;
@@ -19,8 +21,9 @@ public class Requirement {
     private Timestamp created_at;
 
     @ManyToOne()
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @JsonIgnore
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     @OneToMany(mappedBy = "requirement", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("requirement")
@@ -33,10 +36,10 @@ public class Requirement {
     }
 
     // Parameterized constructor
-    public Requirement(String title, Timestamp created_at, Course course) {
+    public Requirement(String title, Timestamp created_at, Department department) {
         this.title = title;
         this.created_at = created_at;
-        this.course = course;
+        this.department = department;
     }
 
     // Getters and Setters (generated using your IDE)
@@ -65,12 +68,12 @@ public class Requirement {
         this.created_at = created_at;
     }
 
-    public Course getCourse() {
-        return course;
+    public Department getDepartment() {
+        return department;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public List<Document> getDocuments() {

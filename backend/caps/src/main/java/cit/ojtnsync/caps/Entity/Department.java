@@ -1,10 +1,13 @@
 package cit.ojtnsync.caps.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.aspectj.apache.bcel.classfile.Module.Require;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Department {
@@ -17,19 +20,19 @@ public class Department {
 
     private Timestamp createdAt;
 
-    // Constructors, getters, and setters (omitted for brevity)
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    private List<Requirement> requirements = new ArrayList<>();
 
-    // Default constructor
+    // Constructors, getters, and setters (you can generate them using your IDE)
+
     public Department() {
+        // Default constructor
     }
 
-    // Parameterized constructor
     public Department(String name, Timestamp createdAt) {
         this.name = name;
         this.createdAt = createdAt;
     }
-
-    // Getters and Setters (generated using your IDE)
 
     public int getId() {
         return id;
@@ -54,4 +57,13 @@ public class Department {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+
+    public List<Requirement> getRequirements() {
+        return requirements;
+    }
+    
+    public void setRequirements(List<Requirement> requirements) {
+        this.requirements = requirements;
+    }
+    
 }

@@ -33,6 +33,7 @@ import java.sql.Timestamp;
 
 @RestController
 @RequestMapping("/file")
+@CrossOrigin(origins = "*")
 public class FileController {
 
     @Value("${upload.directory}")
@@ -115,7 +116,6 @@ public class FileController {
 
 
     @PostMapping("/reupload")
-    @CrossOrigin(origins = "*")
     public ResponseEntity<UploadResponse> handleFileReupload(
             @RequestParam("file") MultipartFile file,
             @RequestParam("documentId") int documentId,

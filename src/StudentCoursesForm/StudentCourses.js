@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './studentform.css';
 import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 export default function ActionAreaCard() {
 
 	const [departments, setDepartments] = useState(null);
+	const auth = Cookies.get('auth');
 
 	const fetchDepartments = async () => {
-        const response = await fetch('http://localhost:8080/departments', {
+        const response = await fetch(`http://localhost:8080/department/user/${JSON.parse(auth).userid}`, {
             method: 'GET',
         })
 
@@ -34,6 +36,20 @@ export default function ActionAreaCard() {
         }
     }
 
+	const showCompleted = (index) => {
+		const requirements = departments[index].requirements
+		const requirementsLength = requirements.length
+		let approvedCount = 0
+		requirements.forEach((item, i) => {
+			if(item.documents.length > 0)
+				if(item.documents[0].status.toLowerCase() == "approved")
+					approvedCount++
+		})
+		console.log("requirements length: ",requirementsLength)
+		console.log("approved count: ",approvedCount)
+		return (approvedCount / requirementsLength * 100).toFixed(2) + "% Completed"
+	}
+
     const showDepartments = () => {
         return (
 				departments && <div className='cards'>
@@ -44,8 +60,8 @@ export default function ActionAreaCard() {
 							<ul>
 								<li>Deed of Undertaking / Waiver (static)</li>
 							</ul>
-							<p>25% completed (static)</p>
-							<Link to={"/submission?dep="+item.id}></Link>
+							<p>{showCompleted(index)}</p>
+							<Link to={"/submission?department="+item.id}></Link>
 						</div>
 					))}
 				</div>

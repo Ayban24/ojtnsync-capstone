@@ -41,7 +41,7 @@ export default function Templates() {
             requirements && <ul>
                 {requirements.map((item, index) => (
                     <li key={index}> 
-                        <a href='javascript:;'>{item.title}</a>
+                        <a href='#!'>{item.title}</a>
                     </li>
                 ))}
             </ul>

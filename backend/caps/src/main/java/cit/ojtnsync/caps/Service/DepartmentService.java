@@ -1,10 +1,9 @@
 package cit.ojtnsync.caps.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Repository.DepartmentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,33 +23,29 @@ public class DepartmentService {
     }
 
     public Department getDepartmentById(int id) {
-        Optional<Department> department = departmentRepository.findById(id);
-        return department.orElse(null);
+        return departmentRepository.findById(id)
+                .orElse(null);
     }
+    
 
     public Department createDepartment(Department department) {
         return departmentRepository.save(department);
     }
 
     public Department updateDepartment(int id, Department updatedDepartment) {
-        Optional<Department> existingDepartment = departmentRepository.findById(id);
-
-        if (existingDepartment.isPresent()) {
-            Department departmentToUpdate = existingDepartment.get();
-            departmentToUpdate.setName(updatedDepartment.getName());
-            // Update other attributes as needed
-            return departmentRepository.save(departmentToUpdate);
+        Optional<Department> existingDepartmentOptional = departmentRepository.findById(id);
+        if (existingDepartmentOptional.isPresent()) {
+            Department existingDepartment = existingDepartmentOptional.get();
+            existingDepartment.setName(updatedDepartment.getName());
+            // Set other attributes as needed
+            return departmentRepository.save(existingDepartment);
         } else {
+            // Handle not found scenario
             return null;
         }
     }
 
-    public boolean deleteDepartment(int id) {
-        if (departmentRepository.existsById(id)) {
-            departmentRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
-        }
+    public void deleteDepartment(int id) {
+        departmentRepository.deleteById(id);
     }
 }

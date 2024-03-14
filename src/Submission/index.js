@@ -23,9 +23,9 @@ export default function Submission() {
     const fetchRequirements = async () => {
         
         const searchParams = new URLSearchParams(location.search);
-        const department_id = searchParams.get('dep');
+        const departmentId = searchParams.get('department');
 
-        const response = await fetch('http://localhost:8080/api/requirements?userid='+JSON.parse(auth).userid+'&department_id='+department_id, {
+        const response = await fetch(`http://localhost:8080/api/requirements/department/${departmentId}?userid=${JSON.parse(auth).userid}`, {
             method: 'GET',
         })
 
@@ -67,7 +67,10 @@ export default function Submission() {
                             setSelectedRequirement(item)
                         }}>
                             {item.title} 
-                        <span className={"status-"+item.documents[0].status.toLowerCase()}>{(item.documents.length > 0 && item.documents[0].status)}</span>
+                        {  
+                            item.documents.length > 0 && 
+                            <span className={"status-"+item.documents[0].status.toLowerCase()}>{(item.documents.length > 0 && item.documents[0].status)}</span>
+                        }
                     </li>
                 ))}
             </ul>
@@ -145,7 +148,7 @@ export default function Submission() {
                         {document && (
                             <div>
                                 <div className='file-info'>{document.name} <a className='delete-btn' onClick={() => {setDocument(null)}}>Delete</a></div>
-                                <a className='btn-submit' href='javascript:;' onClick={submitHandler}>Submit</a>
+                                <a className='btn-submit' onClick={submitHandler}>Submit</a>
                             </div>
                         )}
                         {!document && (
