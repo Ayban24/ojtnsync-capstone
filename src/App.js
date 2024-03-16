@@ -9,6 +9,11 @@ import SplashScreen from './SplashScreen'; // Import the SplashScreen component
 import Templates from './Templates';
 import Navbar from './NavBar/Navbar';
 import Submission from './Submission';
+import AdminHomepage from './Admin/Homepage';
+import AdminSubmission from './Admin/Submission';
+import Validate from './Admin/Validate'
+import Requirements from './Admin/Requirements'
+import Students from './Admin/Students';
 import './App.css';
 
 function App() {
@@ -38,6 +43,13 @@ function App() {
 				<Route path= "/adminloginform" element={<AdminLoginForm/>} />
 				<Route path="/templates" element={<Templates/>} />
 				<Route path="/submission" element={<Submission/>} />
+
+				<Route path="/admin/homepage" element={<AdminHomepage />} />
+				<Route path="/admin/submission" element={<AdminSubmission />} />
+				<Route path="/admin/validate" element={<Validate />} />
+				<Route path="/admin/requirements" element={<Requirements />} />
+				<Route path="/admin/students" element={<Students />} />
+
 
 			</Routes>
 		</Router>

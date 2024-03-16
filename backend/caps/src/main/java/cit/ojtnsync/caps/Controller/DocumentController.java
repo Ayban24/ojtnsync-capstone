@@ -36,4 +36,24 @@ public class DocumentController {
         return ResponseEntity.ok(createdDocument);
     }
 
+    @PutMapping("/{id}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<Document> updateDocumentStatus(
+            @PathVariable int id,
+            @RequestParam("comment") String comment,
+            @RequestParam("status") String status) {
+        Document existingDocument = documentService.getDocumentById(id);
+        if (existingDocument == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Update the fields of the existing document with the fields of the updated document
+        existingDocument.setComment(comment);
+        existingDocument.setStatus(status);
+
+        // Save the updated document
+        Document savedDocument = documentService.saveDocument(existingDocument);
+        return ResponseEntity.ok(savedDocument);
+    }
 }
+

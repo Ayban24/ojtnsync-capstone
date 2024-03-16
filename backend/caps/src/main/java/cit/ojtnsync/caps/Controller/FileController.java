@@ -71,8 +71,6 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<UploadResponse> handleFileUpload(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("title") String title,
-            @RequestParam("description") String description,
             @RequestParam("userId") Long userId,
             @RequestParam("requirementId") int requirementId) {
 
@@ -86,9 +84,10 @@ public class FileController {
             String fileExt = getFileExtension(fileName);
 
             Requirement requirement = requirementService.getRequirementById(requirementId);
-            
+            // public Document(String comment, String fileName, String extName, String hashedFileName, String status, Requirement requirement, UserEntity submittedBy, Timestamp createdAt) {
+
             // Save information about the uploaded file into a Document entity
-            Document document = new Document(title, description, fileName, fileExt, null, "Pending", requirement, submittedBy, new Timestamp(System.currentTimeMillis()));
+            Document document = new Document(null, fileName, fileExt, null, "Pending", requirement, submittedBy, new Timestamp(System.currentTimeMillis()));
             document = documentRepository.save(document);
 
             String hashedFileName = "";
@@ -141,7 +140,6 @@ public class FileController {
             String fileName = file.getOriginalFilename();
             String fileExt = getFileExtension(fileName);
 
-            existingDocument.setTitle(fileName);
             existingDocument.setFileName(fileName);
             existingDocument.setExtName(fileExt);
             existingDocument.setSubmittedBy(submittedBy);

@@ -3,8 +3,10 @@ package cit.ojtnsync.caps.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
+import cit.ojtnsync.caps.Service.DepartmentService;
 import cit.ojtnsync.caps.Service.RequirementService;
 
 import java.util.List;
@@ -15,9 +17,11 @@ import java.util.List;
 public class RequirementController {
 
     private final RequirementService requirementService;
+    private final DepartmentService departmentService;
 
-    public RequirementController(RequirementService requirementService) {
+    public RequirementController(RequirementService requirementService, DepartmentService departmentService) {
         this.requirementService = requirementService;
+        this.departmentService = departmentService;
     }
 
     @GetMapping
@@ -40,7 +44,12 @@ public class RequirementController {
     }
 
     @PostMapping
-    public ResponseEntity<Requirement> createRequirement(@RequestBody Requirement requirement) {
+    public ResponseEntity<Requirement> createRequirement(
+            @RequestParam("requirementTitle") String requirementTitle,
+            @RequestParam("requirementTerm") String requirementTerm,
+            @RequestParam("departmentId") int departmentId) {
+        Department department = departmentService.getDepartmentById(departmentId);
+        Requirement requirement = new Requirement(requirementTitle, department, requirementTerm, null, null, null);
         Requirement createdRequirement = requirementService.createRequirement(requirement);
         return ResponseEntity.ok(createdRequirement);
     }
@@ -69,6 +78,13 @@ public class RequirementController {
             List<Document> filteredDocuments = requirementService.getFilteredDocumentsForRequirement(requirement.getId(), userid);
             requirement.setDocuments(filteredDocuments);
         }
+        return ResponseEntity.ok(requirements);
+    }
+
+    // Mapping to get requirements by department for Admin
+    @GetMapping("/admin/department/{departmentId}")
+    public ResponseEntity<List<Requirement>> getAdminRequirementsByDepartment(long userid, @PathVariable int departmentId) {
+        List<Requirement> requirements = requirementService.getRequirementsByDepartment(departmentId);
         return ResponseEntity.ok(requirements);
     }
 }

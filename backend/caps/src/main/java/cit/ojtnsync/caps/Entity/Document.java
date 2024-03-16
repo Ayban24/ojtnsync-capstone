@@ -2,8 +2,6 @@ package cit.ojtnsync.caps.Entity;
 
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.*;
 
@@ -14,13 +12,10 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String title;
-
     @Lob
-    private String description;
+    private String comment;
 
     private String fileName;
-
     private String extName;
 
     @Column(nullable = true)
@@ -47,9 +42,8 @@ public class Document {
     }
 
     // Parameterized constructor
-    public Document(String title, String description, String fileName, String extName, String hashedFileName, String status, Requirement requirement, UserEntity submittedBy, Timestamp createdAt) {
-        this.title = title;
-        this.description = description;
+    public Document(String comment, String fileName, String extName, String hashedFileName, String status, Requirement requirement, UserEntity submittedBy, Timestamp createdAt) {
+        this.comment = comment;
         this.fileName = fileName;
         this.extName = extName;
         this.hashedFileName = hashedFileName;
@@ -69,20 +63,12 @@ public class Document {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getComment() {
+        return comment;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getFileName() {

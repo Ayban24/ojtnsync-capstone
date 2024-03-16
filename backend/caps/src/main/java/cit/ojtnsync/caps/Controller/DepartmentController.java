@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import cit.ojtnsync.caps.Entity.AdminEntity;
 import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Entity.UserEntity;
+import cit.ojtnsync.caps.Repository.AdminRepository;
 import cit.ojtnsync.caps.Repository.DepartmentRepository;
 import cit.ojtnsync.caps.Repository.UserRepository;
 
@@ -20,11 +22,13 @@ public class DepartmentController {
 
     private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
 
     @Autowired
-    public DepartmentController(DepartmentRepository departmentRepository, UserRepository userRepository) {
+    public DepartmentController(DepartmentRepository departmentRepository, UserRepository userRepository, AdminRepository adminRepository) {
         this.departmentRepository = departmentRepository;
         this.userRepository = userRepository;
+        this.adminRepository = adminRepository;
     }
 
     @GetMapping
@@ -67,25 +71,35 @@ public class DepartmentController {
         return ResponseEntity.noContent().build();
     }
     
-    // Mapping to get departments by UserEntity ID
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Department>> getDepartmentByUserId(@PathVariable Long userId) {
-        UserEntity user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
+    @GetMapping("/{userType}/{userId}")
+    public ResponseEntity<List<Department>> getDepartmentByUserId(@PathVariable String userType, @PathVariable Long userId) {
         List<Department> departments = new ArrayList<>();
-        departments.add(user.getDepartment());
+        if ("user".equals(userType)) {
+            UserEntity user = userRepository.findById(userId).orElse(null);
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
 
-        // Check if the department name is not 'NLO' (case insensitive)
-        if (!"NLO".equalsIgnoreCase(user.getDepartment().getName())) {
-            Optional<Department> nloDepartment = departmentRepository.findByNameIgnoreCase("NLO");
-            nloDepartment.ifPresent(departments::add);
+            departments.add(user.getDepartment());
+
+            // Check if the department name is not 'NLO' (case insensitive)
+            if (!"NLO".equalsIgnoreCase(user.getDepartment().getName())) {
+                Optional<Department> nloDepartment = departmentRepository.findByNameIgnoreCase("NLO");
+                nloDepartment.ifPresent(departments::add);
+            }
+        }
+        else {
+            AdminEntity user = adminRepository.findById(userId).orElse(null);
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            departments.add(user.getDepartment());
         }
 
         return ResponseEntity.ok(departments);
     }
+
 
 
 }

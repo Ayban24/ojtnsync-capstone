@@ -9,6 +9,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
+import Cookies from 'js-cookie';
 import { Link, useNavigate} from 'react-router-dom';
 
 const AdminLoginForm = () => {
@@ -25,13 +26,17 @@ const handleLogin = async () => {
       return;
     }
 
-    const response = await fetch(`http://localhost:8080/getByFacultyId?facultyId=${facultyId}&password=${password}`);
+    const response = await fetch(`http://localhost:8080/admin/login?facultyId=${facultyId}&password=${password}`);
     const data = await response.json();
 
     if (response.ok) {
-      setLoggedInUser(data);
+      const admin = data.admin;
+      admin.departmentId = data.departmentId
+
+      setLoggedInUser(admin);
+      Cookies.set('auth', JSON.stringify(admin));
       setError(null);
-      navigate('/homepage');
+      window.location.replace('/admin/homepage');
       
     } else {
       setLoggedInUser(null);

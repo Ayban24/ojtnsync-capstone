@@ -52,10 +52,11 @@ export default function Submission() {
         }
     }
 
-    const showRequirements = () => {
+    const showRequirements = (term) => {
         return (
             requirements && <ul>
                 {requirements.map((item, index) => (
+                    (item.term && item.term.toLowerCase() == term) &&
                     <li 
                         key={index} 
                         onClick={() => {
@@ -90,8 +91,6 @@ export default function Submission() {
             let uploadUrl = "http://localhost:8080/file/upload"
             if(!isReUpload) {
                 formData.append('file', document);
-                formData.append('title', 'static title');
-                formData.append('description', 'static description');
                 formData.append('userId',JSON.parse(auth).userid);
                 formData.append('requirementId', selectedRequirement.id);
                 formData.append('isReUpload',isReUpload)
@@ -175,22 +174,24 @@ export default function Submission() {
                 <h2 className='status-title'>{selectedRequirement.title}</h2>
                 <h3>Submission Status</h3>
                 <table>
-                    <tr>
-                        <td>Submission Status</td>
-                        <td>Submitted</td>
-                    </tr>
-                    <tr>
-                        <td>Approval Status</td>
-                        <td>{selectedRequirement.documents[0].status}</td>
-                    </tr>
-                    <tr>
-                        <td>File</td>
-                        <td>{selectedRequirement.documents[0].fileName}</td>
-                    </tr>
-                    <tr>
-                        <td>Comments</td>
-                        <td>Static comment</td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <td>Submission Status</td>
+                            <td>Submitted</td>
+                        </tr>
+                        <tr>
+                            <td>Approval Status</td>
+                            <td>{selectedRequirement.documents[0].status}</td>
+                        </tr>
+                        <tr>
+                            <td>File</td>
+                            <td>{selectedRequirement.documents[0].fileName}</td>
+                        </tr>
+                        <tr>
+                            <td>Comments</td>
+                            <td>{selectedRequirement.documents[0].comment ? selectedRequirement.documents[0].comment : "-"}</td>
+                        </tr>
+                    </tbody>
                 </table>
                 {
                     selectedRequirement.documents[0].status != "Approved" ? (
@@ -216,7 +217,19 @@ export default function Submission() {
                 <h1>IT DEPARTMENT</h1>
                 <section>
                     <h2>PRELIM REQUIREMENTS</h2>
-                    {showRequirements()}
+                    {showRequirements("prelim")}
+                </section>
+                <section>
+                    <h2>MIDTERM REQUIREMENTS</h2>
+                    {showRequirements("midterm")}
+                </section>
+                <section>
+                    <h2>PRE-FINAL REQUIREMENTS</h2>
+                    {showRequirements("pre-final")}
+                </section>
+                <section>
+                    <h2>FINAL REQUIREMENTS</h2>
+                    {showRequirements("final")}
                 </section>
             </div>
             

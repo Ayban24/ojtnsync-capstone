@@ -2,6 +2,7 @@ package cit.ojtnsync.caps.Service;
 
 import org.springframework.stereotype.Service;
 
+import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
 import cit.ojtnsync.caps.Repository.RequirementRepository;
@@ -46,7 +47,10 @@ public class RequirementService {
     // Get requirements based on department
     public List<Requirement> getRequirementsByDepartment(int departmentId) {
         return requirementRepository.findAll().stream()
-                .filter(requirement -> requirement.getDepartment().getId() == departmentId)
+                .filter(requirement -> {
+                    Department department = requirement.getDepartment();
+                    return department != null && department.getId() == departmentId;
+                })
                 .collect(Collectors.toList());
     }
 

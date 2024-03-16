@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './studentform.css';
+import './styles.css';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -10,8 +10,8 @@ export default function ActionAreaCard() {
 
 	const fetchDepartments = async () => {
 		let response = null
-		if(JSON.parse(auth).userid) {
-			response = await fetch(`http://localhost:8080/department/user/${JSON.parse(auth).userid}`, {
+		if(JSON.parse(auth).adminid) {
+			response = await fetch(`http://localhost:8080/department/admin/${JSON.parse(auth).adminid}`, {
 				method: 'GET',
 			})
 		}
@@ -40,32 +40,13 @@ export default function ActionAreaCard() {
         }
     }
 
-	const showCompleted = (index) => {
-		const requirements = departments[index].requirements
-		const requirementsLength = requirements.length
-		let approvedCount = 0
-		requirements.forEach((item, i) => {
-			if(item.documents.length > 0)
-				if(item.documents[0].status.toLowerCase() == "approved")
-					approvedCount++
-		})
-		console.log("requirements length: ",requirementsLength)
-		console.log("approved count: ",approvedCount)
-		return (approvedCount / requirementsLength * 100).toFixed(2) + "% Completed"
-	}
-
     const showDepartments = () => {
         return (
 				departments && <div className='cards'>
 					{departments.map((item, index) => (
-						<div className="card">
-							<h2>{item.name} DEPARTMENT </h2>
-							<h4>Upcoming</h4>
-							<ul>
-								<li>Deed of Undertaking / Waiver (static)</li>
-							</ul>
-							<p>{showCompleted(index)}</p>
-							<Link to={"/submission?department="+item.id}></Link>
+						<div className="card" key={index}>
+							<h2>{item.name} DEPARTMENT</h2>
+							<Link to={"/admin/submission?department="+item.id}></Link>
 						</div>
 					))}
 				</div>
@@ -76,32 +57,6 @@ export default function ActionAreaCard() {
 	useEffect(() => {
         fetchDepartments()
     }, []);
-
-  	const renderCards = () => {
-
-		// return	<div className='cards'>
-		// 	<div className="card">
-		// 		<h2>IT DEPARTMENT </h2>
-		// 		<h4>Upcoming</h4>
-		// 		<ul>
-		// 			<li>Deed of Undertaking / Waiver</li>
-		// 		</ul>
-		// 		<p>25% completed</p>
-		// 		<Link to="/submission"></Link>
-		// 	</div>
-		// 	<div className="card">
-		// 		<h2>NLO DEPARTMENT</h2>
-		// 		<h4>Upcoming</h4>
-		// 		<ul>
-		// 			<li>Endorsement Letter</li>
-		// 			<li>Confirmation Letter</li>
-		// 		</ul>
-		// 		<p>50% completed</p>
-		// 		<Link to="/submission"></Link>
-		// 	</div>
-		// </div>
-
-  	};
 
   return <div className='student-courses'>{showDepartments()}</div>;
 }

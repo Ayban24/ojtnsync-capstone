@@ -1,10 +1,14 @@
 package cit.ojtnsync.caps.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,18 +24,33 @@ public class AdminEntity {
     private String facultyId;
     private String firstName;
     private String lastName;
-    private String department;
     private String email;
     private String password;
+
+	@ManyToOne()
+    @JsonIgnore
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     public AdminEntity() {
     	}
     
 
-	public AdminEntity(Long adminid, String facultyId, String firstName, String lastName, String department,
+	public AdminEntity(Long adminid, String facultyId, String firstName, String lastName, Department department,
 			String email, String password) {
 		super();
 		this.adminid = adminid;
+		this.facultyId = facultyId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.department = department;
+		this.email = email;
+		this.password = password;
+	}
+
+	public AdminEntity(String facultyId, String firstName, String lastName, Department department,
+			String email, String password) {
+		super();
 		this.facultyId = facultyId;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -73,13 +92,13 @@ public class AdminEntity {
 		this.lastName = lastName;
 	}
 
-	public String getDepartment() {
-		return department;
-	}
+	public Department getDepartment() {
+        return department;
+    }
 
-	public void setDepartment(String department) {
-		this.department = department;
-	}
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
 
 	public String getEmail() {
 		return email;

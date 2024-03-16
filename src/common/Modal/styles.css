@@ -1,0 +1,43 @@
+/* modal */
+.custom-modal {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+  .custom-modal.hide{
+    display: none;
+  }
+  .custom-modal.show{
+    display: block;
+  }
+  
+  .custom-modal .overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: #1a1a1a1a;
+  }
+  
+  .custom-modal .body {
+    /* position: relative; */
+    z-index: 1;
+    position: absolute;
+    max-width: 800px;
+    width: 100%;
+    margin: -71px auto 0;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 15px;
+    padding: 20px 20px 90px;
+    box-sizing: border-box;
+  }
+  
