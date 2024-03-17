@@ -25,11 +25,13 @@ public class UserEntity {
 
     private String email;
     private String password;
+    
+    private boolean isVerified;
 
     public UserEntity() {
     }
 
-    public UserEntity(Long userid, String studentID, String firstName, String lastName, Department department, String email, String password) {
+    public UserEntity(Long userid, String studentID, String firstName, String lastName, Department department, String email, String password, boolean isVerified) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
@@ -37,15 +39,17 @@ public class UserEntity {
         this.department = department;
         this.email = email;
         this.password = password;
+        this.isVerified = isVerified;
     }
 
-	public UserEntity(String studentID, String firstName, String lastName, Department department, String email, String password) {
+    public UserEntity(String studentID, String firstName, String lastName, Department department, String email, String password, boolean isVerified) {
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.department = department;
         this.email = email;
         this.password = password;
+        this.isVerified = isVerified;
     }
 
     public Long getUserid() {
@@ -98,5 +102,13 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isVerified() { // Getter for isVerified
+        return isVerified;
+    }
+
+    public void setVerified(boolean isVerified) { // Setter for isVerified
+        this.isVerified = isVerified;
     }
 }

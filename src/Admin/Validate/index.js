@@ -3,14 +3,20 @@ import { useLocation, Link } from 'react-router-dom';
 import './styles.css'
 import DataTable from '../../common/DataTable'
 import CustomModal from '../../common/Modal'
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
 const Validate = () => {
 
     const [documents, setDocuments] = useState(null)
     const [check, setCheck] = useState(false)
-    const [modalInfo, setModalInfo] = useState(null)
+    const [checkInfo, setCheckInfo] = useState(null)
+    const [commentModal, setCommentModal] = useState(false)
     const [comment, setComment] = useState(null)
+    const [documentStatus, setDocumentStatus] = useState("pending")
     const [filter, setFilter] = useState("pending")
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
@@ -79,7 +85,7 @@ const Validate = () => {
                             <td>{item.fileName}</td>
                             <td>{formatDate(item.createdAt)}</td>
                             {
-                                (filter && filter == "pending") ? <td><a href="#!" onClick={() => {setModalInfo(item);setCheck(true);}}>Check</a></td>
+                                (filter && filter == "pending") ? <td><a href="#!" onClick={() => {setCheckInfo(item);setCheck(true);}} className='check-btn'>Check</a></td>
                                 : <td style={{textAlign:"center"}}>-</td>
                             }
                         </tr>
@@ -89,12 +95,10 @@ const Validate = () => {
         );
     }
 
-    const handleDocumentStatus = async (documentId = null, status = "Pending") => {
+    const handleDocumentStatus = async (documentId = null) => {
         const formData = new FormData();
         formData.append('comment', comment)
-        formData.append('status', status)
-        console.log("comment: ",comment)
-        console.log("status: ",status)
+        formData.append('status', documentStatus)
         const response = await fetch(`http://localhost:8080/api/documents/${documentId}`, {
             method: 'PUT',
             body: formData,
@@ -116,6 +120,29 @@ const Validate = () => {
         }
     }
 
+    const showDocument = () => {
+        return (
+        <div className='document-con'>
+            <button className='back-btn' onClick={() => setCheck(false)}>&lsaquo;</button>
+            <div className='document-info'>
+                <div className='header'>
+                    <h4>{checkInfo.submittedBy.firstName} {checkInfo.submittedBy.lastName}</h4>
+                    <div className='actions'>
+                        <button onClick={() => {setDocumentStatus("Declined");setCommentModal(true)}}>Decline</button>
+                        <button onClick={() => {setDocumentStatus("Approved");setCommentModal(true)}}>Approve</button>
+                    </div>
+                </div>
+                {checkInfo.extName == "pdf" 
+                    ?   <Document file={`http://localhost:8080/file/download/${checkInfo.id}`} >
+                            <Page pageNumber={1} />
+                        </Document>
+                    :   <figure><img src={`http://localhost:8080/file/download/${checkInfo.id}`} /></figure>
+                }
+            </div>
+        </div>
+        )
+    }
+
     useEffect(() => {
         fetchDocuments()
     }, []);
@@ -126,27 +153,26 @@ const Validate = () => {
         <div className='wrapper'>
 			<h1>Validate</h1>
             <div className="validate-nav">
-                <ul>
-                    <input type='radio' name='status' id='status1' defaultChecked onChange={() => fetchDocuments("pending")} /><label htmlFor="status1">FOR CHECKING</label>
-                    <input type='radio' name='status' id='status2' onChange={() => fetchDocuments("approved")} /><label htmlFor="status2">APPROVED</label>
-                    <input type='radio' name='status' id='status3' onChange={() => fetchDocuments("declined")} /><label htmlFor="status3">DECLINED</label>
-                </ul>
+                <label htmlFor="status1"><input type='radio' name='status' id='status1' defaultChecked onChange={() => fetchDocuments("pending")} />FOR CHECKING</label>
+                <label htmlFor="status2"><input type='radio' name='status' id='status2' onChange={() => fetchDocuments("approved")} />APPROVED</label>
+                <label htmlFor="status3"><input type='radio' name='status' id='status3' onChange={() => fetchDocuments("declined")} />DECLINED</label>
             </div>
             {showDocuments()}
-            {(check && modalInfo) && 
-                <CustomModal show={true} onHide={(val) => setCheck(val)}>
+            {
+            (check && checkInfo && commentModal) && 
+                <CustomModal show={true} onHide={(val) => setCommentModal(val)}>
                     <div id='check-modal'>
-                        <h4>{modalInfo.fileName}<span>-</span></h4>
-                        <a href={`http://localhost:8080/file/download/${modalInfo.id}`} target='_blank' rel='noopener noreferrer'>Download</a>
+                        {/* <a href={`http://localhost:8080/file/download/${checkInfo.id}`} target='_blank' rel='noopener noreferrer'>Download</a> */}
                         <label>Enter Comments</label>
                         <textarea onChange={(e) => setComment(e.target.value)}></textarea>
                         <div className='modal-footer'>
-                            <button onClick={() => handleDocumentStatus(modalInfo.id, "Declined")}>Decline</button>
-                            <button onClick={() => handleDocumentStatus(modalInfo.id, "Approved")}>Approve</button>
+                            <button onClick={() => setCommentModal(false)}>Cancel</button>
+                            <button onClick={() => handleDocumentStatus(checkInfo.id)}>{documentStatus == "Declined" ? "Decline" : "Approve"}</button>
                         </div>
                     </div>
                 </CustomModal>
             }
+            {(check && checkInfo) && showDocument()}
         </div>
       </div>
       

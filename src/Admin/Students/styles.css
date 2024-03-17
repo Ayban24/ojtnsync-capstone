@@ -1,6 +1,48 @@
 
-/* Inline #19 | http://localhost:3000/admin/students */
+/* Inline #21 | http://localhost:3000/admin/students */
 
+#students .header .header-actions a {
+  background: #F8C400;
+  display: inherit;
+  width: auto;
+  text-align: center;
+  line-height: 26px;
+  color: #000;
+  text-decoration: unset !important;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+.header-actions {
+  display: flex;
+  position: absolute;
+  right: 0;
+  top: 0;
+  column-gap: 10px;
+}
+
+#students .header {
+  margin-top: 66px;
+}
+
+#students .header .search {
+  background: #D9D9D9;
+  border: unset;
+  width: 183px;
+  height: 31px;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+#documents-table .check-btn {
+  background: #F8C400;
+  display: block;
+  width: 100px;
+  text-align: center;
+  line-height: 26px;
+  color: #000;
+  text-decoration: unset !important;
+  }
 .filter-options button {
     background: #F8C400;
     border: none;

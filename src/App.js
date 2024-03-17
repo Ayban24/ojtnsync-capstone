@@ -14,17 +14,20 @@ import AdminSubmission from './Admin/Submission';
 import Validate from './Admin/Validate'
 import Requirements from './Admin/Requirements'
 import Students from './Admin/Students';
+import AddStudent from './Admin/Students/Add';
 import './App.css';
+import Cookies from 'js-cookie';
 
 function App() {
 	const currentPath = window.location.pathname;
+	const auth = Cookies.get('auth');
 
 	// Check if the current path is "/signup" or "/login"
 	const isSignupOrLogin = currentPath === '/signup' || currentPath === '/login';
 
 	// Conditionally render the Nav component
 	const renderNav = () => {
-		if (!isSignupOrLogin) {
+		if (!isSignupOrLogin && auth) {
 		return <Navbar />;
 		}
 		return null;
@@ -49,7 +52,7 @@ function App() {
 				<Route path="/admin/validate" element={<Validate />} />
 				<Route path="/admin/requirements" element={<Requirements />} />
 				<Route path="/admin/students" element={<Students />} />
-
+				<Route path="/admin/students/add" element={<AddStudent />} />
 
 			</Routes>
 		</Router>

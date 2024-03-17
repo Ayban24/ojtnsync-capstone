@@ -8,7 +8,7 @@ export default function Submission() {
     const [requirements, setRequirements] = useState(null)
     const [isAddModal, setIsAddModal] = useState(false)
     const [requirementTitle, setRequirementTitle] = useState(null)
-    const [requirementTerm, setRequirementTerm] = useState(null)
+    const [requirementTerm, setRequirementTerm] = useState("Prelim")
 
     const auth = Cookies.get('auth');
     const location = useLocation();
@@ -68,11 +68,11 @@ export default function Submission() {
 
     const showRequirements = () => {
         return (
-            requirements && <ul>
+            requirements && <ul className='requirement-list'>
                 {requirements.map((item, index) => (
                     <li key={index}>
-                        <Link to={`/admin/validate?requirementId=${item.id}`}>{item.title}</Link>
-                        <a href="#!" onClick={() => handleDelete(item.id)}>Delete</a>
+                        <div className='title-con'><Link to={`/admin/validate?requirementId=${item.id}`}>{item.title}</Link></div>
+                        <a className='requirement-list-delete-btn' href="#!" onClick={() => handleDelete(item.id)}>Delete</a>
                     </li>
                 ))}
             </ul>
@@ -82,13 +82,20 @@ export default function Submission() {
     const showAddModal = () => {
         return (
             <CustomModal show={isAddModal} onHide={(val) => {setIsAddModal(val)}}>
-                    <h2>Create Requirement</h2>
-                    <div className='title-con'><label>Title: </label><input type='text' id='add-modal-title' onChange={(e) => setRequirementTitle(e.target.value)} /></div>
-                    <input id='term1' type='radio' name="term" value="Prelim" onChange={handleTermChange} defaultChecked /><label htmlFor="term1">Prelim</label>
-                    <input id='term2' type='radio' name="term" value="Midterm" onChange={handleTermChange} /><label htmlFor="term2">Midterm</label>
-                    <input id='term3' type='radio' name="term" value="Pre-Final" onChange={handleTermChange} /><label htmlFor="term3">Pre-Final</label>
-                    <input id='term4' type='radio' name="term" value="Final" onChange={handleTermChange} /><label htmlFor="term4">Final</label>
-                    <a href="#!" onClick={submitRequirement}>Confirm</a>
+                    <div className='add-requirement-modal'>
+                        <h2>Create Requirement</h2>
+                        <div className='title-con'><label>Title: </label><input type='text' id='add-modal-title' onChange={(e) => setRequirementTitle(e.target.value)} /></div>
+                        <div className='body-con'>
+                            <div className='sidebar'>
+                                <h4>Choose</h4>
+                                <label htmlFor="term1" className={requirementTerm == 'Prelim' && "active-term"}><input id='term1' type='radio' name="term" value="Prelim" onChange={handleTermChange} defaultChecked />Prelim</label>
+                                <label htmlFor="term2" className={requirementTerm == 'Midterm' && "active-term"}><input id='term2' type='radio' name="term" value="Midterm" onChange={handleTermChange} />Midterm</label>
+                                <label htmlFor="term3" className={requirementTerm == 'Pre-Final' && "active-term"}><input id='term3' type='radio' name="term" value="Pre-Final" onChange={handleTermChange} />Pre-Final</label>
+                                <label htmlFor="term4" className={requirementTerm == 'Final' && "active-term"}><input id='term4' type='radio' name="term" value="Final" onChange={handleTermChange} />Final</label>
+                            </div>
+                            <a href="#!" className='confirm-btn' onClick={submitRequirement}>Confirm</a>
+                        </div>
+                    </div>
             </CustomModal>
         )
     }
@@ -121,7 +128,7 @@ export default function Submission() {
     return (
         <div id='submission'>
             <div className='wrapper'>
-                <a href="#!" onClick={() => setIsAddModal(true)}>Add Requirement</a>
+                <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}>Add Requirement</a>
                 <section>
                     <h2>PRELIM REQUIREMENTS</h2>
                     {showRequirements()}
