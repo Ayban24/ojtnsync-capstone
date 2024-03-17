@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
-import { Document, Page } from 'react-pdf';
 
 export default function Submission() {
     const [isUploadModalOpen, setUploadModalOpen] = useState(false);
