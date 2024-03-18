@@ -20,7 +20,7 @@ public class Department {
 
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "department", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Requirement> requirements = new ArrayList<>();
 
     // Constructors, getters, and setters (you can generate them using your IDE)

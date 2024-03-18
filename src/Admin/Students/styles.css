@@ -1,5 +1,18 @@
 
-/* Inline #21 | http://localhost:3000/admin/students */
+.success-modal h2 {
+  text-align: center;
+  margin: 90px 0 84px;
+}
+
+.success-modal p {
+  text-align: right;
+  margin: 0;
+  cursor: pointer;
+}
+
+.success-modal {
+  padding: 0 48px;
+}
 
 #students .header .header-actions a {
   background: #F8C400;
@@ -51,6 +64,7 @@
     margin: 0 8px;
     height: 26px;
     font-weight: 500;
+    cursor: pointer;
   }
   
   .filter-options {

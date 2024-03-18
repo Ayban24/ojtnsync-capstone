@@ -36,7 +36,8 @@ public class UserController {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),
-                    user.getDepartment()
+                    user.getDepartment(),
+                    user.isVerified()
             ));
         }
 
@@ -77,7 +78,8 @@ public class UserController {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),
-                    user.getDepartment()
+                    user.getDepartment(),
+                    user.isVerified()
             ));
         }
 
@@ -102,7 +104,8 @@ public class UserController {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),
-                    user.getDepartment()
+                    user.getDepartment(),
+                    user.isVerified()
             ));
         }
 
@@ -143,6 +146,22 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("Login invalid", null));
         }
     }
+
+    @DeleteMapping("/user/{studentID}")
+    public ResponseEntity<String> deleteUser(@PathVariable("studentID") String studentID) {
+        // Fetch the user from the database
+        UserEntity user = userService.findByStudentID(studentID);
+        
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Delete the user
+        userService.deleteUser(user);
+
+        return ResponseEntity.ok("User deleted successfully");
+    }
+
 
     // Custom class to represent the login response
     private static class LoginResponse {

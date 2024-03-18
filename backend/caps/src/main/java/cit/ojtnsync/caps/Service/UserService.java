@@ -47,5 +47,9 @@ public class UserService {
         // Query the database to search for users by Department.name, lastName, and firstName
         return userRepository.findByDepartmentNameAndLastNameAndFirstName(departmentName, lastName, firstName);
     }
+
+    public void deleteUser(UserEntity user) {
+        userRepository.delete(user);
+    }
     
 }

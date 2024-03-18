@@ -109,7 +109,7 @@ const Students = () => {
                     <input placeholder='Search' className='search' onChange={(e) => {handleSearch(e)}} />
                     <div className='header-actions'>
                         <Link to='/admin/students/add'>Add Student</Link>
-                        <a>Delete Student</a>
+                        <Link to='/admin/students/delete'>Delete Student</Link>
                     </div>
                 </div>
                 {showStudents()}

@@ -70,9 +70,9 @@ const Students = () => {
         }
     }
 
-    const handleAddStudent = async (index) => {
-        const response = await fetch(`http://localhost:8080/user/${students[index].studentID}/verify`, {
-            method: 'PUT',
+    const handleDeleteStudent = async (index) => {
+        const response = await fetch(`http://localhost:8080/user/${students[index].studentID}`, {
+            method: 'DELETE',
         })
 
         if (response && response.ok) {
@@ -113,11 +113,7 @@ const Students = () => {
                             <tr key={index}>
                                 <td>{item.department.name}</td>
                                 <td>{item.lastName + ", " + item.firstName}</td>
-                                {!item.verified ? (
-                                    <td><a href='#!' onClick={() => handleAddStudent(index)}>Add Student</a></td>
-                                ) : (
-                                    <td>-</td>
-                                )}
+                                <td><a href='#!' onClick={() => handleDeleteStudent(index)}>Delete Student</a></td>
                             </tr>
                         ))}
                     </tbody>
@@ -163,7 +159,7 @@ const Students = () => {
             </div>
             {successModal && <CustomModal show={true} onHide={() => {}}>
                 <div className='success-modal'>
-                    <h2>Student Added</h2>
+                    <h2>Student Deleted</h2>
                     <p onClick={() => setSuccessModal(false)}>Close</p>
                 </div>
             </CustomModal>}

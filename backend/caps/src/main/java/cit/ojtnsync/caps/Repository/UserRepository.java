@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>{
             String studentID, String firstName, String lastName, String email);
 
 		@Query("SELECT " +
-            "NEW cit.ojtnsync.caps.Model.UserWithDepartmentDTO(u.userid, u.studentID, u.firstName, u.lastName, u.email, d) " +
+            "NEW cit.ojtnsync.caps.Model.UserWithDepartmentDTO(u.userid, u.studentID, u.firstName, u.lastName, u.email, d, u.isVerified) " +
         "FROM " +
             "UserEntity u " +
         "JOIN " +
