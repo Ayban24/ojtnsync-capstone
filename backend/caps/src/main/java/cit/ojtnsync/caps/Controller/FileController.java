@@ -143,6 +143,7 @@ public class FileController {
             existingDocument.setFileName(fileName);
             existingDocument.setExtName(fileExt);
             existingDocument.setSubmittedBy(submittedBy);
+            existingDocument.setStatus("Pending");
 
             String hashedFileName = "";
             try {
