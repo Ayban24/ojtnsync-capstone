@@ -5,7 +5,7 @@ import logo1 from './icons/logo1.png';
 const SplashScreen = () => {
   return (
     <div style={styles.container}>
-          <img style={styles.logo} img src={logo1} alt="Logo" />
+          <img style={styles.logo} src={logo1} alt="Logo" />
 
       <h1 style={styles.welcomeText}>Welcome!</h1>
       <Link to="/adminloginform" style={styles.button}>

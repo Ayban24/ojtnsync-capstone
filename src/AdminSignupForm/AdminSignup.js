@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo1 from '../icons/logo1.png';
 import './signup.css';
 import { Link, useNavigate } from 'react-router-dom';
@@ -12,6 +12,7 @@ const SignupForm = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [department, setDepartment] = useState('');
+	const [departments, setDepartments] = useState(null)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
@@ -19,6 +20,41 @@ const SignupForm = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+		fetchDepartments()
+	}, []);
+	
+	const fetchDepartments = async () => {
+		const response = await fetch('http://localhost:8080/department', {
+			method: 'GET',
+		});
+	
+		if (response.ok) {
+			try {
+				const result = await response.json();
+				setDepartments(result)
+			} catch (error) {
+				console.error('Error parsing JSON:', error);
+			}
+		} else {
+			console.error('Fetching of departments failed:', response.status, response.statusText);
+			try {
+				const result = await response.json();
+				// Access specific properties from the result if needed
+				console.log('Error Message:', result.message);
+				// Handle failure, e.g., display an error message to the user
+			} catch (error) {
+				console.error('Error parsing JSON:', error);
+				// Handle unexpected JSON parsing error
+			}
+		}
+	}
+	
+	const showDepartments = () => {
+		if(departments && departments.length > 0)
+			return departments.map((department, index) => <MenuItem key={department.id} value={index}>{department.name}</MenuItem>);
+	}
 
   const handleSignup = async () => {
     if (!facultyId || !firstName || !lastName || !department || !email || !password) {
@@ -31,22 +67,19 @@ const SignupForm = () => {
       setErrorModalOpen(true);
       return;
     }
-    const admin = {
-      facultyId,
-      firstName,
-      lastName,
-      department,
-      email,
-      password,
-    };
+
+    const formData = new FormData();
+		formData.append('facultyId', facultyId);
+		formData.append('firstName', firstName);
+		formData.append('lastName', lastName);
+		formData.append('department_id', department.id);
+		formData.append('email', email);
+		formData.append('password', password);
 
     try {
       const response = await fetch('http://localhost:8080/adminsignup', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(admin),
+				body: formData,
       });
 
       if (response.ok) {
@@ -123,18 +156,17 @@ const SignupForm = () => {
         </div>
         
         <div className='input'>
-  <FormControl fullWidth>
-    <InputLabel id="course-label">Department</InputLabel>
-    <Select
-      labelId="course-label"
-      id="course"
-      value={department}
-      onChange={(e) => setDepartment(e.target.value)}
-    >
-      <MenuItem value={'BSIT'}>NLO</MenuItem>
-      <MenuItem value={'BSCS'}>CCS</MenuItem>
-    </Select>
-  </FormControl>
+        <FormControl fullWidth>
+          <InputLabel id="course-label">Department</InputLabel>
+          <Select
+          labelId="course-label"
+          id="course"
+          value={department.name}
+          onChange={(e) => setDepartment(departments[e.target.value])}
+          >
+          {showDepartments()}
+          </Select>
+        </FormControl>
 </div>
 
         <div className='input'>
