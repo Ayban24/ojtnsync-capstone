@@ -30,9 +30,8 @@ public class Document {
     @JoinColumn(name = "requirement_id")
     private Requirement requirement;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "submitted_by")
-    @Nullable
     private UserEntity submittedBy;
 
     // Constructors, getters, and setters (omitted for brevity)

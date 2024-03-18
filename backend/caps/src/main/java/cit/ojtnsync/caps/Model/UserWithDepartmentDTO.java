@@ -9,15 +9,17 @@ public class UserWithDepartmentDTO {
     private String lastName;
     private String email;
     private Department department;
+    private boolean isVerified;
     // Add other department attributes as needed
 
-    public UserWithDepartmentDTO(Long userid, String studentID, String firstName, String lastName, String email, Department department) {
+    public UserWithDepartmentDTO(Long userid, String studentID, String firstName, String lastName, String email, Department department, boolean isVerified) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.department = department;
+        this.isVerified = isVerified;
     }
 
     public Long getUserid() {
@@ -68,5 +70,12 @@ public class UserWithDepartmentDTO {
         this.department = department;
     }
 
-    // Add getters and setters for other department attributes as needed
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean isVerified) {
+        this.isVerified = isVerified;
+    }
+
 }

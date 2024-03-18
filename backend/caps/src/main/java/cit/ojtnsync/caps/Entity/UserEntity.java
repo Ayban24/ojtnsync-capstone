@@ -104,11 +104,11 @@ public class UserEntity {
         this.password = password;
     }
 
-    public boolean isVerified() { // Getter for isVerified
+    public boolean isVerified() {
         return isVerified;
     }
 
-    public void setVerified(boolean isVerified) { // Setter for isVerified
+    public void setVerified(boolean isVerified) {
         this.isVerified = isVerified;
     }
 }

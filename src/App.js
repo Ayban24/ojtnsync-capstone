@@ -15,6 +15,7 @@ import Validate from './Admin/Validate'
 import Requirements from './Admin/Requirements'
 import Students from './Admin/Students';
 import AddStudent from './Admin/Students/Add';
+import DeleteStudent from './Admin/Students/Delete';
 import './App.css';
 import Cookies from 'js-cookie';
 
@@ -53,6 +54,7 @@ function App() {
 				<Route path="/admin/requirements" element={<Requirements />} />
 				<Route path="/admin/students" element={<Students />} />
 				<Route path="/admin/students/add" element={<AddStudent />} />
+				<Route path="/admin/students/delete" element={<DeleteStudent />} />
 
 			</Routes>
 		</Router>
