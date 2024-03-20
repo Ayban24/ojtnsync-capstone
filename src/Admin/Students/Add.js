@@ -7,7 +7,7 @@ import CustomModal from '../../common/Modal'
 
 const Students = () => {
 
-    const auth = Cookies.get('auth');
+    const auth = JSON.parse(Cookies.get('auth'));
     const [program, setProgram] = useState("")
     const [lastName, setLastName] = useState("")
     const [firstName, setFirstName] = useState("")
@@ -15,7 +15,7 @@ const Students = () => {
     const [successModal, setSuccessModal] = useState(false)
 
     const handleSearch = async () => {
-        const response = await fetch(`http://localhost:8080/searchUserAttributes?departmentName=${program}&firstName=${firstName}&lastName=${lastName}`, {
+        const response = await fetch(`http://localhost:8080/searchUserAttributes?courseName=${program}&firstName=${firstName}&lastName=${lastName}`, {
             method: 'GET',
         })
 
@@ -111,7 +111,7 @@ const Students = () => {
                     </thead>
                     <tbody>{students && students.length > 0 && students.map((item, index) => (
                             <tr key={index}>
-                                <td>{item.department.name}</td>
+                                <td>{item.course.name}</td>
                                 <td>{item.lastName + ", " + item.firstName}</td>
                                 {!item.verified ? (
                                     <td><a href='#!' onClick={() => handleAddStudent(index)}>Add Student</a></td>

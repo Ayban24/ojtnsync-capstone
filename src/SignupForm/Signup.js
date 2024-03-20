@@ -10,8 +10,8 @@ const SignupForm = () => {
 	const [studentID, setStudentID] = useState('');
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
-	const [department, setDepartment] = useState('');
-	const [departments, setDepartments] = useState(null)
+	const [course, setCourse] = useState('');
+	const [courses, setCourses] = useState(null)
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
@@ -21,23 +21,23 @@ const SignupForm = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		fetchDepartments()
+		fetchCourses()
 	}, []);
 	
-	const fetchDepartments = async () => {
-		const response = await fetch('http://localhost:8080/department', {
+	const fetchCourses = async () => {
+		const response = await fetch('http://localhost:8080/courses', {
 			method: 'GET',
 		});
 	
 		if (response.ok) {
 			try {
 				const result = await response.json();
-				setDepartments(result)
+				setCourses(result)
 			} catch (error) {
 				console.error('Error parsing JSON:', error);
 			}
 		} else {
-			console.error('Fetching of departments failed:', response.status, response.statusText);
+			console.error('Fetching of courses failed:', response.status, response.statusText);
 			try {
 				const result = await response.json();
 				// Access specific properties from the result if needed
@@ -50,13 +50,13 @@ const SignupForm = () => {
 		}
 	}
 	
-	const showDepartments = () => {
-		if(departments && departments.length > 0)
-			return departments.map((department, index) => department.name != "NLO" && <MenuItem key={department.id} value={index}>{department.name}</MenuItem>);
+	const showCourses = () => {
+		if(courses && courses.length > 0)
+			return courses.map((course, index) => course.name != "NLO" && <MenuItem key={course.id} value={index}>{course.name}</MenuItem>);
 	}
 
 	const handleSignup = async () => {
-		if (!studentID || !firstName || !lastName || !department || !email || !password) {
+		if (!studentID || !firstName || !lastName || !course || !email || !password) {
 				setErrorMessage('Input all fields!');
 				setErrorModalOpen(true);
 				return;
@@ -71,7 +71,7 @@ const SignupForm = () => {
 		formData.append('studentID', studentID);
 		formData.append('firstName', firstName);
 		formData.append('lastName', lastName);
-		formData.append('department_id', department.id);
+		formData.append('course_id', course.id);
 		formData.append('email', email);
 		formData.append('password', password);
 
@@ -156,14 +156,14 @@ const SignupForm = () => {
 						
 							<div className='input'>
 								<FormControl fullWidth>
-									<InputLabel id="course-label">Department</InputLabel>
+									<InputLabel id="course-label">Course</InputLabel>
 									<Select
 									labelId="course-label"
 									id="course"
-									value={department.name}
-									onChange={(e) => setDepartment(departments[e.target.value])}
+									value={course.name}
+									onChange={(e) => setCourse(courses[e.target.value])}
 									>
-									{showDepartments()}
+									{showCourses()}
 									</Select>
 								</FormControl>
 							</div>

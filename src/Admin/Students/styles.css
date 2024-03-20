@@ -1,4 +1,26 @@
 
+#students .course-nav {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 20px;
+}
+
+#students .course-nav .active {
+  color: #5DAEF8;
+}
+
+
+#students .course-nav a {
+  display: block;
+  background: #801C1C;
+  width: 100%;
+  text-align: center;
+  padding: 12px 5px;
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none !important;
+}
+
 .success-modal h2 {
   text-align: center;
   margin: 90px 0 84px;
@@ -36,6 +58,7 @@
 
 #students .header {
   margin-top: 66px;
+  position: relative;
 }
 
 #students .header .search {

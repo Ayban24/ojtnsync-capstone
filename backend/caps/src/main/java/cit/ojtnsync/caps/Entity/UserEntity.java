@@ -20,33 +20,35 @@ public class UserEntity {
 
     @ManyToOne()
     @JsonIgnore
-    @JoinColumn(name = "department_id")
-    private Department department;
+    @JoinColumn(name = "course_id")
+    private Course course;
 
     private String email;
     private String password;
     
     private boolean isVerified;
 
+    private String status = "active";
+
     public UserEntity() {
     }
 
-    public UserEntity(Long userid, String studentID, String firstName, String lastName, Department department, String email, String password, boolean isVerified) {
+    public UserEntity(Long userid, String studentID, String firstName, String lastName, Course course, String email, String password, boolean isVerified) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.department = department;
+        this.course = course;
         this.email = email;
         this.password = password;
         this.isVerified = isVerified;
     }
 
-    public UserEntity(String studentID, String firstName, String lastName, Department department, String email, String password, boolean isVerified) {
+    public UserEntity(String studentID, String firstName, String lastName, Course course, String email, String password, boolean isVerified) {
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.department = department;
+        this.course = course;
         this.email = email;
         this.password = password;
         this.isVerified = isVerified;
@@ -80,12 +82,12 @@ public class UserEntity {
         this.lastName = lastName;
     }
 
-    public Department getDepartment() {
-        return department;
+    public Course getCourse() {
+        return course;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public String getEmail() {
@@ -110,5 +112,14 @@ public class UserEntity {
 
     public void setVerified(boolean isVerified) {
         this.isVerified = isVerified;
+    }
+
+    // Getter and setter for status field
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

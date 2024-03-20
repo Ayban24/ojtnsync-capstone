@@ -16,6 +16,7 @@ import Requirements from './Admin/Requirements'
 import Students from './Admin/Students';
 import AddStudent from './Admin/Students/Add';
 import DeleteStudent from './Admin/Students/Delete';
+import StudentDocuments from './Admin/Students/Documents';
 import './App.css';
 import Cookies from 'js-cookie';
 
@@ -35,29 +36,32 @@ function App() {
 	};
 
 	return (
-		<Router>
-			{renderNav()}
-			<Routes>
-				<Route path="/" element={<SplashScreen />} /> 
-
-				<Route path="/signup" element={<Signup />} />
-				<Route path="/login" element={<Login />} />
-				<Route path="/homepage" element={<HomePage />} />
-				<Route path= "/adminsignupform" element={<AdminSignupForm/>} />
-				<Route path= "/adminloginform" element={<AdminLoginForm/>} />
-				<Route path="/templates" element={<Templates/>} />
-				<Route path="/submission" element={<Submission/>} />
-
-				<Route path="/admin/homepage" element={<AdminHomepage />} />
-				<Route path="/admin/submission" element={<AdminSubmission />} />
-				<Route path="/admin/validate" element={<Validate />} />
-				<Route path="/admin/requirements" element={<Requirements />} />
-				<Route path="/admin/students" element={<Students />} />
-				<Route path="/admin/students/add" element={<AddStudent />} />
-				<Route path="/admin/students/delete" element={<DeleteStudent />} />
-
-			</Routes>
-		</Router>
+		<div id='root'>
+			<Router>
+				{renderNav()}
+				<Routes>
+					<Route path="/" element={<SplashScreen />} /> 
+	
+					<Route path="/signup" element={<Signup />} />
+					<Route path="/login" element={<Login />} />
+					<Route path="/homepage" element={<HomePage />} />
+					<Route path= "/adminsignupform" element={<AdminSignupForm/>} />
+					<Route path= "/adminloginform" element={<AdminLoginForm/>} />
+					<Route path="/templates" element={<Templates/>} />
+					<Route path="/submission" element={<Submission/>} />
+	
+					<Route path="/admin/homepage" element={<AdminHomepage />} />
+					<Route path="/admin/submission" element={<AdminSubmission />} />
+					<Route path="/admin/validate" element={<Validate />} />
+					<Route path="/admin/requirements" element={<Requirements />} />
+					<Route path="/admin/students" element={<Students />} />
+					<Route path="/admin/students/add" element={<AddStudent />} />
+					<Route path="/admin/students/delete" element={<DeleteStudent />} />
+					<Route path="/admin/student/documents" element={<StudentDocuments />} />
+	
+				</Routes>
+			</Router>
+		</div>
 	);
 }
 

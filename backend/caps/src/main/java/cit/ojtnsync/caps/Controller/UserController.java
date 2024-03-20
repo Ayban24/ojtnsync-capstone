@@ -8,9 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import cit.ojtnsync.caps.Entity.Course;
 import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Entity.UserEntity;
+import cit.ojtnsync.caps.Model.UserWithCourseDTO;
 import cit.ojtnsync.caps.Model.UserWithDepartmentDTO;
+import cit.ojtnsync.caps.Service.CourseService;
 import cit.ojtnsync.caps.Service.DepartmentService;
 import cit.ojtnsync.caps.Service.UserService;
 
@@ -24,29 +28,33 @@ public class UserController {
     @Autowired
     private DepartmentService departmentService;
 
+    @Autowired
+    private CourseService courseService;
+
     @GetMapping("/users")
-    public ResponseEntity<List<UserWithDepartmentDTO>> getAllUsersWithDepartment() {
-        List<UserEntity> users = userService.getAllUsers();
-        List<UserWithDepartmentDTO> usersWithDepartment = new ArrayList<>();
+    public ResponseEntity<List<UserWithCourseDTO>> getAllUsersWithCourse() {
+        List<UserEntity> users = userService.getUsersByStatus("active");
+        List<UserWithCourseDTO> usersWithCourse = new ArrayList<>();
 
         for (UserEntity user : users) {
-            usersWithDepartment.add(new UserWithDepartmentDTO(
+            usersWithCourse.add(new UserWithCourseDTO(
                     user.getUserid(),
                     user.getStudentID(),
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),
-                    user.getDepartment(),
+                    user.getCourse(),
                     user.isVerified()
             ));
         }
 
-        if (!usersWithDepartment.isEmpty()) {
-            return ResponseEntity.ok(usersWithDepartment);
+        if (!usersWithCourse.isEmpty()) {
+            return ResponseEntity.ok(usersWithCourse);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 
 	
 	@GetMapping("/getByUserid")
@@ -64,52 +72,74 @@ public class UserController {
     }
 
     @GetMapping("/searchUsers")
-    public ResponseEntity<List<UserWithDepartmentDTO>> searchUsers(
+    public ResponseEntity<List<UserWithCourseDTO>> searchUsers(
             @RequestParam(name = "searchVal", required = true) String searchVal) {
 
         // Search for users by userid, firstName, lastName, or email
         List<UserEntity> users = userService.searchUsers(searchVal);
-        List<UserWithDepartmentDTO> usersWithDepartment = new ArrayList<>();
+        List<UserWithCourseDTO> usersWithCourse = new ArrayList<>();
 
         for (UserEntity user : users) {
-            usersWithDepartment.add(new UserWithDepartmentDTO(
+            usersWithCourse.add(new UserWithCourseDTO(
                     user.getUserid(),
                     user.getStudentID(),
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),
-                    user.getDepartment(),
+                    user.getCourse(),
                     user.isVerified()
             ));
         }
 
-        return ResponseEntity.ok(usersWithDepartment);
+        return ResponseEntity.ok(usersWithCourse);
 
     }
 
     @GetMapping("/searchUserAttributes")
-    public ResponseEntity<List<UserWithDepartmentDTO>> searchUserAttributes(
-            @RequestParam(name = "departmentName", required = false) String departmentName,
+    public ResponseEntity<List<UserWithCourseDTO>> searchUserAttributes(
+            @RequestParam(name = "courseName", required = false) String courseName,
             @RequestParam(name = "lastName", required = false) String lastName,
             @RequestParam(name = "firstName", required = false) String firstName) {
 
-        // Search for users by Department.name, lastName, or userName
-        List<UserWithDepartmentDTO> users = userService.searchUserAttributes(departmentName, lastName, firstName);
-        List<UserWithDepartmentDTO> usersWithDepartment = new ArrayList<>();
+        // Search for users by Course.name, lastName, or userName
+        List<UserWithCourseDTO> users = userService.searchUserAttributes(courseName, lastName, firstName);
+        List<UserWithCourseDTO> usersWithCourse = new ArrayList<>();
 
-        for (UserWithDepartmentDTO user : users) {
-            usersWithDepartment.add(new UserWithDepartmentDTO(
+        for (UserWithCourseDTO user : users) {
+            usersWithCourse.add(new UserWithCourseDTO(
                     user.getUserid(),
                     user.getStudentID(),
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),
-                    user.getDepartment(),
+                    user.getCourse(),
                     user.isVerified()
             ));
         }
 
-        return ResponseEntity.ok(usersWithDepartment);
+        return ResponseEntity.ok(usersWithCourse);
+    }
+
+    @GetMapping("/users/department/{departmentId}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<List<UserWithCourseDTO>> getUsersByDepartmentId(@PathVariable int departmentId) {
+        List<UserWithCourseDTO> users = userService.getUsersByDepartmentId(departmentId);
+        if (!users.isEmpty()) {
+            return ResponseEntity.ok(users);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/users/course/{courseId}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<List<UserWithCourseDTO>> getUsersByCourseId(@PathVariable int courseId) {
+        List<UserWithCourseDTO> users = userService.getUsersByCourseId(courseId);
+        if (!users.isEmpty()) {
+            return ResponseEntity.ok(users);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/user/{studentID}/verify")
@@ -130,6 +160,37 @@ public class UserController {
         return ResponseEntity.ok("User verified successfully");
     }
 
+    @PutMapping("/user/update/{studentId}")
+    public ResponseEntity<String> updateStudent(
+        @PathVariable("studentId") String studentId,
+        @RequestParam(name = "firstName", required = false) String firstName,
+        @RequestParam(name = "lastName", required = false) String lastName,
+        @RequestParam(name = "email", required = false) String email,
+        @RequestParam(name = "status", required = false) String status
+        // Add other form parameters as needed
+    ) {
+        // Fetch the user from the database
+        UserEntity user = userService.findByStudentID(studentId);
+
+        // Update the user's properties if they exist in the form data
+        if (firstName != null) 
+            user.setFirstName(firstName);
+        if (lastName != null) 
+            user.setLastName(lastName);
+        if (email != null) 
+            user.setEmail(email);
+        if (status != null) 
+            user.setStatus(status);
+
+        // Update other properties as needed
+
+        // Save the updated user
+        userService.createUser(user);
+
+        return ResponseEntity.ok("User updated successfully");
+    }
+
+
     @GetMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @RequestParam(name = "studentID", required = false, defaultValue = "0") String studentID,
@@ -137,7 +198,7 @@ public class UserController {
 
         UserEntity user = userService.findByStudentID(studentID);
 
-        if (user != null && user.getPassword().equals(password)) {
+        if (user != null && user.getPassword().equals(password) && user.getStatus().equals("active")) {
             // User authentication successful
             LoginResponse response = new LoginResponse("Login successful", user);
             return ResponseEntity.ok(response);
@@ -188,12 +249,12 @@ public class UserController {
         @RequestParam("studentID") String studentID,
         @RequestParam("firstName") String firstName,
         @RequestParam("lastName") String lastName,
-        @RequestParam("department_id") int department_id,
+        @RequestParam("course_id") int course_id,
         @RequestParam("email") String email,
         @RequestParam("password") String password) {
 
-        Department department = departmentService.getDepartmentById(department_id);
-        UserEntity user = new UserEntity(studentID, firstName, lastName, department, email, password, false);
+        Course course = courseService.getCourseById(course_id);
+        UserEntity user = new UserEntity(studentID, firstName, lastName, course, email, password, false);
         // Check if the studentID already exists
         if (userService.existsByStudentID(user.getStudentID())) {
             return new ResponseEntity<>("StudentID already exists", HttpStatus.BAD_REQUEST);

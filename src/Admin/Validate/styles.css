@@ -3,6 +3,11 @@
   position: relative;
 }
 
+.validate-nav label.active {
+  color: #5DAEF8;
+}
+
+
 .validate-nav input {
   position: absolute;
   left: 0;

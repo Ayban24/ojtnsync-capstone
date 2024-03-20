@@ -89,10 +89,10 @@ export default function Submission() {
                         <div className='body-con'>
                             <div className='sidebar'>
                                 <h4>Choose</h4>
-                                <label htmlFor="term1" className={requirementTerm == 'Prelim' && "active-term"}><input id='term1' type='radio' name="term" value="Prelim" onChange={handleTermChange} defaultChecked />Prelim</label>
-                                <label htmlFor="term2" className={requirementTerm == 'Midterm' && "active-term"}><input id='term2' type='radio' name="term" value="Midterm" onChange={handleTermChange} />Midterm</label>
-                                <label htmlFor="term3" className={requirementTerm == 'Pre-Final' && "active-term"}><input id='term3' type='radio' name="term" value="Pre-Final" onChange={handleTermChange} />Pre-Final</label>
-                                <label htmlFor="term4" className={requirementTerm == 'Final' && "active-term"}><input id='term4' type='radio' name="term" value="Final" onChange={handleTermChange} />Final</label>
+                                <label htmlFor="term1" className={requirementTerm == 'Prelim' ? "active-term" : ""}><input id='term1' type='radio' name="term" value="Prelim" onChange={handleTermChange} defaultChecked />Prelim</label>
+                                <label htmlFor="term2" className={requirementTerm == 'Midterm' ? "active-term" : ""}><input id='term2' type='radio' name="term" value="Midterm" onChange={handleTermChange} />Midterm</label>
+                                <label htmlFor="term3" className={requirementTerm == 'Pre-Final' ? "active-term" : ""}><input id='term3' type='radio' name="term" value="Pre-Final" onChange={handleTermChange} />Pre-Final</label>
+                                <label htmlFor="term4" className={requirementTerm == 'Final' ? "active-term" : ""}><input id='term4' type='radio' name="term" value="Final" onChange={handleTermChange} />Final</label>
                             </div>
                             <a href="#!" className='confirm-btn' onClick={submitRequirement}>Confirm</a>
                         </div>

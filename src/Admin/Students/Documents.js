@@ -4,13 +4,13 @@ import './styles.css';
 import Cookies from 'js-cookie';
 import DataTable from '../../common/DataTable';
 
-const Students = () => {
+const StudentDocuments = () => {
 
     const auth = JSON.parse(Cookies.get('auth'));
     const [courses, setCourses] = useState(null)
     const [selectedCourse, setSelectedCourse] = useState(0)
 
-    const fetchStudents = async () => {
+    const fetchDocuments = async () => {
         const response = await fetch(`http://localhost:8080/courses?departmentId=${auth.departmentId}`, {
             method: 'GET',
         })
@@ -18,7 +18,6 @@ const Students = () => {
         if (response && response.ok) {
             try {
                 const result = await response.json();
-                console.log("courses: ",result)
 				setCourses(result)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
@@ -50,18 +49,14 @@ const Students = () => {
         return approvedCount
     }
 
-    const showStudents = () => {
+    const showDocuments = () => {
         return (
             <DataTable>
                 <table>
                     <thead>
                         <tr>
-                            <th>User ID</th>
-                            <th>Firstname</th>
-                            <th>Lastname</th>
-                            <th>Email</th>
-                            <th>Documents Approved</th>
-                            <th>Action</th>
+                            <th>File name</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,10 +65,6 @@ const Students = () => {
                                 <tr key={index}>
                                     <td>{item.userid}</td>
                                     <td>{item.firstName}</td>
-                                    <td>{item.lastName}</td>
-                                    <td>{item.email}</td>
-                                    <td>{getApprovedDocuments(courses[selectedCourse], item)}</td>
-                                    <td><Link to="/admin/student/documents">View</Link></td>
                                 </tr>
                             ))
                         }
@@ -94,37 +85,8 @@ const Students = () => {
         </div>)
     }
 
-    const handleSearch = async (e) => {
-        let searchVal = e.target.value
-        const response = await fetch(`http://localhost:8080/courses/search?departmentId=${auth.departmentId}&searchVal=${searchVal}`, {
-            method: 'GET',
-        })
-
-        if (response && response.ok) {
-            try {
-                const result = await response.json();
-                console.log("search courses: ",result)
-                setCourses(result)
-            } catch (error) {
-                console.error('Error parsing JSON:', error);
-                // Handle unexpected JSON parsing error
-            }
-        } else {
-            console.error('Response failed:', response.status, response.statusText);
-            try {
-                const result = await response.json();
-                // Access specific properties from the result if needed
-                console.log('Error Message:', result.message);
-                // Handle failure, e.g., display an error message to the user
-            } catch (error) {
-                console.error('Error parsing JSON:', error);
-                // Handle unexpected JSON parsing error
-            }
-        }
-    }
-
     useEffect(() => {
-        fetchStudents()
+        fetchDocuments()
     }, []);
 
     return(
@@ -132,16 +94,11 @@ const Students = () => {
             <div className='wrapper'>
                 {showCoursesNav()}
                 <div className='header'>
-                    <input placeholder='Search' className='search' onChange={(e) => {handleSearch(e)}} />
-                    <div className='header-actions'>
-                        <Link to='/admin/students/add'>Add Student</Link>
-                        <Link to='/admin/students/delete'>Delete Student</Link>
-                    </div>
                 </div>
-                {showStudents()}
+                {showDocuments()}
             </div>
         </div>
     )
 }
 
-export default Students
+export default StudentDocuments

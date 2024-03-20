@@ -10,6 +10,7 @@ export default function Submission() {
     const [requirements, setRequirements] = useState(null)
     const [selectedRequirement, setSelectedRequirement] = useState(null)
     const [isReUpload, setIsReUpload] = useState(false)
+    const [department, setDepartment] = useState(null)
   
     const openUploadModal = () => setUploadModalOpen(true);
     const closeUploadModal = () => {setUploadModalOpen(false);setIsReUpload(false)};
@@ -34,6 +35,38 @@ export default function Submission() {
                 const result = await response.json();
                 setRequirements(result)
                 console.log("response: ",result)
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Upload failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+    }
+
+    const fetchDepartment = async () => {
+        
+        const searchParams = new URLSearchParams(location.search);
+        const departmentId = searchParams.get('department');
+
+        const response = await fetch(`http://localhost:8080/department/${departmentId}`, {
+            method: 'GET',
+        })
+
+        if (response.ok) {
+            try {
+                const result = await response.json();
+                setDepartment(result)
+                console.log("department: ",result)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -139,7 +172,7 @@ export default function Submission() {
     const UploadModal = ({ closeModal, title }) => {
         return (
             <div className="modal-container">
-                <div onClick={closeModal}><span>&lt;</span>IT Department</div>
+                <div className='modal-back' onClick={closeModal}><span>&lsaquo;</span>{department ? department.name : ""} Department</div>
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                     <h2>{title}</h2>
                     <h4>Attach Files</h4>
@@ -169,7 +202,7 @@ export default function Submission() {
     const StatusModal = ({ closeModal, children }) => {
         return (
           <div className="modal-container">
-            <div onClick={closeModal}><span>&lt;</span>IT Department</div>
+            <div className='modal-back' onClick={closeModal}><span>&lsaquo;</span>{department ? department.name : ""} Department</div>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <h2 className='status-title'>{selectedRequirement.title}</h2>
                 <h3>Submission Status</h3>
@@ -209,12 +242,13 @@ export default function Submission() {
 
     useEffect(() => {
         fetchRequirements()
+        fetchDepartment()
     }, []);
   
     return (
         <div id='submission'>
             <div className='wrapper'>
-                <h1>IT DEPARTMENT</h1>
+                <h1>{department ? department.name : ""} DEPARTMENT</h1>
                 <section>
                     <h2>PRELIM REQUIREMENTS</h2>
                     {showRequirements("prelim")}
