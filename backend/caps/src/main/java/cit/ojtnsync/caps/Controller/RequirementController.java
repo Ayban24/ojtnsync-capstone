@@ -84,7 +84,12 @@ public class RequirementController {
     // Mapping to get requirements by department for Admin
     @GetMapping("/admin/department/{departmentId}")
     public ResponseEntity<List<Requirement>> getAdminRequirementsByDepartment(long userid, @PathVariable int departmentId) {
-        List<Requirement> requirements = requirementService.getRequirementsByDepartment(departmentId);
+        Department department = departmentService.getDepartmentById(departmentId);
+        List<Requirement> requirements;
+        if(department.getName().toLowerCase().equals("nlo")) 
+            requirements = requirementService.getAllRequirements();
+        else
+            requirements = requirementService.getRequirementsByDepartment(departmentId);
         return ResponseEntity.ok(requirements);
     }
 }
