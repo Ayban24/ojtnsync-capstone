@@ -6,25 +6,26 @@ import DataTable from '../../common/DataTable';
 
 const Students = () => {
 
-    const auth = Cookies.get('auth');
-    const [students, setStudents] = useState(null)
+    const auth = JSON.parse(Cookies.get('auth'));
+    const [courses, setCourses] = useState(null)
+    const [selectedCourse, setSelectedCourse] = useState(0)
 
     const fetchStudents = async () => {
-        const response = await fetch(`http://localhost:8080/users`, {
+        const response = await fetch(`http://localhost:8080/courses?departmentId=${auth.departmentId}`, {
             method: 'GET',
         })
 
         if (response && response.ok) {
             try {
                 const result = await response.json();
-                console.log("response: ",result)
-				setStudents(result)
+                console.log("courses: ",result)
+				setCourses(result)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
             }
         } else {
-            console.error('Upload failed:', response.status, response.statusText);
+            console.error('Response failed:', response.status, response.statusText);
             try {
                 const result = await response.json();
                 // Access specific properties from the result if needed
@@ -35,6 +36,18 @@ const Students = () => {
                 // Handle unexpected JSON parsing error
             }
         }
+    }
+
+    const getApprovedDocuments = (course, student) => {
+        let approvedCount = 0
+        const requirements = course.department.requirements
+        requirements.forEach(requirement => {
+            requirement.documents.forEach(document => {
+                if(document.submittedBy.userid == student.userid && document.status.toLowerCase() == 'approved')
+                    approvedCount++;
+            });
+        });
+        return approvedCount
     }
 
     const showStudents = () => {
@@ -52,15 +65,15 @@ const Students = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {(students && students.length > 0) &&
-                            students.map((item, index) => (
+                        {(courses && courses.length > 0) &&
+                            courses[selectedCourse].students.map((item, index) => (
                                 <tr key={index}>
                                     <td>{item.userid}</td>
                                     <td>{item.firstName}</td>
                                     <td>{item.lastName}</td>
                                     <td>{item.email}</td>
-                                    <td>1 (static)</td>
-                                    <td><a href="#!">View</a></td>
+                                    <td>{getApprovedDocuments(courses[selectedCourse], item)}</td>
+                                    <td><Link to={`/admin/student/documents?userid=${item.userid}&course=${courses[selectedCourse].id}`}>View</Link></td>
                                 </tr>
                             ))
                         }
@@ -70,16 +83,28 @@ const Students = () => {
         )
     }
 
+    const showCoursesNav = () => {
+        return (<div className='course-nav'>
+            {(courses && courses.length > 0) && 
+                courses.map((item, index) => (
+                    <a className={selectedCourse == index ? "active" : ""} key={index} onClick={() => setSelectedCourse(index)}>{item.name} DEPARTMENT</a>
+                ))
+            }
+            
+        </div>)
+    }
+
     const handleSearch = async (e) => {
         let searchVal = e.target.value
-        const response = await fetch(`http://localhost:8080/searchUsers?searchVal=${searchVal}`, {
+        const response = await fetch(`http://localhost:8080/courses/search?departmentId=${auth.departmentId}&searchVal=${searchVal}`, {
             method: 'GET',
         })
 
         if (response && response.ok) {
             try {
                 const result = await response.json();
-                setStudents(result)
+                console.log("search courses: ",result)
+                setCourses(result)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -105,6 +130,7 @@ const Students = () => {
     return(
         <div id= "students">
             <div className='wrapper'>
+                {showCoursesNav()}
                 <div className='header'>
                     <input placeholder='Search' className='search' onChange={(e) => {handleSearch(e)}} />
                     <div className='header-actions'>

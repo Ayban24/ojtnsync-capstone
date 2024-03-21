@@ -51,7 +51,7 @@ export default function ActionAreaCard() {
 		})
 		console.log("requirements length: ",requirementsLength)
 		console.log("approved count: ",approvedCount)
-		return (approvedCount / requirementsLength * 100).toFixed(2) + "% Completed"
+		return approvedCount > 0 ? (approvedCount / requirementsLength * 100).toFixed(2) + "% Completed" : 0 + "% Completed"
 	}
 
     const showDepartments = () => {

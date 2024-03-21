@@ -80,10 +80,10 @@ public class DepartmentController {
                 return ResponseEntity.notFound().build();
             }
 
-            departments.add(user.getDepartment());
+            departments.add(user.getCourse().getDepartment());
 
             // Check if the department name is not 'NLO' (case insensitive)
-            if (!"NLO".equalsIgnoreCase(user.getDepartment().getName())) {
+            if (!"NLO".equalsIgnoreCase(user.getCourse().getDepartment().getName())) {
                 Optional<Department> nloDepartment = departmentRepository.findByNameIgnoreCase("NLO");
                 nloDepartment.ifPresent(departments::add);
             }
@@ -94,7 +94,10 @@ public class DepartmentController {
                 return ResponseEntity.notFound().build();
             }
 
-            departments.add(user.getDepartment());
+            if(user.getDepartment().getName().equalsIgnoreCase("NLO"))
+                departments = departmentRepository.findAll();
+            else
+                departments.add(user.getDepartment());
         }
 
         return ResponseEntity.ok(departments);

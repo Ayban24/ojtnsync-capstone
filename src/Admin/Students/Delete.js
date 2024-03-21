@@ -71,9 +71,18 @@ const Students = () => {
     }
 
     const handleDeleteStudent = async (index) => {
-        const response = await fetch(`http://localhost:8080/user/${students[index].studentID}`, {
-            method: 'DELETE',
-        })
+        // const response = await fetch(`http://localhost:8080/user/${students[index].studentID}`, {
+        //     method: 'DELETE',
+        // })
+
+        const formData = new FormData();
+        formData.append('status', 'inactive');
+        // Add other form fields as needed
+
+        const response = await fetch(`http://localhost:8080/user/update/${students[index].studentID}`, {
+            method: 'PUT',
+            body: formData,
+        });
 
         if (response && response.ok) {
             try {
@@ -111,7 +120,7 @@ const Students = () => {
                     </thead>
                     <tbody>{students && students.length > 0 && students.map((item, index) => (
                             <tr key={index}>
-                                <td>{item.department.name}</td>
+                                <td>{item.course.name}</td>
                                 <td>{item.lastName + ", " + item.firstName}</td>
                                 <td><a href='#!' onClick={() => handleDeleteStudent(index)}>Delete Student</a></td>
                             </tr>

@@ -9,8 +9,10 @@ export default function Submission() {
     const [isAddModal, setIsAddModal] = useState(false)
     const [requirementTitle, setRequirementTitle] = useState(null)
     const [requirementTerm, setRequirementTerm] = useState("Prelim")
+    const [courses, setCourses] = useState(null)
+    const [selectedCourse, setSelectedCourse] = useState(0)
 
-    const auth = Cookies.get('auth');
+    const auth = JSON.parse(Cookies.get('auth'));
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
 
@@ -18,14 +20,21 @@ export default function Submission() {
         
         const departmentId = searchParams.get('department');
 
-        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${departmentId}?userid=${JSON.parse(auth).adminid}`, {
+        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${departmentId}?userid=${auth.adminid}`, {
             method: 'GET',
         })
 
-        if (response.ok) {
+        const response2 = await fetch(`http://localhost:8080/courses?departmentId=${auth.departmentId}`, {
+            method: 'GET',
+        })
+
+        if (response.ok && response2.ok) {
             try {
                 const result = await response.json();
+                const result2 = await response2.json();
                 setRequirements(result)
+                setCourses(result2)
+                console.log("courses: ",result2)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -89,15 +98,28 @@ export default function Submission() {
                         <div className='body-con'>
                             <div className='sidebar'>
                                 <h4>Choose</h4>
-                                <label htmlFor="term1" className={requirementTerm == 'Prelim' && "active-term"}><input id='term1' type='radio' name="term" value="Prelim" onChange={handleTermChange} defaultChecked />Prelim</label>
-                                <label htmlFor="term2" className={requirementTerm == 'Midterm' && "active-term"}><input id='term2' type='radio' name="term" value="Midterm" onChange={handleTermChange} />Midterm</label>
-                                <label htmlFor="term3" className={requirementTerm == 'Pre-Final' && "active-term"}><input id='term3' type='radio' name="term" value="Pre-Final" onChange={handleTermChange} />Pre-Final</label>
-                                <label htmlFor="term4" className={requirementTerm == 'Final' && "active-term"}><input id='term4' type='radio' name="term" value="Final" onChange={handleTermChange} />Final</label>
+                                <label htmlFor="term1" className={requirementTerm == 'Prelim' ? "active-term" : ""}><input id='term1' type='radio' name="term" value="Prelim" onChange={handleTermChange} defaultChecked />Prelim</label>
+                                <label htmlFor="term2" className={requirementTerm == 'Midterm' ? "active-term" : ""}><input id='term2' type='radio' name="term" value="Midterm" onChange={handleTermChange} />Midterm</label>
+                                <label htmlFor="term3" className={requirementTerm == 'Pre-Final' ? "active-term" : ""}><input id='term3' type='radio' name="term" value="Pre-Final" onChange={handleTermChange} />Pre-Final</label>
+                                <label htmlFor="term4" className={requirementTerm == 'Final' ? "active-term" : ""}><input id='term4' type='radio' name="term" value="Final" onChange={handleTermChange} />Final</label>
                             </div>
                             <a href="#!" className='confirm-btn' onClick={submitRequirement}>Confirm</a>
                         </div>
                     </div>
             </CustomModal>
+        )
+    }
+
+    const showPrograms = () => {
+        return (
+            <div className='program-nav'>
+                <h4>Programs</h4>
+                {courses && <ul>
+                    {courses.map((item, index) => (
+                        <li className={selectedCourse == index ? "active" : ""} onClick={() => setSelectedCourse(index)} key={index}>{item.name}</li>
+                    ))}
+                </ul>}
+            </div>
         )
     }
 
@@ -128,7 +150,8 @@ export default function Submission() {
   
     return (
         <div id='submission'>
-            <div className='wrapper'>
+            {courses && showPrograms()}
+            <div className='wrapper nav-wrapper'>
                 <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}>Add Requirement</a>
                 <section>
                     <h2>PRELIM REQUIREMENTS</h2>
