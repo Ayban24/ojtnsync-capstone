@@ -40,7 +40,7 @@ export default function ActionAreaCard() {
         }
     }
 
-	const showCompleted = (index) => {
+	const getCompleted = (index) => {
 		const requirements = departments[index].requirements
 		const requirementsLength = requirements.length
 		let approvedCount = 0
@@ -51,7 +51,7 @@ export default function ActionAreaCard() {
 		})
 		console.log("requirements length: ",requirementsLength)
 		console.log("approved count: ",approvedCount)
-		return approvedCount > 0 ? (approvedCount / requirementsLength * 100).toFixed(2) + "% Completed" : 0 + "% Completed"
+		return approvedCount > 0 ? (approvedCount / requirementsLength * 100).toFixed(0) + "%" : 0 + "%"
 	}
 
     const showDepartments = () => {
@@ -64,7 +64,8 @@ export default function ActionAreaCard() {
 							<ul>
 								<li>Deed of Undertaking / Waiver (static)</li>
 							</ul>
-							<p>{showCompleted(index)}</p>
+							<div className='progress-bar-con'><div className='progress-bar' style={{width: `${getCompleted(index)}`}}></div></div>
+							<p>{getCompleted(index)} Completed</p>
 							<Link to={"/submission?department="+item.id}></Link>
 						</div>
 					))}
