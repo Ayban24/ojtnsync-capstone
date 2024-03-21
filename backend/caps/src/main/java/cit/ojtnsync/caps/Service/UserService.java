@@ -29,6 +29,10 @@ public class UserService {
         else
             return null;
     }
+
+    public UserEntity findById(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
     
     public boolean existsByStudentID(String studentID) {
         return userRepository.existsByStudentID(studentID);

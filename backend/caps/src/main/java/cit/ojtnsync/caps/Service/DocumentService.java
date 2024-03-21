@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cit.ojtnsync.caps.Entity.Document;
+import cit.ojtnsync.caps.Entity.UserEntity;
 import cit.ojtnsync.caps.Repository.DocumentRepository;
 
 import java.util.List;
@@ -35,5 +36,9 @@ public class DocumentService {
 
     public void deleteDocumentById(int id) {
         documentRepository.deleteById(id);
+    }
+
+    public List<Document> getDocumentsBySubmittedBy(UserEntity submittedBy) {
+        return documentRepository.findBySubmittedBy(submittedBy);
     }
 }

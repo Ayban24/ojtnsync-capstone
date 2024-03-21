@@ -1,5 +1,42 @@
 
-/* Inline #21 | http://localhost:3000/admin/requirements?department=1#! */
+.wrapper.nav-wrapper {
+  margin-left: 212px;
+}
+.program-nav {
+  position: fixed;
+  left: 0;
+  top: 60px;
+  border-right: 1px solid #D9D9D9;
+  bottom: 0;
+}
+
+.program-nav ul {
+  padding: 0;
+  position: relative;
+}
+
+.program-nav h4 {
+  padding-left: 25px;
+}
+
+.program-nav ul li {
+  padding: 6px 0;
+  width: 100%;
+  list-style: none;
+  box-sizing: border-box;
+  width: 212px;
+  padding-right: 10px;
+  padding-left: 25px;
+  cursor: pointer;
+}
+
+.program-nav ul li.active {
+  background: #D9D9D9;
+}
+
+.program-nav ul {
+  padding: 0;
+}
 
 .add-requirement-modal .title-con input {
   height: 37px;

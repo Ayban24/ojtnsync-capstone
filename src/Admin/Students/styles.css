@@ -127,4 +127,24 @@
     border-radius: 4px;
     border: 1px solid #8C8A8A;
   }
+
+  .document-info .header .actions {
+    text-align: right;
+  }
   
+  .document-info .header a {
+    margin: 0;
+    width: 100px;
+    height: 34px;
+    border: none;
+    margin: 5px;
+    background: #D9D9D9;
+    font-weight: 600;
+    cursor: pointer;
+    background: #F8C400;
+    display: block;
+    text-align: center;
+    line-height: 34px;
+    color: #000;
+    text-decoration: none !important;
+  }

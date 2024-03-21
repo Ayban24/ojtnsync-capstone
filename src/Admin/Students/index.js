@@ -73,7 +73,7 @@ const Students = () => {
                                     <td>{item.lastName}</td>
                                     <td>{item.email}</td>
                                     <td>{getApprovedDocuments(courses[selectedCourse], item)}</td>
-                                    <td><Link to="/admin/student/documents">View</Link></td>
+                                    <td><Link to={`/admin/student/documents?userid=${item.userid}&course=${courses[selectedCourse].id}`}>View</Link></td>
                                 </tr>
                             ))
                         }

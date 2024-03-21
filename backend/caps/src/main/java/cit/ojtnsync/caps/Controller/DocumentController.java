@@ -1,7 +1,10 @@
 package cit.ojtnsync.caps.Controller;
 
 import cit.ojtnsync.caps.Entity.Document;
+import cit.ojtnsync.caps.Entity.UserEntity;
 import cit.ojtnsync.caps.Service.DocumentService;
+import cit.ojtnsync.caps.Service.UserService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +16,11 @@ import java.util.List;
 public class DocumentController {
 
     private final DocumentService documentService;
+    private final UserService userService;
 
-    public DocumentController(DocumentService documentService) {
+    public DocumentController(DocumentService documentService, UserService userService) {
         this.documentService = documentService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -55,5 +60,26 @@ public class DocumentController {
         Document savedDocument = documentService.saveDocument(existingDocument);
         return ResponseEntity.ok(savedDocument);
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Document>> getDocumentsByUserId(@PathVariable("userId") Long userId) {
+        // Fetch the user from the database
+        UserEntity user = userService.findById(userId);
+        
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Retrieve documents submitted by the user
+        List<Document> documents = documentService.getDocumentsBySubmittedBy(user);
+
+        if (!documents.isEmpty()) {
+            return ResponseEntity.ok(documents);
+        } else {
+            return ResponseEntity.notFound().build();
+    }
+}
+
+
 }
 

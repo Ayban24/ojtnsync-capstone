@@ -1,24 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './styles.css';
 import Cookies from 'js-cookie';
 import DataTable from '../../common/DataTable';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
 const StudentDocuments = () => {
 
     const auth = JSON.parse(Cookies.get('auth'));
+    const [documents, setDocuments] = useState(null)
     const [courses, setCourses] = useState(null)
-    const [selectedCourse, setSelectedCourse] = useState(0)
+    const [selectedCourse, setSelectedCourse] = useState()
+    const [check, setCheck] = useState(false)
+    const [checkInfo, setCheckInfo] = useState(null)
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
 
     const fetchDocuments = async () => {
-        const response = await fetch(`http://localhost:8080/courses?departmentId=${auth.departmentId}`, {
+        const userId = searchParams.get('userid');
+        const courseId = searchParams.get('course');
+        const response = await fetch(`http://localhost:8080/api/documents/user/${userId}`, {
+            method: 'GET',
+        })
+        const response2 = await fetch(`http://localhost:8080/courses?departmentId=${auth.departmentId}`, {
             method: 'GET',
         })
 
-        if (response && response.ok) {
+        if (response && response.ok && response2 && response.ok) {
             try {
                 const result = await response.json();
-				setCourses(result)
+                const result2 = await response2.json();
+                setCourses(result2)
+                setDocuments(result)
+                setSelectedCourse(result2.findIndex((item) => item.id == courseId))
+				console.log("documents: ",result)
+                console.log("courses: ",result2)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -37,18 +57,6 @@ const StudentDocuments = () => {
         }
     }
 
-    const getApprovedDocuments = (course, student) => {
-        let approvedCount = 0
-        const requirements = course.department.requirements
-        requirements.forEach(requirement => {
-            requirement.documents.forEach(document => {
-                if(document.submittedBy.userid == student.userid && document.status.toLowerCase() == 'approved')
-                    approvedCount++;
-            });
-        });
-        return approvedCount
-    }
-
     const showDocuments = () => {
         return (
             <DataTable>
@@ -60,11 +68,11 @@ const StudentDocuments = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {(courses && courses.length > 0) &&
-                            courses[selectedCourse].students.map((item, index) => (
+                        {(documents && documents.length > 0) &&
+                            documents.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{item.userid}</td>
-                                    <td>{item.firstName}</td>
+                                    <td><a href="#!" onClick={() => {setCheck(true);setCheckInfo(item)}}>{item.fileName}</a></td>
+                                    <td>{item.status}</td>
                                 </tr>
                             ))
                         }
@@ -78,11 +86,33 @@ const StudentDocuments = () => {
         return (<div className='course-nav'>
             {(courses && courses.length > 0) && 
                 courses.map((item, index) => (
-                    <a className={selectedCourse == index ? "active" : ""} key={index} onClick={() => setSelectedCourse(index)}>{item.name} DEPARTMENT</a>
+                    <a className={selectedCourse == index ? "active" : ""} key={index}>{item.name} DEPARTMENT</a>
                 ))
             }
             
         </div>)
+    }
+
+    const showDocument = () => {
+        return (
+        <div className='document-con'>
+            <button className='back-btn' onClick={() => setCheck(false)}>&lsaquo;</button>
+            <div className='document-info'>
+                <div className='header'>
+                    <h4>{checkInfo.submittedBy.firstName} {checkInfo.submittedBy.lastName}</h4>
+                    <div className='actions'>
+                        <a href={`http://localhost:8080/file/download/${checkInfo.id}`}>Download</a>
+                    </div>
+                </div>
+                {checkInfo.extName == "pdf" 
+                    ?   <Document file={`http://localhost:8080/file/download/${checkInfo.id}`} >
+                            <Page pageNumber={1} />
+                        </Document>
+                    :   <figure><img src={`http://localhost:8080/file/download/${checkInfo.id}`} /></figure>
+                }
+            </div>
+        </div>
+        )
     }
 
     useEffect(() => {
@@ -97,6 +127,7 @@ const StudentDocuments = () => {
                 </div>
                 {showDocuments()}
             </div>
+            {(check && checkInfo) && showDocument()}
         </div>
     )
 }
