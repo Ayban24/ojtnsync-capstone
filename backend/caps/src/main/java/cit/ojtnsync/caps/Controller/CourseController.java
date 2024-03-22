@@ -74,6 +74,18 @@ public class CourseController {
         }
     }
 
+    @GetMapping("/get/department/{departmentId}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<List<Course>> getCoursesByDepartmentIdNew(@PathVariable int departmentId) {
+        List<Course> courses = courseService.getCoursesByDepartmentId(departmentId);
+        
+        if (!courses.isEmpty()) {
+            return ResponseEntity.ok(courses);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<Course>> getCoursesByDepartmentIdAndUserAttributes(
             @RequestParam(name = "departmentId") int departmentId,

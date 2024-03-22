@@ -5,13 +5,14 @@ import Cookies from 'js-cookie';
 
 export default function ActionAreaCard() {
 
-	const [departments, setDepartments] = useState(null);
+	const [courses, setCourses] = useState(null);
 	const auth = Cookies.get('auth');
 
-	const fetchDepartments = async () => {
+	const fetchCourses = async () => {
 		let response = null
+        let response2 = null
 		if(JSON.parse(auth).adminid) {
-			response = await fetch(`http://localhost:8080/department/admin/${JSON.parse(auth).adminid}`, {
+            response = await fetch(`http://localhost:8080/courses/get/department/${JSON.parse(auth).departmentId}`, {
 				method: 'GET',
 			})
 		}
@@ -21,7 +22,7 @@ export default function ActionAreaCard() {
             try {
                 const result = await response.json();
                 console.log("response: ",result)
-				setDepartments(result)
+				setCourses(result)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -40,13 +41,13 @@ export default function ActionAreaCard() {
         }
     }
 
-    const showDepartments = () => {
+    const showCourses = () => {
         return (
-				departments && <div className='cards'>
-					{departments.map((item, index) => (
+				courses && <div className='cards'>
+					{courses.map((item, index) => (
 						<div className="card" key={index}>
 							<h2>{item.name} DEPARTMENT</h2>
-							<Link to={"/admin/submission?department="+item.id}></Link>
+							<Link to={"/admin/submission?department="+item.department.id}></Link>
 						</div>
 					))}
 				</div>
@@ -55,8 +56,8 @@ export default function ActionAreaCard() {
     }
 
 	useEffect(() => {
-        fetchDepartments()
+        fetchCourses()
     }, []);
 
-  return <div className='student-courses'>{showDepartments()}</div>;
+  return <div className='student-courses'>{showCourses()}</div>;
 }
