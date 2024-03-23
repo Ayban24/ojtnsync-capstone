@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import cit.ojtnsync.caps.Entity.Course;
+import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Service.CourseService;
+import cit.ojtnsync.caps.Service.DepartmentService;
 
 import java.util.List;
 
@@ -15,6 +17,9 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private DepartmentService departmentService;
 
     // Get all courses
     @GetMapping
@@ -77,7 +82,12 @@ public class CourseController {
     @GetMapping("/get/department/{departmentId}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<List<Course>> getCoursesByDepartmentIdNew(@PathVariable int departmentId) {
-        List<Course> courses = courseService.getCoursesByDepartmentId(departmentId);
+        Department department = departmentService.getDepartmentById(departmentId);
+        List<Course> courses;
+        if(department.getName().equalsIgnoreCase("nlo"))
+            courses = courseService.getAllCourses();
+        else
+            courses = courseService.getCoursesByDepartmentId(departmentId);
         
         if (!courses.isEmpty()) {
             return ResponseEntity.ok(courses);
