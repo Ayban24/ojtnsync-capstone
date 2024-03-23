@@ -23,13 +23,14 @@ import Cookies from 'js-cookie';
 function App() {
 	const currentPath = window.location.pathname;
 	const auth = Cookies.get('auth');
+	
 
 	// Check if the current path is "/signup" or "/login"
 	const isSignupOrLogin = currentPath === '/signup' || currentPath === '/login';
 
 	// Conditionally render the Nav component
 	const renderNav = () => {
-		if (!isSignupOrLogin && auth) {
+		if (!isSignupOrLogin && auth && currentPath != '/') {
 		return <Navbar />;
 		}
 		return null;
