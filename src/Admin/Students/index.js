@@ -50,11 +50,29 @@ const Students = () => {
         return approvedCount
     }
 
+    let header = [
+        'col1',
+        'col2'
+    ]
+
+    let data = [
+        ['data1', 'd1'],
+        ['data2', 'd2']
+    ]
+
     const showStudents = () => {
+        // const data=(courses && courses.length > 0) && courses.map((item, index) => (
+        //     [item.userid, item.firstName, item.lastName, item.email, 'test', 'test']
+        // ))
+        console.log("test: ",courses ? courses : 0)
         return (
-            <DataTable>
-                <table>
-                    <thead>
+            <DataTable 
+                header={['User ID', 'Firstname', 'Lastname', 'Email', 'Documents Approved', 'Action']} 
+                data={(courses && courses.length > 0) && courses[selectedCourse].students.map((item, index) => (
+                    [item.userid, item.firstName, item.lastName, item.email, getApprovedDocuments(courses[selectedCourse], item), '<Link to={`/admin/student/documents?userid=${item.userid}&course=${courses[selectedCourse].id}`}>View</Link>']
+                ))} 
+            />
+                    /* <thead>
                         <tr>
                             <th>User ID</th>
                             <th>Firstname</th>
@@ -78,8 +96,7 @@ const Students = () => {
                             ))
                         }
                     </tbody>
-                </table>
-            </DataTable>
+            </DataTable> */
         )
     }
 

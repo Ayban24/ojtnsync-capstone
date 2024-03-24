@@ -27,6 +27,8 @@ public class Requirement {
     private String attachedExtName;
     private String attachedHashedFileName;
 
+    private String status;
+
     @ManyToOne()
     @JsonIgnore
     @JoinColumn(name = "department_id")
@@ -36,6 +38,10 @@ public class Requirement {
     @JsonIgnoreProperties("requirement")
     private List<Document> documents = new ArrayList<>();
 
+    @ManyToOne() // Add ManyToOne relationship with Course
+    @JoinColumn(name = "course_id")
+    private Course course;
+
     // Constructors, getters, and setters (omitted for brevity)
 
     // Default constructor
@@ -43,11 +49,12 @@ public class Requirement {
     }
 
     // Parameterized constructor
-    public Requirement(String title, Timestamp created_at, Department department, String term,
+    public Requirement(String title, Timestamp created_at, Department department, Course course, String term,
                        String attachedFileName, String attachedExtName, String attachedHashedFileName) {
         this.title = title;
         this.created_at = created_at;
         this.department = department;
+        this.course = course; // Set course
         this.term = term;
         this.attachedFileName = attachedFileName;
         this.attachedExtName = attachedExtName;
@@ -141,5 +148,21 @@ public class Requirement {
 
     public void setAttachedHashedFileName(String attachedHashedFileName) {
         this.attachedHashedFileName = attachedHashedFileName;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

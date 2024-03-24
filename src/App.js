@@ -17,6 +17,7 @@ import Students from './Admin/Students';
 import AddStudent from './Admin/Students/Add';
 import DeleteStudent from './Admin/Students/Delete';
 import StudentDocuments from './Admin/Students/Documents';
+import Dashboard from './Admin/Dashboard';
 import './App.css';
 import Cookies from 'js-cookie';
 
@@ -59,6 +60,7 @@ function App() {
 					<Route path="/admin/students/add" element={<AddStudent />} />
 					<Route path="/admin/students/delete" element={<DeleteStudent />} />
 					<Route path="/admin/student/documents" element={<StudentDocuments />} />
+					<Route path="/admin/Dashboard" element={<Dashboard />} />
 	
 				</Routes>
 			</Router>
