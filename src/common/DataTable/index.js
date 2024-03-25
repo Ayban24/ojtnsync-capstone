@@ -49,7 +49,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{filteredTable.map((row, rowIndex) => (
+						{filteredTable && filteredTable.map((row, rowIndex) => (
 							<tr key={rowIndex}>
 							{row.map((col, colIndex) => (
 								<td key={colIndex}>{col}</td>

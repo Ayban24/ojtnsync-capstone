@@ -3,9 +3,11 @@ package cit.ojtnsync.caps.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import cit.ojtnsync.caps.Entity.Course;
 import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
+import cit.ojtnsync.caps.Service.CourseService;
 import cit.ojtnsync.caps.Service.DepartmentService;
 import cit.ojtnsync.caps.Service.RequirementService;
 
@@ -18,10 +20,12 @@ public class RequirementController {
 
     private final RequirementService requirementService;
     private final DepartmentService departmentService;
+    private final CourseService courseService;
 
-    public RequirementController(RequirementService requirementService, DepartmentService departmentService) {
+    public RequirementController(RequirementService requirementService, DepartmentService departmentService, CourseService courseService) {
         this.requirementService = requirementService;
         this.departmentService = departmentService;
+        this.courseService = courseService;
     }
 
     @GetMapping
@@ -47,9 +51,11 @@ public class RequirementController {
     public ResponseEntity<Requirement> createRequirement(
             @RequestParam("requirementTitle") String requirementTitle,
             @RequestParam("requirementTerm") String requirementTerm,
-            @RequestParam("departmentId") int departmentId) {
+            @RequestParam("departmentId") int departmentId,
+            @RequestParam("courseId") int courseId) {
         Department department = departmentService.getDepartmentById(departmentId);
-        Requirement requirement = new Requirement(requirementTitle, department, requirementTerm, null, null, null);
+        Course course = courseService.getCourseById(courseId);
+        Requirement requirement = new Requirement(requirementTitle, department, course, requirementTerm, null, null, null);
         Requirement createdRequirement = requirementService.createRequirement(requirement);
         return ResponseEntity.ok(createdRequirement);
     }

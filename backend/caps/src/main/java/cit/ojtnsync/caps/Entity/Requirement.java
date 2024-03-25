@@ -38,7 +38,8 @@ public class Requirement {
     @JsonIgnoreProperties("requirement")
     private List<Document> documents = new ArrayList<>();
 
-    @ManyToOne() // Add ManyToOne relationship with Course
+    @ManyToOne()
+    @JsonIgnore
     @JoinColumn(name = "course_id")
     private Course course;
 
@@ -54,17 +55,18 @@ public class Requirement {
         this.title = title;
         this.created_at = created_at;
         this.department = department;
-        this.course = course; // Set course
+        this.course = course;
         this.term = term;
         this.attachedFileName = attachedFileName;
         this.attachedExtName = attachedExtName;
         this.attachedHashedFileName = attachedHashedFileName;
     }
 
-    public Requirement(String title, Department department, String term,
+    public Requirement(String title, Department department, Course course, String term,
                        String attachedFileName, String attachedExtName, String attachedHashedFileName) {
         this.title = title;
         this.department = department;
+        this.course = course;
         this.term = term;
         this.attachedFileName = attachedFileName;
         this.attachedExtName = attachedExtName;
