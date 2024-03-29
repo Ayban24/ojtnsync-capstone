@@ -109,26 +109,35 @@ const Students = () => {
 
     const showStudents = () => {
         return (
-            <DataTable>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Course</th>
-                            <th>Student Name</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>{students && students.length > 0 && students.map((item, index) => (
-                            <tr key={index}>
-                                <td>{item.course.name}</td>
-                                <td>{item.lastName + ", " + item.firstName}</td>
-                                <td><a href='#!' onClick={() => handleDeleteStudent(index)}>Delete Student</a></td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-
-            </DataTable>
+            // <DataTable>
+            //     <table>
+            //         <thead>
+            //             <tr>
+            //                 <th>Course</th>
+            //                 <th>Student Name</th>
+            //                 <th>Action</th>
+            //             </tr>
+            //         </thead>
+            //         <tbody>{students && students.length > 0 && students.map((item, index) => (
+            //                 <tr key={index}>
+            //                     <td>{item.course.name}</td>
+            //                     <td>{item.lastName + ", " + item.firstName}</td>
+            //                     <td><a href='#!' onClick={() => handleDeleteStudent(index)}>Delete Student</a></td>
+            //                 </tr>
+            //             ))}
+            //         </tbody>
+            //     </table>
+            // </DataTable>
+            <DataTable 
+                header={['Course', 'Student Name', 'Action']} 
+                data={students && students.length > 0 && students.map((item, index) => (
+                    [
+                        item.course.name, 
+                        (item.lastName + ", " + item.firstName), 
+                        (<a href='#!' onClick={() => handleDeleteStudent(index)}>Delete Student</a>)
+                    ]
+                ))} 
+            />
         )
     }
 

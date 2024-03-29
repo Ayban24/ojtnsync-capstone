@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
+import cit.ojtnsync.caps.Entity.Course;
 import cit.ojtnsync.caps.Repository.RequirementRepository;
 
 import java.util.ArrayList;
@@ -50,6 +51,16 @@ public class RequirementService {
                 .filter(requirement -> {
                     Department department = requirement.getDepartment();
                     return department != null && department.getId() == departmentId;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Get requirements based on department
+    public List<Requirement> getRequirementsByCourse(int courseId) {
+        return requirementRepository.findAll().stream()
+                .filter(requirement -> {
+                    Course course = requirement.getCourse();
+                    return course != null && course.getId() == courseId;
                 })
                 .collect(Collectors.toList());
     }

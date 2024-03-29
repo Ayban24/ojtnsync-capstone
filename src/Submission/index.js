@@ -26,7 +26,7 @@ export default function Submission() {
         const searchParams = new URLSearchParams(location.search);
         const departmentId = searchParams.get('department');
 
-        const response = await fetch(`http://localhost:8080/api/requirements/department/${departmentId}?userid=${JSON.parse(auth).userid}`, {
+        const response = await fetch(`http://localhost:8080/api/requirements/department/${departmentId}/course/${JSON.parse(auth).course.id}?userid=${JSON.parse(auth).userid}`, {
             method: 'GET',
         })
 

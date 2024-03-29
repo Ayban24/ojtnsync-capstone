@@ -74,10 +74,10 @@ public class RequirementController {
         return ResponseEntity.noContent().build();
     }
     
-    // Mapping to get requirements by department
-    @GetMapping("/department/{departmentId}")
-    public ResponseEntity<List<Requirement>> getRequirementsByDepartment(long userid, @PathVariable int departmentId) {
-        List<Requirement> requirements = requirementService.getRequirementsByDepartment(departmentId);
+    // Mapping to get requirements by course
+    @GetMapping("/department/{departmentId}/course/{courseId}")
+    public ResponseEntity<List<Requirement>> getRequirementsByDepartment(long userid, @PathVariable int departmentId, @PathVariable int courseId) {
+        List<Requirement> requirements = requirementService.getRequirementsByCourse(courseId);
         
         // Filter documents for each requirement based on userid
         for (Requirement requirement : requirements) {
@@ -87,10 +87,10 @@ public class RequirementController {
         return ResponseEntity.ok(requirements);
     }
 
-    // Mapping to get requirements by department for Admin
-    @GetMapping("/admin/department/{departmentId}")
-    public ResponseEntity<List<Requirement>> getAdminRequirementsByDepartment(long userid, @PathVariable int departmentId) {
-        List<Requirement> requirements = requirementService.getRequirementsByDepartment(departmentId);
+    // Mapping to get requirements by course for Admin
+    @GetMapping("/admin/department/{departmentId}/course/{courseId}")
+    public ResponseEntity<List<Requirement>> getAdminRequirementsByDepartment(long userid, @PathVariable int departmentId, @PathVariable int courseId) {
+        List<Requirement> requirements = requirementService.getRequirementsByCourse(courseId);
         return ResponseEntity.ok(requirements);
     }
 }

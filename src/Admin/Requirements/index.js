@@ -16,31 +16,58 @@ export default function Submission() {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
 
-    const fetchRequirements = async () => {
+    const fetchCourses = async () => {
         
         const departmentId = searchParams.get('department');
 
-        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${departmentId}?userid=${auth.adminid}`, {
+        const response = await fetch(`http://localhost:8080/courses?departmentId=${departmentId}`, {
             method: 'GET',
         })
 
-        const response2 = await fetch(`http://localhost:8080/courses?departmentId=${auth.departmentId}`, {
-            method: 'GET',
-        })
-
-        if (response.ok && response2.ok) {
+        if (response.ok) {
             try {
                 const result = await response.json();
-                const result2 = await response2.json();
-                setRequirements(result)
-                setCourses(result2)
-                console.log("courses: ",result2)
+                setCourses(result)
+                console.log("courses: ",result)
+                return result
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
             }
         } else {
-            console.error('Upload failed:', response.status, response.statusText);
+            console.error('Response failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+        return null;
+    }
+
+    const fetchRequirements = async (courseId) => {
+        
+        const departmentId = searchParams.get('department');
+
+        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${departmentId}/course/${courseId}?userid=${auth.adminid}`, {
+            method: 'GET',
+        })
+
+        if (response.ok) {
+            try {
+                const result = await response.json();
+                setRequirements(result)
+                console.log("resquirements: ",result)
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Response failed:', response.status, response.statusText);
             try {
                 const result = await response.json();
                 // Access specific properties from the result if needed
@@ -116,7 +143,14 @@ export default function Submission() {
                 <h4>Programs</h4>
                 {courses && <ul>
                     {courses.map((item, index) => (
-                        <li className={selectedCourse == index ? "active" : ""} onClick={() => setSelectedCourse(index)} key={index}>{item.name}</li>
+                        <li className={selectedCourse == index ? "active" : ""} 
+                            onClick={() => {
+                                    setSelectedCourse(index);
+                                    fetchRequirements(courses[index].id);
+                                }
+                            } 
+                            key={index}>{item.name}
+                        </li>
                     ))}
                 </ul>}
             </div>
@@ -146,7 +180,10 @@ export default function Submission() {
     }
 
     useEffect(() => {
-        fetchRequirements()
+        fetchCourses().then((course) => {
+            console.log("courses useeffect: ",course)
+            fetchRequirements(course[0].id)
+        })
     }, []);
   
     return (

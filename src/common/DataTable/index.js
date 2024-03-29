@@ -1,10 +1,9 @@
-	import React, { useState } from 'react';
+	import React, { useState, useEffect } from 'react';
 	import './styles.css';
 
 	const InitDataTable = ({ children, rowCount, itemsPerPage, header, data }) => {
-		console.log("data: ",data)
 		const [currentPage, setCurrentPage] = useState(1);
-		const [filteredTable, setFilteredTable] = useState(data)
+		const [filteredTable, setFilteredTable] = useState(null)
 
 		// Calculate indexes for slicing the items array
 		const indexOfLastItem = currentPage * itemsPerPage;
@@ -19,23 +18,14 @@
 			pageNumbers.push(i);
 		}
 
-		
-
 		const handleFilter = (e) => {
 			const filteredData = data.filter((row) => (
 			  row.some((col) => (
-				col.toLowerCase().includes(e.target.value.toLowerCase())
+				(col+"").toLowerCase().includes(e.target.value.toLowerCase())
 			  ))
 			));
-			
-			// Now 'filteredData' contains only rows where at least one column contains the filter value
-			console.log(filteredData);
 			setFilteredTable(filteredData)
-			
-			// If you need to update the state or perform further actions with the filtered data, do it here
-		  };
-		  
-		  
+		};
 
 		return (
 			<div className="datatable">
@@ -49,7 +39,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{filteredTable && filteredTable.map((row, rowIndex) => (
+						{(filteredTable ? filteredTable : data ? data : []).map((row, rowIndex) => (
 							<tr key={rowIndex}>
 							{row.map((col, colIndex) => (
 								<td key={colIndex}>{col}</td>
