@@ -55,7 +55,7 @@ public class RequirementController {
             @RequestParam("courseId") int courseId) {
         Department department = departmentService.getDepartmentById(departmentId);
         Course course = courseService.getCourseById(courseId);
-        Requirement requirement = new Requirement(requirementTitle, department, course, requirementTerm, null, null, null);
+        Requirement requirement = new Requirement(requirementTitle, department, course, requirementTerm);
         Requirement createdRequirement = requirementService.createRequirement(requirement);
         return ResponseEntity.ok(createdRequirement);
     }

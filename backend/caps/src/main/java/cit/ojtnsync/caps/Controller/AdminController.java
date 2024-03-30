@@ -39,10 +39,15 @@ public class AdminController {
 		AdminEntity admin = adminService.findByFacultyId(facultyId);
 		if (admin != null && admin.getPassword().equals(password)) {
 			int departmentId = admin.getDepartment().getId();
+
+			String adminType = "faculty";
+			if(admin.getDepartment().getName().equals("NLO"))
+				adminType = "NLO";
 			
 			Map<String, Object> adminWithDepartmentId = new HashMap<>();
 			adminWithDepartmentId.put("admin", admin);
 			adminWithDepartmentId.put("departmentId", departmentId);
+			adminWithDepartmentId.put("adminType", adminType);
 			
 			return ResponseEntity.ok(adminWithDepartmentId);
 		} else {

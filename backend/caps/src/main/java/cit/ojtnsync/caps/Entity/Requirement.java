@@ -23,10 +23,6 @@ public class Requirement {
 
     private String term;
 
-    private String attachedFileName;
-    private String attachedExtName;
-    private String attachedHashedFileName;
-
     private String status;
 
     @ManyToOne()
@@ -50,27 +46,19 @@ public class Requirement {
     }
 
     // Parameterized constructor
-    public Requirement(String title, Timestamp created_at, Department department, Course course, String term,
-                       String attachedFileName, String attachedExtName, String attachedHashedFileName) {
+    public Requirement(String title, Timestamp created_at, Department department, Course course, String term) {
         this.title = title;
         this.created_at = created_at;
         this.department = department;
         this.course = course;
         this.term = term;
-        this.attachedFileName = attachedFileName;
-        this.attachedExtName = attachedExtName;
-        this.attachedHashedFileName = attachedHashedFileName;
     }
 
-    public Requirement(String title, Department department, Course course, String term,
-                       String attachedFileName, String attachedExtName, String attachedHashedFileName) {
+    public Requirement(String title, Department department, Course course, String term) {
         this.title = title;
         this.department = department;
         this.course = course;
         this.term = term;
-        this.attachedFileName = attachedFileName;
-        this.attachedExtName = attachedExtName;
-        this.attachedHashedFileName = attachedHashedFileName;
     }
 
     // Getters and Setters (generated using your IDE)
@@ -126,30 +114,6 @@ public class Requirement {
     @PrePersist
     protected void onCreate() {
         created_at = Timestamp.from(Instant.now());
-    }
-
-    public String getAttachedFileName() {
-        return attachedFileName;
-    }
-
-    public void setAttachedFileName(String attachedFileName) {
-        this.attachedFileName = attachedFileName;
-    }
-
-    public String getAttachedExtName() {
-        return attachedExtName;
-    }
-
-    public void setAttachedExtName(String attachedExtName) {
-        this.attachedExtName = attachedExtName;
-    }
-
-    public String getAttachedHashedFileName() {
-        return attachedHashedFileName;
-    }
-
-    public void setAttachedHashedFileName(String attachedHashedFileName) {
-        this.attachedHashedFileName = attachedHashedFileName;
     }
 
     public Course getCourse() {

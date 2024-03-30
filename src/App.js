@@ -43,24 +43,28 @@ function App() {
 				{renderNav()}
 				<Routes>
 					<Route path="/" element={<SplashScreen />} /> 
-	
-					<Route path="/signup" element={<Signup />} />
 					<Route path="/login" element={<Login />} />
-					<Route path="/homepage" element={<HomePage />} />
-					<Route path= "/adminsignupform" element={<AdminSignupForm/>} />
 					<Route path= "/adminloginform" element={<AdminLoginForm/>} />
-					<Route path="/templates" element={<Templates/>} />
-					<Route path="/submission" element={<Submission/>} />
-	
-					<Route path="/admin/homepage" element={<AdminHomepage />} />
-					<Route path="/admin/submission" element={<AdminSubmission />} />
-					<Route path="/admin/validate" element={<Validate />} />
-					<Route path="/admin/requirements" element={<Requirements />} />
-					<Route path="/admin/students" element={<Students />} />
-					<Route path="/admin/students/add" element={<AddStudent />} />
-					<Route path="/admin/students/delete" element={<DeleteStudent />} />
-					<Route path="/admin/student/documents" element={<StudentDocuments />} />
-					<Route path="/admin/Dashboard" element={<Dashboard />} />
+					{ auth &&(
+					<>
+						<Route path="/signup" element={<Signup />} />
+						<Route path="/homepage" element={<HomePage />} />
+						<Route path= "/adminsignupform" element={<AdminSignupForm/>} />
+						<Route path="/templates" element={<Templates/>} />
+						<Route path="/submission" element={<Submission/>} />
+		
+						<Route path="/admin/homepage" element={<AdminHomepage />} />
+						<Route path="/admin/submission" element={<AdminSubmission />} />
+						<Route path="/admin/validate" element={<Validate />} />
+						<Route path="/admin/requirements" element={<Requirements />} />
+						<Route path="/admin/students" element={<Students />} />
+						<Route path="/admin/students/add" element={<AddStudent />} />
+						<Route path="/admin/students/delete" element={<DeleteStudent />} />
+						<Route path="/admin/student/documents" element={<StudentDocuments />} />
+						<Route path="/admin/dashboard" element={<Dashboard />} />
+					</>
+					)
+					}
 	
 				</Routes>
 			</Router>

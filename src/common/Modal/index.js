@@ -7,7 +7,7 @@ const Modal = ({ show, children, onHide }) => {
     // Function to handle closing the modal
     const handleCloseModal = () => {
         setIsVisible(false);
-        onHide(false); // Notify the parent that the modal is now hidden
+        onHide && onHide(false); // Notify the parent that the modal is now hidden
     };
 
     return (

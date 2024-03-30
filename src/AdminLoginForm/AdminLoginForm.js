@@ -32,6 +32,7 @@ const handleLogin = async () => {
     if (response.ok) {
       const admin = data.admin;
       admin.departmentId = data.departmentId
+      admin.adminType = data.adminType
 
       setLoggedInUser(admin);
       Cookies.set('auth', JSON.stringify(admin));

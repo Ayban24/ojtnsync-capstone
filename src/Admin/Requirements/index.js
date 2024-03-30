@@ -20,7 +20,7 @@ export default function Submission() {
         
         const departmentId = searchParams.get('department');
 
-        const response = await fetch(`http://localhost:8080/courses?departmentId=${departmentId}`, {
+        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${departmentId}`, {
             method: 'GET',
         })
 
@@ -109,7 +109,9 @@ export default function Submission() {
                     (item.term && item.term.toLowerCase() == term) &&
                     <li key={index}>
                         <div className='title-con'><Link to={`/admin/validate?requirementId=${item.id}`}>{item.title}</Link></div>
-                        <a className='requirement-list-delete-btn' href="#!" onClick={() => handleDelete(item.id)}>Delete</a>
+                        { (auth.adminType != "NLO") &&
+                            <a className='requirement-list-delete-btn' href="#!" onClick={() => handleDelete(item.id)}>Delete</a>
+                        }
                     </li>
                 ))}
             </ul>
@@ -190,7 +192,9 @@ export default function Submission() {
         <div id='submission'>
             {courses && showPrograms()}
             <div className='wrapper nav-wrapper'>
-                <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}>Add Requirement</a>
+                { (auth.adminType != "NLO") &&
+                    <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}>Add Requirement</a>
+                }
                 <section>
                     <h2>PRELIM REQUIREMENTS</h2>
                     {showRequirements("prelim")}
