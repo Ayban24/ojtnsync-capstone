@@ -11,4 +11,6 @@ public interface RequirementRepository extends JpaRepository<Requirement, Intege
 
     @Query(value = "SELECT * FROM Requirement", nativeQuery = true)
     List<Requirement> findAllRequirements();
+
+    List<Requirement> findByDepartmentName(String departmentName);
 }

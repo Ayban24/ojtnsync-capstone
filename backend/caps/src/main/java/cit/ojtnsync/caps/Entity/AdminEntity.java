@@ -19,7 +19,7 @@ public class AdminEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long adminid;
 
-    @Column(name = "faculity_id", nullable = false, unique = true)
+    @Column(name = "faculity_id", nullable = true, unique = true)
     
     private String facultyId;
     private String firstName;

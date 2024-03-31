@@ -26,6 +26,10 @@ public class RequirementService {
         return requirementRepository.findAllRequirements();
     }
 
+    public List<Requirement> getRequirementsByDepartmentName(String departmentName) {
+        return requirementRepository.findByDepartmentName(departmentName);
+    }
+
     // Add a method to filter documents for a specific requirement based on userid
     public List<Document> getFilteredDocumentsForRequirement(int requirementId, long userid) {
         Requirement requirement = requirementRepository.findById(requirementId).orElse(null);

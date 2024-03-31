@@ -3,10 +3,12 @@ package cit.ojtnsync.caps.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import cit.ojtnsync.caps.Entity.AdminEntity;
 import cit.ojtnsync.caps.Entity.Course;
 import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
+import cit.ojtnsync.caps.Service.AdminService;
 import cit.ojtnsync.caps.Service.CourseService;
 import cit.ojtnsync.caps.Service.DepartmentService;
 import cit.ojtnsync.caps.Service.RequirementService;
@@ -22,11 +24,13 @@ public class RequirementController {
     private final RequirementService requirementService;
     private final DepartmentService departmentService;
     private final CourseService courseService;
+    private final AdminService adminService;
 
-    public RequirementController(RequirementService requirementService, DepartmentService departmentService, CourseService courseService) {
+    public RequirementController(RequirementService requirementService, DepartmentService departmentService, CourseService courseService, AdminService adminService) {
         this.requirementService = requirementService;
         this.departmentService = departmentService;
         this.courseService = courseService;
+        this.adminService = adminService;
     }
 
     @GetMapping
@@ -105,6 +109,7 @@ public class RequirementController {
     @GetMapping("/admin/department/{departmentId}/course/{courseId}")
     public ResponseEntity<List<Requirement>> getAdminRequirementsByCourse(long userid, @PathVariable int departmentId, @PathVariable int courseId) {
         List<Requirement> requirements = requirementService.getRequirementsByCourse(courseId);
+        // List<Requirement> requirements = requirementService.getRequirementsByDepartmentName("NLO");
         return ResponseEntity.ok(requirements);
     }
 }

@@ -33,10 +33,10 @@ public class AdminController {
 	@GetMapping("/admin/login")
 	@CrossOrigin(origins = "*")
 	public ResponseEntity findByFacultyId(
-			@RequestParam(name = "facultyId", required = false, defaultValue = "0") String facultyId,
+			@RequestParam(name = "adminId", required = false) long adminId,
 			@RequestParam(name = "password", required = false, defaultValue = "0") String password) {    
 
-		AdminEntity admin = adminService.findByFacultyId(facultyId);
+		AdminEntity admin = adminService.findById(adminId);
 		if (admin != null && admin.getPassword().equals(password)) {
 			int departmentId = admin.getDepartment().getId();
 
@@ -69,7 +69,7 @@ public class AdminController {
 		Department department = departmentService.getDepartmentById(department_id);
         AdminEntity user = new AdminEntity(facultyId, firstName, lastName, department, email, password);
         // Check if the studentID already exists
-        if (adminService.existsByFacultyId(user.getFacultyId())) {
+        if (adminService.existsById(user.getAdminid())) {
             return new ResponseEntity<>("FacultyID already exists", HttpStatus.BAD_REQUEST);
         }
 

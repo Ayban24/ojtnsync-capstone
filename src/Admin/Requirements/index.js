@@ -12,7 +12,7 @@ export default function Submission() {
     const [courses, setCourses] = useState(null)
     const [selectedCourse, setSelectedCourse] = useState(0)
     const [nloIsSelected, setNloIsSelected] = useState(false)
-    const [nlo, setNlo] = useState(null)
+    const [filteredCourses, setFilteredCourses] = useState(null)
 
     const auth = JSON.parse(Cookies.get('auth'));
     const location = useLocation();
@@ -144,13 +144,19 @@ export default function Submission() {
         )
     }
 
+    const handleSearch = (e) => {
+        const searchVal = e.target.value
+        const filtered = courses.filter((val) => (val.name.toLowerCase().includes(searchVal)))
+        setFilteredCourses(filtered)
+    }
+
     const showPrograms = () => {
         return (
             <div className='program-nav'>
                 <h4>Programs</h4>
-                <input placeholder='Search' />
+                <input placeholder='Search' onChange={handleSearch} />
                 {courses && <ul>
-                    {courses.map((item, index) => (
+                    {(filteredCourses ? filteredCourses : courses ? courses : []).map((item, index) => (
                         <li className={(selectedCourse == index && !nloIsSelected) ? "active" : ""} 
                             onClick={() => {
                                     setSelectedCourse(index);
@@ -162,7 +168,7 @@ export default function Submission() {
                         </li>
                     ))}
                 </ul>}
-                {auth.adminType.toLowerCase() == 'nlo' && <ul>
+                <ul>
                     <li className={nloIsSelected ? "active" : ""} 
                         onClick={() => {
                                 setNloIsSelected(true);
@@ -172,7 +178,7 @@ export default function Submission() {
                         } 
                     >NLO
                     </li>
-                </ul>}
+                </ul>
             </div>
         )
     }

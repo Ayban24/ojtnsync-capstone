@@ -65,7 +65,7 @@ export default function Templates() {
             let uploadUrl = "http://localhost:8080/templates/upload"
             formData.append('title', title)
             formData.append('file', file);
-            formData.append('facultyId',auth.facultyId);
+            formData.append('adminId',auth.adminId);
     
             const response = await fetch(uploadUrl, {
                 method: 'POST',
@@ -108,7 +108,7 @@ export default function Templates() {
         <div className='wrapper'>
             <h1>Requirements Templates</h1>
 
-            { auth.facultyId &&
+            { auth.adminId &&
                 <a href="#!" onClick={() => setShowModal(true)}>Add</a>
             }
             {showTemplates()}

@@ -43,14 +43,14 @@ public class TemplateController {
     public ResponseEntity<UploadResponse> handleFileUpload(
             @RequestParam("title") String title,
             @RequestParam("file") MultipartFile file,
-            @RequestParam("facultyId") String facultyId) {
+            @RequestParam("adminId") long adminId) {
 
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(new UploadResponse("Please select a file to upload", null));
         }
 
         try {
-            AdminEntity createdBy = adminService.findByFacultyId(facultyId);
+            AdminEntity createdBy = adminService.findById(adminId);
             String fileName = file.getOriginalFilename();
             String fileExt = getFileExtension(fileName);
 

@@ -1,6 +1,5 @@
 
 .program-nav ul:first-of-type {
-  /* border-bottom: 1px solid #1a1a1a29; */
   padding-bottom: 15px;
   max-height: 300px;
   overflow: auto;
