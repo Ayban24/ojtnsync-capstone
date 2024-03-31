@@ -1,4 +1,14 @@
 
+.program-nav ul:first-of-type {
+  /* border-bottom: 1px solid #1a1a1a29; */
+  padding-bottom: 15px;
+  max-height: 300px;
+  overflow: auto;
+}
+.program-nav ul:not(:first-of-type) {
+  border-top: 1px solid #1a1a1a29;
+}
+
 .wrapper.nav-wrapper {
   margin-left: 212px;
 }

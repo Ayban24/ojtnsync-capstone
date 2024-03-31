@@ -27,7 +27,7 @@ function App() {
 	
 
 	// Check if the current path is "/signup" or "/login"
-	const isSignupOrLogin = currentPath === '/signup' || currentPath === '/login';
+	const isSignupOrLogin = currentPath === '/signup' || currentPath === '/login' || currentPath === '/' || currentPath === '';
 
 	// Conditionally render the Nav component
 	const renderNav = () => {
@@ -38,7 +38,7 @@ function App() {
 	};
 
 	return (
-		<div id='root'>
+		<div id='main-content'>
 			<Router>
 				{renderNav()}
 				<Routes>

@@ -59,26 +59,36 @@ const StudentDocuments = () => {
 
     const showDocuments = () => {
         return (
-            <DataTable>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>File name</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(documents && documents.length > 0) &&
-                            documents.map((item, index) => (
-                                <tr key={index}>
-                                    <td><a href="#!" onClick={() => {setCheck(true);setCheckInfo(item)}}>{item.fileName}</a></td>
-                                    <td>{item.status}</td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
-            </DataTable>
+            // <DataTable>
+            //     <table>
+            //         <thead>
+            //             <tr>
+            //                 <th>File name</th>
+            //                 <th>Status</th>
+            //             </tr>
+            //         </thead>
+            //         <tbody>
+            //             {(documents && documents.length > 0) &&
+            //                 documents.map((item, index) => (
+            //                     <tr key={index}>
+            //                         <td><a href="#!" onClick={() => {setCheck(true);setCheckInfo(item)}}>{item.fileName}</a></td>
+            //                         <td>{item.status}</td>
+            //                     </tr>
+            //                 ))
+            //             }
+            //         </tbody>
+            //     </table>
+            // </DataTable>
+            <DataTable 
+                showFilter={false} 
+                header={['File name', 'Status']} 
+                data={(documents && documents.length > 0) && documents
+                    .map((item, index) => ([
+                        <a href="#!" onClick={() => {setCheck(true);setCheckInfo(item)}}>{item.fileName}</a>, 
+                        item.status
+                    ]))
+                } 
+            />
         )
     }
 

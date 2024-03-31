@@ -106,8 +106,7 @@ export default function Templates() {
 
     return <div id='templates'>
         <div className='wrapper'>
-            <h1>List of Requirements</h1>
-            <h4>Templates</h4>
+            <h1>Requirements Templates</h1>
 
             { auth.facultyId &&
                 <a href="#!" onClick={() => setShowModal(true)}>Add</a>

@@ -11,6 +11,8 @@ export default function Submission() {
     const [requirementTerm, setRequirementTerm] = useState("Prelim")
     const [courses, setCourses] = useState(null)
     const [selectedCourse, setSelectedCourse] = useState(0)
+    const [nloIsSelected, setNloIsSelected] = useState(false)
+    const [nlo, setNlo] = useState(null)
 
     const auth = JSON.parse(Cookies.get('auth'));
     const location = useLocation();
@@ -49,11 +51,14 @@ export default function Submission() {
         return null;
     }
 
-    const fetchRequirements = async (courseId) => {
+    const fetchRequirements = async (courseId, isNlo) => {
         
         const departmentId = searchParams.get('department');
 
-        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${departmentId}/course/${courseId}?userid=${auth.adminid}`, {
+        let url = (courseId && !isNlo)
+            ? `http://localhost:8080/api/requirements/admin/department/${departmentId}/course/${courseId}?userid=${auth.adminid}`
+            : `http://localhost:8080/api/requirements/admin/department/${auth.departmentId}`
+        const response = await fetch(url, {
             method: 'GET',
         })
 
@@ -143,17 +148,30 @@ export default function Submission() {
         return (
             <div className='program-nav'>
                 <h4>Programs</h4>
+                <input placeholder='Search' />
                 {courses && <ul>
                     {courses.map((item, index) => (
-                        <li className={selectedCourse == index ? "active" : ""} 
+                        <li className={(selectedCourse == index && !nloIsSelected) ? "active" : ""} 
                             onClick={() => {
                                     setSelectedCourse(index);
-                                    fetchRequirements(courses[index].id);
+                                    setNloIsSelected(false)
+                                    fetchRequirements(courses[index].id, false);
                                 }
                             } 
                             key={index}>{item.name}
                         </li>
                     ))}
+                </ul>}
+                {auth.adminType.toLowerCase() == 'nlo' && <ul>
+                    <li className={nloIsSelected ? "active" : ""} 
+                        onClick={() => {
+                                setNloIsSelected(true);
+                                setSelectedCourse(null)
+                                fetchRequirements(null, true);
+                            }
+                        } 
+                    >NLO
+                    </li>
                 </ul>}
             </div>
         )

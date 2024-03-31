@@ -11,7 +11,7 @@ const Students = () => {
     const [selectedCourse, setSelectedCourse] = useState(0)
 
     const fetchStudents = async () => {
-        const response = await fetch(`http://localhost:8080/courses?departmentId=${auth.departmentId}`, {
+        const response = await fetch(`http://localhost:8080/courses`, {
             method: 'GET',
         })
 
@@ -51,13 +51,20 @@ const Students = () => {
     }
 
     const showStudents = () => {
-        console.log("test: ",courses ? courses : 0)
         return (
             <DataTable 
                 header={['User ID', 'Firstname', 'Lastname', 'Email', 'Documents Approved', 'Action']} 
-                data={(courses && courses.length > 0) && courses[selectedCourse].students.map((item, index) => (
-                    [item.userid, item.firstName, item.lastName, item.email, getApprovedDocuments(courses[selectedCourse], item), (<Link to={`/admin/student/documents?userid=${item.userid}&course=${courses[selectedCourse].id}`}>View</Link>)]
-                ))} 
+                data={(courses && courses.length > 0) && courses[selectedCourse].students
+                    .filter(item => item.status === 'active') // Filter out students with status 'active'
+                    .map((item, index) => ([
+                        item.userid, 
+                        item.firstName, 
+                        item.lastName, 
+                        item.email, 
+                        getApprovedDocuments(courses[selectedCourse], item), 
+                        <Link to={`/admin/student/documents?userid=${item.userid}&course=${courses[selectedCourse].id}`}>View</Link>
+                    ]))
+                } 
             />
         )
     }

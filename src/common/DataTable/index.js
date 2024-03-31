@@ -1,7 +1,7 @@
 	import React, { useState, useEffect } from 'react';
 	import './styles.css';
 
-	const InitDataTable = ({ children, rowCount, itemsPerPage, header, data }) => {
+	const InitDataTable = ({ children, showFilter = true, rowCount, itemsPerPage, header, data }) => {
 		const [currentPage, setCurrentPage] = useState(1);
 		const [filteredTable, setFilteredTable] = useState(null)
 
@@ -29,7 +29,9 @@
 
 		return (
 			<div className="datatable">
-				<input onChange={handleFilter} />
+				{ showFilter &&
+					<input onChange={handleFilter} />
+				}
 				<table>
 					<thead>
 						<tr>

@@ -11,6 +11,7 @@ import cit.ojtnsync.caps.Service.CourseService;
 import cit.ojtnsync.caps.Service.DepartmentService;
 import cit.ojtnsync.caps.Service.RequirementService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -76,8 +77,14 @@ public class RequirementController {
     
     // Mapping to get requirements by course
     @GetMapping("/department/{departmentId}/course/{courseId}")
-    public ResponseEntity<List<Requirement>> getRequirementsByDepartment(long userid, @PathVariable int departmentId, @PathVariable int courseId) {
-        List<Requirement> requirements = requirementService.getRequirementsByCourse(courseId);
+    public ResponseEntity<List<Requirement>> getRequirementsByCourse(long userid, @PathVariable int departmentId, @PathVariable int courseId) {
+        Department department = departmentService.getDepartmentById(departmentId);
+        List<Requirement> requirements = new ArrayList<>();
+
+        if(department.getName().equalsIgnoreCase("nlo"))
+            requirements = requirementService.getRequirementsByDepartment(departmentId);
+        else
+            requirements = requirementService.getRequirementsByCourse(courseId);
         
         // Filter documents for each requirement based on userid
         for (Requirement requirement : requirements) {
@@ -87,9 +94,16 @@ public class RequirementController {
         return ResponseEntity.ok(requirements);
     }
 
+    // Mapping to get all requirements by department
+    @GetMapping("/admin/department/{departmentId}")
+    public ResponseEntity<List<Requirement>> getRequirementsByDepartment(@PathVariable int departmentId) {
+        List<Requirement> requirements = requirementService.getRequirementsByDepartment(departmentId);
+        return ResponseEntity.ok(requirements);
+    }
+
     // Mapping to get requirements by course for Admin
     @GetMapping("/admin/department/{departmentId}/course/{courseId}")
-    public ResponseEntity<List<Requirement>> getAdminRequirementsByDepartment(long userid, @PathVariable int departmentId, @PathVariable int courseId) {
+    public ResponseEntity<List<Requirement>> getAdminRequirementsByCourse(long userid, @PathVariable int departmentId, @PathVariable int courseId) {
         List<Requirement> requirements = requirementService.getRequirementsByCourse(courseId);
         return ResponseEntity.ok(requirements);
     }

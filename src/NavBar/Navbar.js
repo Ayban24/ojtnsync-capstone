@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './navbar.css';
 import Cookies from 'js-cookie';
+import Logo from '../icons/logo1.png';
 
 const Navbar = () => {
 
@@ -10,7 +11,7 @@ const Navbar = () => {
 
     return(
         <div className= "Navbar">
-            <span className='nav-logo'>OJTnSYNC</span>
+            <a href="/" className='nav-logo'><img src={Logo} /></a>
             <div className={`nav-items ${isOpen && "open"}`}>
                 <Link to={JSON.parse(auth).adminid ? `/admin/homepage` : '/homepage'}>Home</Link>
                 {JSON.parse(auth).userid && 
