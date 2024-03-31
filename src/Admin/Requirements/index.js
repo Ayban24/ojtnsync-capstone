@@ -57,7 +57,7 @@ export default function Submission() {
 
         let url = (courseId && !isNlo)
             ? `http://localhost:8080/api/requirements/admin/department/${departmentId}/course/${courseId}?userid=${auth.adminid}`
-            : `http://localhost:8080/api/requirements/admin/department/${auth.departmentId}`
+            : `http://localhost:8080/api/requirements/admin/department/nlo?adminId=${auth.adminid}`
         const response = await fetch(url, {
             method: 'GET',
         })

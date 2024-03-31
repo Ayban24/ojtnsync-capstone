@@ -105,6 +105,16 @@ public class RequirementController {
         return ResponseEntity.ok(requirements);
     }
 
+    // Mapping to get all requirements by NLO
+    @GetMapping("/admin/department/nlo")
+    public ResponseEntity<List<Requirement>> getRequirementsByNlo(long adminId) {
+        AdminEntity adminEntity = adminService.findById(adminId);
+        if(adminEntity == null)
+            return ResponseEntity.badRequest().build();
+        List<Requirement> requirements = requirementService.getRequirementsByDepartmentName("NLO");
+        return ResponseEntity.ok(requirements);
+    }
+
     // Mapping to get requirements by course for Admin
     @GetMapping("/admin/department/{departmentId}/course/{courseId}")
     public ResponseEntity<List<Requirement>> getAdminRequirementsByCourse(long userid, @PathVariable int departmentId, @PathVariable int courseId) {
