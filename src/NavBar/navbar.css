@@ -42,7 +42,7 @@ body{
     opacity: 0.9;
 }
 
-.nav-items > a:hover {
+.nav-items > a:hover, .nav-items > a.active {
     opacity: 1;
     color: red;
 }

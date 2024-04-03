@@ -45,14 +45,13 @@ function App() {
 					<Route path="/" element={<SplashScreen />} /> 
 					<Route path="/login" element={<Login />} />
 					<Route path= "/adminloginform" element={<AdminLoginForm/>} />
+					<Route path="/signup" element={<Signup />} />
+					<Route path= "/adminsignupform" element={<AdminSignupForm/>} />
 					{ auth &&(
 					<>
-						<Route path="/signup" element={<Signup />} />
 						<Route path="/homepage" element={<HomePage />} />
-						<Route path= "/adminsignupform" element={<AdminSignupForm/>} />
 						<Route path="/templates" element={<Templates/>} />
 						<Route path="/submission" element={<Submission/>} />
-		
 						<Route path="/admin/homepage" element={<AdminHomepage />} />
 						<Route path="/admin/submission" element={<AdminSubmission />} />
 						<Route path="/admin/validate" element={<Validate />} />

@@ -50,6 +50,7 @@
 						))}
 					</tbody>
 				</table>
+				{((filteredTable && filteredTable.length == 0) || (data && data.length == 0)) && <div>No Data</div>}
 				{/* Pagination */}
 				<ul className="pagination">
 					{pageNumbers.map(number => (

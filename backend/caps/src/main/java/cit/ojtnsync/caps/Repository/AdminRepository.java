@@ -13,5 +13,7 @@ public interface AdminRepository extends JpaRepository<AdminEntity, Long> {
 
 	AdminEntity findById(long id);
 
+	AdminEntity findByFacultyId(String id);
+
 	boolean existsById(long id);
 }

@@ -57,13 +57,14 @@ public class RequirementController {
             @RequestParam("requirementTitle") String requirementTitle,
             @RequestParam("requirementTerm") String requirementTerm,
             @RequestParam("departmentId") int departmentId,
-            @RequestParam("courseId") int courseId) {
+            @RequestParam(value = "courseId", required = false) Integer courseId) {
         Department department = departmentService.getDepartmentById(departmentId);
-        Course course = courseService.getCourseById(courseId);
+        Course course = courseId != null ? courseService.getCourseById(courseId) : null;
         Requirement requirement = new Requirement(requirementTitle, department, course, requirementTerm);
         Requirement createdRequirement = requirementService.createRequirement(requirement);
         return ResponseEntity.ok(createdRequirement);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Requirement> updateRequirement(

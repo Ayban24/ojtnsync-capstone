@@ -8,7 +8,7 @@ import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 
 
 const SignupForm = () => {
-  const [adminId, setAdminId] = useState('');
+  const [facultyId, setFacultyId] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [department, setDepartment] = useState('');
@@ -57,7 +57,7 @@ const SignupForm = () => {
 	}
 
   const handleSignup = async () => {
-    if (!adminId || !firstName || !lastName || !department || !email || !password) {
+    if (!facultyId || !firstName || !lastName || !department || !email || !password) {
       setErrorMessage('Input all fields!');
       setErrorModalOpen(true);
       return; // Stop execution if any field is empty
@@ -69,7 +69,7 @@ const SignupForm = () => {
     }
 
     const formData = new FormData();
-		formData.append('adminId', adminId);
+		formData.append('facultyId', facultyId);
 		formData.append('firstName', firstName);
 		formData.append('lastName', lastName);
 		formData.append('department_id', department.id);
@@ -127,8 +127,8 @@ const SignupForm = () => {
           
             type="text"
             id="facultyId"
-            value={adminId}
-            onChange={(e) => setAdminId(e.target.value)}
+            value={facultyId}
+            onChange={(e) => setFacultyId(e.target.value)}
             style={{ width: '100%', height: '100%'}}>
             </TextField>
         </div>

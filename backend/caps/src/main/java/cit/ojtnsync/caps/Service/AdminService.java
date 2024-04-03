@@ -28,4 +28,8 @@ public class AdminService {
 	        else
 	            return null;
 	    }
+
+	public AdminEntity findByFacultyId(String id) {
+		return adminRepository.findByFacultyId(id);
+	}
 }

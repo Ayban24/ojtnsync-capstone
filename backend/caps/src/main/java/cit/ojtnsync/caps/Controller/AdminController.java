@@ -68,12 +68,13 @@ public class AdminController {
 
 		Department department = departmentService.getDepartmentById(department_id);
         AdminEntity user = new AdminEntity(facultyId, firstName, lastName, department, email, password);
-        // Check if the studentID already exists
-        if (adminService.existsById(user.getAdminid())) {
+		AdminEntity existingUser = adminService.findByFacultyId(facultyId);
+        // Check if the adminId already exists
+        if (existingUser != null) {
             return new ResponseEntity<>("FacultyID already exists", HttpStatus.BAD_REQUEST);
         }
 
-        // Save the user if studentID is unique
+        // Save the user if adminId is unique
         adminService.createAdmin(user);
         return new ResponseEntity<>("Admin created successfully", HttpStatus.CREATED);
     }

@@ -193,7 +193,8 @@ export default function Submission() {
         formData.append('requirementTitle', requirementTitle)
         formData.append('requirementTerm', requirementTerm)
         formData.append('departmentId', departmentId)
-        formData.append('courseId', courses[selectedCourse].id)
+        if(selectedCourse)
+            formData.append('courseId', courses[selectedCourse].id)
 
         const response = await fetch("http://localhost:8080/api/requirements", {
             method: 'POST',
