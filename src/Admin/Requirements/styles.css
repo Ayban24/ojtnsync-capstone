@@ -1,22 +1,40 @@
+#submission section {
+  background: #D9D9D9;
+  padding: 9px;
+  margin-bottom: 18px;
+  }
 
+#submission .wrapper {
+  margin-left: 260px;
+  margin-right: 10px;
+}
 .program-nav ul:first-of-type {
   padding-bottom: 15px;
   max-height: 300px;
   overflow: auto;
 }
 .program-nav ul:not(:first-of-type) {
-  border-top: 1px solid #1a1a1a29;
+  border-top: 1px solid #fff;
+  padding-top: 20px;
 }
 
-.wrapper.nav-wrapper {
-  margin-left: 212px;
-}
+.program-nav input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  border-radius: 7px;
+  border: 1px solid #1a1a1a1a;
+  }
 .program-nav {
   position: fixed;
   left: 0;
   top: 60px;
-  border-right: 1px solid #D9D9D9;
   bottom: 0;
+  box-shadow: 1px 7px 9px #6987B5;
+  z-index: 1;
+  background: #6987B5;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
 .program-nav ul {
@@ -26,6 +44,9 @@
 
 .program-nav h4 {
   padding-left: 25px;
+  color: #fff;
+  padding: 10px;
+  border-left: 3px solid #FFC100;
 }
 
 .program-nav ul li {
@@ -37,10 +58,11 @@
   padding-right: 10px;
   padding-left: 25px;
   cursor: pointer;
+  color: #fff;
 }
 
 .program-nav ul li.active {
-  background: #D9D9D9;
+  background: #FFC100;
 }
 
 .program-nav ul {
@@ -116,7 +138,6 @@
 }
 
 .add-requirement-modal .title-con {
-  background: #D9D9D9;
   padding: 0 15px;
   margin-bottom: 20px;
   display: flex;
@@ -132,12 +153,10 @@
   height: 30px;
   line-height: 30px;
   margin-left: auto;
-  margin-top: 40px;
   text-decoration: unset !important;
 }
 
 .requirement-list .title-con {
-  background: #D9D9D9;
   width: 100%;
   padding: 10px 0 10px 15px;
 }
@@ -153,18 +172,12 @@ a.requirement-list-delete-btn {
   margin-right: 30px;
 }
 
-ul.requirement-list li {
-  background: unset !important;
-}
 a.requirement-list-delete-btn {
   background: #801C1C;
   color: #fff;
   padding: 2px 22px;
   display: block;
   text-decoration: none !important;
-}
-ul.requirement-list li {
-  background: unset !important;
 }
 a.requirement-list-delete-btn {
   background: #801C1C;
@@ -179,10 +192,14 @@ a.requirement-list-delete-btn {
 #submission section h2 {
     background: #D9D9D9;
     padding: 10px;
+    border-left: 6px solid #8D0000;
 }
 #submission section ul {
     list-style: none;
     padding: 0;
+}
+#submission section ul li:nth-child(odd) {
+  background: #1a1a1a0d;
 }
 #submission section ul li {
     background: #D9D9D9;

@@ -1,4 +1,4 @@
-#main-content {
+#main-content.with-nav {
   margin-top: 60px;
   padding: 40px 0;
   }
@@ -34,6 +34,11 @@
 }
 
 .wrapper {max-width: 1400px;margin: 0 auto;position: relative;}
+
+
+.action-nav {
+  margin-bottom: 25px;
+  }
 
 @keyframes App-logo-spin {
   from {

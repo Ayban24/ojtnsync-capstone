@@ -90,17 +90,15 @@ export default function Submission() {
             requirements && <ul>
                 {requirements.map((item, index) => (
                     (item.term && item.term.toLowerCase() == term) &&
-                    <li 
-                        key={index} 
-                        onClick={() => {
+                    <li key={index}>
+                        <a onClick={() => {
                             // open upload modal if status is not available for this document
                             if(item.documents.length == 0)
                                 openUploadModal();
                             else
                                 openStatusModal();
                             setSelectedRequirement(item)
-                        }}>
-                            {item.title} 
+                        }}>{item.title} </a>
                         {  
                             item.documents.length > 0 && 
                             <span className={"status-"+item.documents[0].status.toLowerCase()}>{(item.documents.length > 0 && item.documents[0].status)}</span>

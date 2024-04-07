@@ -193,7 +193,7 @@ export default function Submission() {
         formData.append('requirementTitle', requirementTitle)
         formData.append('requirementTerm', requirementTerm)
         formData.append('departmentId', departmentId)
-        if(selectedCourse)
+        if(selectedCourse != null)
             formData.append('courseId', courses[selectedCourse].id)
 
         const response = await fetch("http://localhost:8080/api/requirements", {
@@ -217,8 +217,11 @@ export default function Submission() {
         <div id='submission'>
             {courses && showPrograms()}
             <div className='wrapper nav-wrapper'>
+                <h1 className='page-title'>Requirements</h1>
                 { (auth.adminType != "NLO") &&
-                    <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}>Add Requirement</a>
+                    <div className='action-nav'>
+                        <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}><i class="fa-solid fa-plus"></i> Add Requirement</a>
+                    </div>
                 }
                 <section>
                     <h2>PRELIM REQUIREMENTS</h2>

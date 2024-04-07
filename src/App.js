@@ -38,7 +38,7 @@ function App() {
 	};
 
 	return (
-		<div id='main-content'>
+		<div id='main-content' className={renderNav() && 'with-nav'}>
 			<Router>
 				{renderNav()}
 				<Routes>

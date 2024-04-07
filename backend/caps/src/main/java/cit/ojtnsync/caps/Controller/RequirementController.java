@@ -90,6 +90,8 @@ public class RequirementController {
             requirements = requirementService.getRequirementsByDepartment(departmentId);
         else
             requirements = requirementService.getRequirementsByCourse(courseId);
+
+        requirements = requirementService.filterActive(requirements);
         
         // Filter documents for each requirement based on userid
         for (Requirement requirement : requirements) {
@@ -120,7 +122,7 @@ public class RequirementController {
     @GetMapping("/admin/department/{departmentId}/course/{courseId}")
     public ResponseEntity<List<Requirement>> getAdminRequirementsByCourse(long userid, @PathVariable int departmentId, @PathVariable int courseId) {
         List<Requirement> requirements = requirementService.getRequirementsByCourse(courseId);
-        // List<Requirement> requirements = requirementService.getRequirementsByDepartmentName("NLO");
+        requirements = requirementService.filterActive(requirements);
         return ResponseEntity.ok(requirements);
     }
 }

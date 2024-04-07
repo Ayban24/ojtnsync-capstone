@@ -1,5 +1,6 @@
 package cit.ojtnsync.caps.Service;
 
+import org.aspectj.apache.bcel.classfile.Module.Require;
 import org.springframework.stereotype.Service;
 
 import cit.ojtnsync.caps.Entity.Department;
@@ -88,5 +89,13 @@ public class RequirementService {
 
     public void deleteRequirement(int id) {
         requirementRepository.deleteById(id);
+    }
+
+    public List<Requirement> filterActive(List<Requirement> requirements) {
+        // Filter requirements to include only those with status "Active"
+        List<Requirement> activeRequirements = requirements.stream()
+        .filter(requirement -> "Active".equals(requirement.getStatus()))
+        .collect(Collectors.toList());
+        return activeRequirements;
     }
 }

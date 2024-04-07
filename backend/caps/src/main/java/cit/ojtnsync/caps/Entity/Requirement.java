@@ -52,6 +52,7 @@ public class Requirement {
         this.department = department;
         this.course = course;
         this.term = term;
+        this.status = "Active";
     }
 
     public Requirement(String title, Department department, Course course, String term) {
@@ -59,6 +60,7 @@ public class Requirement {
         this.department = department;
         this.course = course;
         this.term = term;
+        this.status = "Active";
     }
 
     // Getters and Setters (generated using your IDE)
