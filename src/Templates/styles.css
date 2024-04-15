@@ -1,0 +1,18 @@
+#templates ul {
+    list-style: none;
+    padding: 0;
+}
+
+#templates ul li a {
+    display: block;
+    background: #6987B5;
+    color: #fff;
+    padding: 13px 5px;
+    text-align: center;
+    text-decoration: none;
+    transition: .6s;
+    margin-bottom: 5px;
+}
+#templates ul li a:hover {
+    background: #8D0000;
+}

@@ -30,7 +30,7 @@
 		return (
 			<div className="datatable">
 				{ showFilter &&
-					<input onChange={handleFilter} />
+					<input placeholder='Search' id="dt-search" onChange={handleFilter} />
 				}
 				<table>
 					<thead>

@@ -52,7 +52,8 @@ function App() {
 						<Route path="/homepage" element={<HomePage />} />
 						<Route path="/templates" element={<Templates/>} />
 						<Route path="/submission" element={<Submission/>} />
-						<Route path="/admin/homepage" element={<AdminHomepage />} />
+						{/* <Route path="/admin/homepage" element={<AdminHomepage />} /> */}
+						<Route path="/admin/homepage" element={<Dashboard />} />
 						<Route path="/admin/submission" element={<AdminSubmission />} />
 						<Route path="/admin/validate" element={<Validate />} />
 						<Route path="/admin/requirements" element={<Requirements />} />
@@ -60,7 +61,6 @@ function App() {
 						<Route path="/admin/students/add" element={<AddStudent />} />
 						<Route path="/admin/students/delete" element={<DeleteStudent />} />
 						<Route path="/admin/student/documents" element={<StudentDocuments />} />
-						<Route path="/admin/dashboard" element={<Dashboard />} />
 					</>
 					)
 					}
