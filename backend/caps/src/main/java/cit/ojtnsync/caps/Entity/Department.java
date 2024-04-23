@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.aspectj.apache.bcel.classfile.Module.Require;
 
@@ -59,7 +60,9 @@ public class Department {
     }
 
     public List<Requirement> getRequirements() {
-        return requirements;
+        return requirements.stream()
+            .filter(requirement -> "Active".equals(requirement.getStatus()))
+            .collect(Collectors.toList());
     }
     
     public void setRequirements(List<Requirement> requirements) {

@@ -1,10 +1,12 @@
 package cit.ojtnsync.caps.Service;
 
+import org.aspectj.apache.bcel.classfile.Module.Require;
 import org.springframework.stereotype.Service;
 
 import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
+import cit.ojtnsync.caps.Entity.Course;
 import cit.ojtnsync.caps.Repository.RequirementRepository;
 
 import java.util.ArrayList;
@@ -23,6 +25,10 @@ public class RequirementService {
 
     public List<Requirement> getAllRequirements() {
         return requirementRepository.findAllRequirements();
+    }
+
+    public List<Requirement> getRequirementsByDepartmentName(String departmentName) {
+        return requirementRepository.findByDepartmentName(departmentName);
     }
 
     // Add a method to filter documents for a specific requirement based on userid
@@ -54,6 +60,16 @@ public class RequirementService {
                 .collect(Collectors.toList());
     }
 
+    // Get requirements based on department
+    public List<Requirement> getRequirementsByCourse(int courseId) {
+        return requirementRepository.findAll().stream()
+                .filter(requirement -> {
+                    Course course = requirement.getCourse();
+                    return course != null && course.getId() == courseId;
+                })
+                .collect(Collectors.toList());
+    }
+
     public Requirement getRequirementById(int id) {
         return requirementRepository.findById(id)
                 .orElse(null);
@@ -73,5 +89,13 @@ public class RequirementService {
 
     public void deleteRequirement(int id) {
         requirementRepository.deleteById(id);
+    }
+
+    public List<Requirement> filterActive(List<Requirement> requirements) {
+        // Filter requirements to include only those with status "Active"
+        List<Requirement> activeRequirements = requirements.stream()
+        .filter(requirement -> "Active".equals(requirement.getStatus()))
+        .collect(Collectors.toList());
+        return activeRequirements;
     }
 }

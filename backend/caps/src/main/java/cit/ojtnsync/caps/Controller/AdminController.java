@@ -33,16 +33,21 @@ public class AdminController {
 	@GetMapping("/admin/login")
 	@CrossOrigin(origins = "*")
 	public ResponseEntity findByFacultyId(
-			@RequestParam(name = "facultyId", required = false, defaultValue = "0") String facultyId,
+			@RequestParam(name = "adminId", required = false) long adminId,
 			@RequestParam(name = "password", required = false, defaultValue = "0") String password) {    
 
-		AdminEntity admin = adminService.findByFacultyId(facultyId);
+		AdminEntity admin = adminService.findById(adminId);
 		if (admin != null && admin.getPassword().equals(password)) {
 			int departmentId = admin.getDepartment().getId();
+
+			String adminType = "faculty";
+			if(admin.getDepartment().getName().equals("NLO"))
+				adminType = "NLO";
 			
 			Map<String, Object> adminWithDepartmentId = new HashMap<>();
 			adminWithDepartmentId.put("admin", admin);
 			adminWithDepartmentId.put("departmentId", departmentId);
+			adminWithDepartmentId.put("adminType", adminType);
 			
 			return ResponseEntity.ok(adminWithDepartmentId);
 		} else {
@@ -63,12 +68,13 @@ public class AdminController {
 
 		Department department = departmentService.getDepartmentById(department_id);
         AdminEntity user = new AdminEntity(facultyId, firstName, lastName, department, email, password);
-        // Check if the studentID already exists
-        if (adminService.existsByFacultyId(user.getFacultyId())) {
+		AdminEntity existingUser = adminService.findByFacultyId(facultyId);
+        // Check if the adminId already exists
+        if (existingUser != null) {
             return new ResponseEntity<>("FacultyID already exists", HttpStatus.BAD_REQUEST);
         }
 
-        // Save the user if studentID is unique
+        // Save the user if adminId is unique
         adminService.createAdmin(user);
         return new ResponseEntity<>("Admin created successfully", HttpStatus.CREATED);
     }

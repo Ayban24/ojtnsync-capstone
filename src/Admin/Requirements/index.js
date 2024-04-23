@@ -11,36 +11,68 @@ export default function Submission() {
     const [requirementTerm, setRequirementTerm] = useState("Prelim")
     const [courses, setCourses] = useState(null)
     const [selectedCourse, setSelectedCourse] = useState(0)
+    const [nloIsSelected, setNloIsSelected] = useState(false)
+    const [filteredCourses, setFilteredCourses] = useState(null)
 
     const auth = JSON.parse(Cookies.get('auth'));
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
 
-    const fetchRequirements = async () => {
+    const fetchCourses = async () => {
         
         const departmentId = searchParams.get('department');
 
-        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${departmentId}?userid=${auth.adminid}`, {
+        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${departmentId}`, {
             method: 'GET',
         })
 
-        const response2 = await fetch(`http://localhost:8080/courses?departmentId=${auth.departmentId}`, {
-            method: 'GET',
-        })
-
-        if (response.ok && response2.ok) {
+        if (response.ok) {
             try {
                 const result = await response.json();
-                const result2 = await response2.json();
-                setRequirements(result)
-                setCourses(result2)
-                console.log("courses: ",result2)
+                setCourses(result)
+                console.log("courses: ",result)
+                return result
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
             }
         } else {
-            console.error('Upload failed:', response.status, response.statusText);
+            console.error('Response failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+        return null;
+    }
+
+    const fetchRequirements = async (courseId, isNlo) => {
+        
+        const departmentId = searchParams.get('department');
+
+        let url = (courseId && !isNlo)
+            ? `http://localhost:8080/api/requirements/admin/department/${departmentId}/course/${courseId}?userid=${auth.adminid}`
+            : `http://localhost:8080/api/requirements/admin/department/nlo?adminId=${auth.adminid}`
+        const response = await fetch(url, {
+            method: 'GET',
+        })
+
+        if (response.ok) {
+            try {
+                const result = await response.json();
+                setRequirements(result)
+                console.log("resquirements: ",result)
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Response failed:', response.status, response.statusText);
             try {
                 const result = await response.json();
                 // Access specific properties from the result if needed
@@ -82,7 +114,9 @@ export default function Submission() {
                     (item.term && item.term.toLowerCase() == term) &&
                     <li key={index}>
                         <div className='title-con'><Link to={`/admin/validate?requirementId=${item.id}`}>{item.title}</Link></div>
-                        <a className='requirement-list-delete-btn' href="#!" onClick={() => handleDelete(item.id)}>Delete</a>
+                        { (auth.adminType != "NLO") &&
+                            <a className='requirement-list-delete-btn' href="#!" onClick={() => handleDelete(item.id)}>Delete</a>
+                        }
                     </li>
                 ))}
             </ul>
@@ -110,15 +144,41 @@ export default function Submission() {
         )
     }
 
+    const handleSearch = (e) => {
+        const searchVal = e.target.value
+        const filtered = courses.filter((val) => (val.name.toLowerCase().includes(searchVal)))
+        setFilteredCourses(filtered)
+    }
+
     const showPrograms = () => {
         return (
             <div className='program-nav'>
                 <h4>Programs</h4>
+                <input placeholder='Search' onChange={handleSearch} />
                 {courses && <ul>
-                    {courses.map((item, index) => (
-                        <li className={selectedCourse == index ? "active" : ""} onClick={() => setSelectedCourse(index)} key={index}>{item.name}</li>
+                    {(filteredCourses ? filteredCourses : courses ? courses : []).map((item, index) => (
+                        <li className={(selectedCourse == index && !nloIsSelected) ? "active" : ""} 
+                            onClick={() => {
+                                    setSelectedCourse(index);
+                                    setNloIsSelected(false)
+                                    fetchRequirements(courses[index].id, false);
+                                }
+                            } 
+                            key={index}>{item.name}
+                        </li>
                     ))}
                 </ul>}
+                <ul>
+                    <li className={nloIsSelected ? "active" : ""} 
+                        onClick={() => {
+                                setNloIsSelected(true);
+                                setSelectedCourse(null)
+                                fetchRequirements(null, true);
+                            }
+                        } 
+                    >NLO
+                    </li>
+                </ul>
             </div>
         )
     }
@@ -133,6 +193,8 @@ export default function Submission() {
         formData.append('requirementTitle', requirementTitle)
         formData.append('requirementTerm', requirementTerm)
         formData.append('departmentId', departmentId)
+        if(selectedCourse != null)
+            formData.append('courseId', courses[selectedCourse].id)
 
         const response = await fetch("http://localhost:8080/api/requirements", {
             method: 'POST',
@@ -145,14 +207,22 @@ export default function Submission() {
     }
 
     useEffect(() => {
-        fetchRequirements()
+        fetchCourses().then((course) => {
+            console.log("courses useeffect: ",course)
+            fetchRequirements(course[0].id)
+        })
     }, []);
   
     return (
         <div id='submission'>
             {courses && showPrograms()}
             <div className='wrapper nav-wrapper'>
-                <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}>Add Requirement</a>
+                <h1 className='page-title'>Requirements</h1>
+                { (auth.adminType != "NLO") &&
+                    <div className='action-nav'>
+                        <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}><i class="fa-solid fa-plus"></i> Add Requirement</a>
+                    </div>
+                }
                 <section>
                     <h2>PRELIM REQUIREMENTS</h2>
                     {showRequirements("prelim")}

@@ -50,7 +50,8 @@
 
 .header-actions {
   display: flex;
-  position: absolute;
+  position: relative;
+  justify-content: flex-end;
   right: 0;
   top: 0;
   column-gap: 10px;

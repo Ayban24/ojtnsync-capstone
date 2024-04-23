@@ -17,6 +17,7 @@ import Students from './Admin/Students';
 import AddStudent from './Admin/Students/Add';
 import DeleteStudent from './Admin/Students/Delete';
 import StudentDocuments from './Admin/Students/Documents';
+import Dashboard from './Admin/Dashboard';
 import './App.css';
 import Cookies from 'js-cookie';
 
@@ -26,7 +27,7 @@ function App() {
 	
 
 	// Check if the current path is "/signup" or "/login"
-	const isSignupOrLogin = currentPath === '/signup' || currentPath === '/login';
+	const isSignupOrLogin = currentPath === '/signup' || currentPath === '/login' || currentPath === '/' || currentPath === '';
 
 	// Conditionally render the Nav component
 	const renderNav = () => {
@@ -37,28 +38,32 @@ function App() {
 	};
 
 	return (
-		<div id='root'>
+		<div id='main-content' className={renderNav() && 'with-nav'}>
 			<Router>
 				{renderNav()}
 				<Routes>
 					<Route path="/" element={<SplashScreen />} /> 
-	
-					<Route path="/signup" element={<Signup />} />
 					<Route path="/login" element={<Login />} />
-					<Route path="/homepage" element={<HomePage />} />
-					<Route path= "/adminsignupform" element={<AdminSignupForm/>} />
 					<Route path= "/adminloginform" element={<AdminLoginForm/>} />
-					<Route path="/templates" element={<Templates/>} />
-					<Route path="/submission" element={<Submission/>} />
-	
-					<Route path="/admin/homepage" element={<AdminHomepage />} />
-					<Route path="/admin/submission" element={<AdminSubmission />} />
-					<Route path="/admin/validate" element={<Validate />} />
-					<Route path="/admin/requirements" element={<Requirements />} />
-					<Route path="/admin/students" element={<Students />} />
-					<Route path="/admin/students/add" element={<AddStudent />} />
-					<Route path="/admin/students/delete" element={<DeleteStudent />} />
-					<Route path="/admin/student/documents" element={<StudentDocuments />} />
+					<Route path="/signup" element={<Signup />} />
+					<Route path= "/adminsignupform" element={<AdminSignupForm/>} />
+					{ auth &&(
+					<>
+						<Route path="/homepage" element={<HomePage />} />
+						<Route path="/templates" element={<Templates/>} />
+						<Route path="/submission" element={<Submission/>} />
+						{/* <Route path="/admin/homepage" element={<AdminHomepage />} /> */}
+						<Route path="/admin/homepage" element={<Dashboard />} />
+						<Route path="/admin/submission" element={<AdminSubmission />} />
+						<Route path="/admin/validate" element={<Validate />} />
+						<Route path="/admin/requirements" element={<Requirements />} />
+						<Route path="/admin/students" element={<Students />} />
+						<Route path="/admin/students/add" element={<AddStudent />} />
+						<Route path="/admin/students/delete" element={<DeleteStudent />} />
+						<Route path="/admin/student/documents" element={<StudentDocuments />} />
+					</>
+					)
+					}
 	
 				</Routes>
 			</Router>

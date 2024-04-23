@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cit.ojtnsync.caps.Entity.AdminEntity;
-import cit.ojtnsync.caps.Entity.UserEntity;
 import cit.ojtnsync.caps.Repository.AdminRepository;
 @Service
 public class AdminService {
@@ -14,8 +13,8 @@ public class AdminService {
 	@Autowired
 	private AdminRepository adminRepository;
 	
-	 public boolean existsByFacultyId(String facultyId) {
-	        return adminRepository.existsByFacultyId(facultyId);
+	 public boolean existsById(long id) {
+	        return adminRepository.existsById(id);
 	    }
 	 public void createAdmin(AdminEntity adminEntity) {
 	        adminRepository.save(adminEntity);
@@ -23,10 +22,14 @@ public class AdminService {
 	 public List<AdminEntity> getAllAdmins() {
 	        return adminRepository.findAll();
 	    }
-	 public AdminEntity findByFacultyId(String facultyId) {
-	        if (adminRepository.findByFacultyId(facultyId) != null)
-	            return adminRepository.findByFacultyId(facultyId);
+	 public AdminEntity findById(long id) {
+	        if (adminRepository.findById(id) != null)
+	            return adminRepository.findById(id);
 	        else
 	            return null;
 	    }
+
+	public AdminEntity findByFacultyId(String id) {
+		return adminRepository.findByFacultyId(id);
+	}
 }

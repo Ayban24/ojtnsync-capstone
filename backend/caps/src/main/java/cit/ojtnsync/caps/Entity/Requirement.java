@@ -23,9 +23,7 @@ public class Requirement {
 
     private String term;
 
-    private String attachedFileName;
-    private String attachedExtName;
-    private String attachedHashedFileName;
+    private String status;
 
     @ManyToOne()
     @JsonIgnore
@@ -36,6 +34,11 @@ public class Requirement {
     @JsonIgnoreProperties("requirement")
     private List<Document> documents = new ArrayList<>();
 
+    @ManyToOne()
+    @JsonIgnore
+    @JoinColumn(name = "course_id")
+    private Course course;
+
     // Constructors, getters, and setters (omitted for brevity)
 
     // Default constructor
@@ -43,25 +46,21 @@ public class Requirement {
     }
 
     // Parameterized constructor
-    public Requirement(String title, Timestamp created_at, Department department, String term,
-                       String attachedFileName, String attachedExtName, String attachedHashedFileName) {
+    public Requirement(String title, Timestamp created_at, Department department, Course course, String term) {
         this.title = title;
         this.created_at = created_at;
         this.department = department;
+        this.course = course;
         this.term = term;
-        this.attachedFileName = attachedFileName;
-        this.attachedExtName = attachedExtName;
-        this.attachedHashedFileName = attachedHashedFileName;
+        this.status = "Active";
     }
 
-    public Requirement(String title, Department department, String term,
-                       String attachedFileName, String attachedExtName, String attachedHashedFileName) {
+    public Requirement(String title, Department department, Course course, String term) {
         this.title = title;
         this.department = department;
+        this.course = course;
         this.term = term;
-        this.attachedFileName = attachedFileName;
-        this.attachedExtName = attachedExtName;
-        this.attachedHashedFileName = attachedHashedFileName;
+        this.status = "Active";
     }
 
     // Getters and Setters (generated using your IDE)
@@ -119,27 +118,19 @@ public class Requirement {
         created_at = Timestamp.from(Instant.now());
     }
 
-    public String getAttachedFileName() {
-        return attachedFileName;
+    public Course getCourse() {
+        return course;
     }
 
-    public void setAttachedFileName(String attachedFileName) {
-        this.attachedFileName = attachedFileName;
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
-    public String getAttachedExtName() {
-        return attachedExtName;
+    public String getStatus() {
+        return status;
     }
 
-    public void setAttachedExtName(String attachedExtName) {
-        this.attachedExtName = attachedExtName;
-    }
-
-    public String getAttachedHashedFileName() {
-        return attachedHashedFileName;
-    }
-
-    public void setAttachedHashedFileName(String attachedHashedFileName) {
-        this.attachedHashedFileName = attachedHashedFileName;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

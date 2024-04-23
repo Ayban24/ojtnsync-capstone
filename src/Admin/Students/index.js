@@ -11,7 +11,7 @@ const Students = () => {
     const [selectedCourse, setSelectedCourse] = useState(0)
 
     const fetchStudents = async () => {
-        const response = await fetch(`http://localhost:8080/courses?departmentId=${auth.departmentId}`, {
+        const response = await fetch(`http://localhost:8080/courses`, {
             method: 'GET',
         })
 
@@ -52,34 +52,20 @@ const Students = () => {
 
     const showStudents = () => {
         return (
-            <DataTable>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Firstname</th>
-                            <th>Lastname</th>
-                            <th>Email</th>
-                            <th>Documents Approved</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(courses && courses.length > 0) &&
-                            courses[selectedCourse].students.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{item.userid}</td>
-                                    <td>{item.firstName}</td>
-                                    <td>{item.lastName}</td>
-                                    <td>{item.email}</td>
-                                    <td>{getApprovedDocuments(courses[selectedCourse], item)}</td>
-                                    <td><Link to={`/admin/student/documents?userid=${item.userid}&course=${courses[selectedCourse].id}`}>View</Link></td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
-            </DataTable>
+            <DataTable 
+                header={['User ID', 'Firstname', 'Lastname', 'Email', 'Documents Approved', 'Action']} 
+                data={(courses && courses.length > 0) && courses[selectedCourse].students
+                    .filter(item => item.status === 'active') // Filter out students with status 'active'
+                    .map((item, index) => ([
+                        item.userid, 
+                        item.firstName, 
+                        item.lastName, 
+                        item.email, 
+                        getApprovedDocuments(courses[selectedCourse], item), 
+                        <Link to={`/admin/student/documents?userid=${item.userid}&course=${courses[selectedCourse].id}`}>View</Link>
+                    ]))
+                } 
+            />
         )
     }
 
@@ -94,35 +80,6 @@ const Students = () => {
         </div>)
     }
 
-    const handleSearch = async (e) => {
-        let searchVal = e.target.value
-        const response = await fetch(`http://localhost:8080/courses/search?departmentId=${auth.departmentId}&searchVal=${searchVal}`, {
-            method: 'GET',
-        })
-
-        if (response && response.ok) {
-            try {
-                const result = await response.json();
-                console.log("search courses: ",result)
-                setCourses(result)
-            } catch (error) {
-                console.error('Error parsing JSON:', error);
-                // Handle unexpected JSON parsing error
-            }
-        } else {
-            console.error('Response failed:', response.status, response.statusText);
-            try {
-                const result = await response.json();
-                // Access specific properties from the result if needed
-                console.log('Error Message:', result.message);
-                // Handle failure, e.g., display an error message to the user
-            } catch (error) {
-                console.error('Error parsing JSON:', error);
-                // Handle unexpected JSON parsing error
-            }
-        }
-    }
-
     useEffect(() => {
         fetchStudents()
     }, []);
@@ -132,7 +89,6 @@ const Students = () => {
             <div className='wrapper'>
                 {showCoursesNav()}
                 <div className='header'>
-                    <input placeholder='Search' className='search' onChange={(e) => {handleSearch(e)}} />
                     <div className='header-actions'>
                         <Link to='/admin/students/add'>Add Student</Link>
                         <Link to='/admin/students/delete'>Delete Student</Link>

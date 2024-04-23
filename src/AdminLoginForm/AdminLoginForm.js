@@ -13,7 +13,7 @@ import Cookies from 'js-cookie';
 import { Link, useNavigate} from 'react-router-dom';
 
 const AdminLoginForm = () => {
-  const [facultyId, setFacultyId] = useState('');
+  const [adminId, setAdminId] = useState('');
   const [password, setPassword] = useState('');
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [error, setError] = useState(null);
@@ -21,17 +21,18 @@ const AdminLoginForm = () => {
 const navigate=useNavigate();
 const handleLogin = async () => {
   try {
-    if (!facultyId || !password) {
+    if (!adminId || !password) {
       setError('Input all fields!');
       return;
     }
 
-    const response = await fetch(`http://localhost:8080/admin/login?facultyId=${facultyId}&password=${password}`);
+    const response = await fetch(`http://localhost:8080/admin/login?adminId=${adminId}&password=${password}`);
     const data = await response.json();
 
     if (response.ok) {
       const admin = data.admin;
       admin.departmentId = data.departmentId
+      admin.adminType = data.adminType
 
       setLoggedInUser(admin);
       Cookies.set('auth', JSON.stringify(admin));
@@ -74,8 +75,8 @@ const handleLogin = async () => {
                 variant="outlined"
                 type="text"
                 fullWidth
-                value={facultyId}
-                onChange={(e) => setFacultyId(e.target.value)}
+                value={adminId}
+                onChange={(e) => setAdminId(e.target.value)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">

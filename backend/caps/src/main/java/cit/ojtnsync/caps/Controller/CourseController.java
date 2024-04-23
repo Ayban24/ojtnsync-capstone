@@ -70,7 +70,12 @@ public class CourseController {
 
     @GetMapping("/get")
     public ResponseEntity<List<Course>> getCoursesByDepartmentId(@RequestParam(name = "departmentId") int departmentId) {
-        List<Course> courses = courseService.getCoursesByDepartmentId(departmentId);
+        Department department = departmentService.getDepartmentById(departmentId);
+        List<Course> courses;
+        if(department.getName().equalsIgnoreCase("nlo"))
+            courses = courseService.getAllCourses();
+        else
+            courses = courseService.getCoursesByDepartmentId(departmentId);
         
         if (!courses.isEmpty()) {
             return ResponseEntity.ok(courses);

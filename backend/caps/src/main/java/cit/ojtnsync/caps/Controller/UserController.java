@@ -227,18 +227,26 @@ public class UserController {
     // Custom class to represent the login response
     private static class LoginResponse {
         private final String message;
-        private final UserEntity user;
+        private final UserWithCourseDTO user;
 
         public LoginResponse(String message, UserEntity user) {
             this.message = message;
-            this.user = user;
+            this.user = new UserWithCourseDTO(
+                user.getUserid(),
+                user.getStudentID(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getCourse(),
+                user.isVerified()
+            );
         }
 
         public String getMessage() {
             return message;
         }
 
-        public UserEntity getUser() {
+        public UserWithCourseDTO getUser() {
             return user;
         }
     }
