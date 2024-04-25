@@ -59,11 +59,11 @@ export default function ActionAreaCard() {
 				departments && <div className='cards'>
 					{departments.map((item, index) => (
 						<div className="card">
-							<h2>{item.name} DEPARTMENT </h2>
-							<h4>Upcoming</h4>
-							<ul>
-								<li>Deed of Undertaking / Waiver (static)</li>
-							</ul>
+							<figure>
+								<img src={item.name.toLowerCase() == "nlo" ? "/images/nlo_requirements.jpg" : "/images/course_requirements.jpg"} />
+								<h2>{item.name}</h2>
+							</figure>
+							<h4>{item.name} Requirements</h4>
 							<div className='progress-bar-con'><div className='progress-bar' style={{width: `${getCompleted(index)}`}}></div></div>
 							<p>{getCompleted(index)} Completed</p>
 							<Link to={"/submission?department="+item.id}></Link>
@@ -104,5 +104,8 @@ export default function ActionAreaCard() {
 
   	};
 
-  return <div className='student-courses'>{showDepartments()}</div>;
+  return <div className='student-courses'>
+			<h4 className='cards-header'><img src="/icons/documents.png" />Overview</h4>
+			{showDepartments()}
+		</div>;
 }

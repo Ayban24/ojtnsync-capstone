@@ -200,6 +200,7 @@ export default function Submission() {
     const StatusModal = ({ closeModal, children }) => {
         return (
           <div className="modal-container">
+            <img className='modal-bg' src='/images/folder.png' />
             <div className='modal-back' onClick={closeModal}><span>&lsaquo;</span>{department ? department.name : ""} Department</div>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <h2 className='status-title'>{selectedRequirement.title}</h2>
@@ -246,7 +247,6 @@ export default function Submission() {
     return (
         <div id='submission'>
             <div className='wrapper'>
-                <h1>{department ? department.name : ""} DEPARTMENT</h1>
                 <section>
                     <h2>PRELIM REQUIREMENTS</h2>
                     {showRequirements("prelim")}

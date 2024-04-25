@@ -16,7 +16,7 @@ const Navbar = () => {
 
     return(
         <div className= "Navbar">
-            <a href="/" className='nav-logo'><img src={Logo} alt="Logo" /></a>
+            <a href="/" className='nav-logo'><img src="/images/nav_logo.png" alt="Logo" /></a>
             <div className={`nav-items ${isOpen && "open"}`}>
                 <Link to={JSON.parse(auth).adminid ? `/admin/homepage` : '/homepage'} className={isPathActive(`/admin/homepage`) || isPathActive(`/homepage`) ? 'active' : ''}>Dashboard</Link>
                 {JSON.parse(auth).adminid && 

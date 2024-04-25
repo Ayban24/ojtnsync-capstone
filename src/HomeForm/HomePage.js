@@ -9,8 +9,11 @@ const HomePage = () => {
     
       <div id='homepage'>
         <div className='wrapper'>
-			<h1>Dashboard</h1>
-	        <StudentCourses/>
+          <div class="homepage-header">
+            <h1>Dashboard</h1>
+            <p>Welcome to OJTnSync (OJT Documentation)</p>
+          </div>
+          <StudentCourses/>
         </div>
       </div>
       

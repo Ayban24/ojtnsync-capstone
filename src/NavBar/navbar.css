@@ -1,5 +1,5 @@
 body{
-    background-color: #e9e9e9;
+    background-color: #fff;
     height: 100%;
     margin: 0;
     padding: 0;
@@ -11,7 +11,7 @@ body{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #D9D9D9;
+    background: #801C1C;
     position: fixed;
     top: 0;
     left: 0;
@@ -30,11 +30,11 @@ body{
 }
 
 .Navbar > .nav-logo img {
-    width: 96px;
+    width: 167px;
 }
 
 .nav-items > a {
-    color: black;
+    color: #fff;
     font-size: 16px;
     text-decoration: none;
     margin: 30px;
@@ -44,7 +44,7 @@ body{
 
 .nav-items > a:hover, .nav-items > a.active {
     opacity: 1;
-    color: red;
+    color: #5DAEF8;
 }
 
 .Navbar > .nav-items > a::before {
@@ -54,7 +54,7 @@ body{
     bottom: 0;
     width: 0;
     height: 2px;
-    background: red;
+    background: #5DAEF8;
     transition: all .45s;
 }
 
