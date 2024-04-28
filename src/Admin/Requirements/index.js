@@ -153,7 +153,6 @@ export default function Submission() {
     const showPrograms = () => {
         return (
             <div className='program-nav'>
-                <h4>Programs</h4>
                 <input placeholder='Search' onChange={handleSearch} />
                 {courses && <ul>
                     {(filteredCourses ? filteredCourses : courses ? courses : []).map((item, index) => (
@@ -217,7 +216,7 @@ export default function Submission() {
         <div id='submission'>
             {courses && showPrograms()}
             <div className='wrapper nav-wrapper'>
-                <h1 className='page-title'>Requirements</h1>
+                <h1 className='page-title'><img src="/icons/documents.png" />Requirements</h1>
                 { (auth.adminType != "NLO") &&
                     <div className='action-nav'>
                         <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}><i class="fa-solid fa-plus"></i> Add Requirement</a>

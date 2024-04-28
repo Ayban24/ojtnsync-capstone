@@ -151,7 +151,7 @@ const Validate = () => {
     
       <div id='validate'>
         <div className='wrapper'>
-			<h1>Validate</h1>
+			<h1>Requirements</h1>
             <div className="validate-nav">
                 <label htmlFor="status1" className={filter == "pending" ? "active" : ""}><input type='radio' name='status' id='status1' defaultChecked onChange={() => fetchDocuments("pending")} />FOR CHECKING</label>
                 <label htmlFor="status2" className={filter == "approved" ? "active" : ""}><input type='radio' name='status' id='status2' onChange={() => fetchDocuments("approved")} />APPROVED</label>

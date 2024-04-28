@@ -1,5 +1,10 @@
+.page-title {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+  }
+  
 #submission section {
-  background: #D9D9D9;
   padding: 9px;
   margin-bottom: 18px;
   }
@@ -22,19 +27,20 @@
   width: 100%;
   box-sizing: border-box;
   padding: 8px;
-  border-radius: 7px;
-  border: 1px solid #1a1a1a1a;
+  border: 1px solid #000;
+  background: unset;
   }
 .program-nav {
   position: fixed;
   left: 0;
   top: 60px;
   bottom: 0;
-  box-shadow: 1px 7px 9px #6987B5;
   z-index: 1;
-  background: #6987B5;
-  padding: 0 10px;
+  padding: 73px 10px 0;
   box-sizing: border-box;
+  background: #D9D9D9;
+  border: 2px solid #801C1C;
+  border-top: 0;
 }
 
 .program-nav ul {
@@ -58,11 +64,11 @@
   padding-right: 10px;
   padding-left: 25px;
   cursor: pointer;
-  color: #fff;
+  color: #000;
 }
 
 .program-nav ul li.active {
-  background: #FFC100;
+  background: #8C8A8A;
 }
 
 .program-nav ul {
@@ -159,6 +165,7 @@
 .requirement-list .title-con {
   width: 100%;
   padding: 10px 0 10px 15px;
+  background: #D9D9D9;
 }
 ul.requirement-list li {
   display: flex !important;
@@ -190,19 +197,18 @@ a.requirement-list-delete-btn {
 
 }
 #submission section h2 {
-    background: #D9D9D9;
     padding: 10px;
-    border-left: 6px solid #8D0000;
+    background: #8D0000;
+    color: #fff;
+    font-weight: 400;
+    font-size: 17px;
 }
 #submission section ul {
     list-style: none;
     padding: 0;
 }
-#submission section ul li:nth-child(odd) {
-  background: #1a1a1a0d;
-}
+
 #submission section ul li {
-    background: #D9D9D9;
     margin-bottom: 15px;
     display: flex;
     justify-content: space-between;

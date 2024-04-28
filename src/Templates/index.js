@@ -106,12 +106,15 @@ export default function Templates() {
 
     return <div id='templates'>
         <div className='wrapper'>
-            <h1>Requirements Templates</h1>
+            <h1><img src="/icons/template.png" />List of Requirements</h1>
 
             { auth.adminid &&
-                <a href="#!" onClick={() => setShowModal(true)}>Add</a>
+                <a className='add-btn' href="#!" onClick={() => setShowModal(true)}>Add Template</a>
             }
-            {showTemplates()}
+            <div className='template-list'>
+                <h4>Templates</h4>
+                {showTemplates()}
+            </div>
         </div>
             { showModal && 
             <Modal show={showModal} onHide={() => setShowModal(false)}>

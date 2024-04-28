@@ -116,10 +116,10 @@ export default function Dashboard() {
     return <div className='student-courses'>
         <div>
             <h1>Dashboard</h1>
-            <Line data={lineData} options={options} />
-            {studentsPerCourseData &&
+            {/* <Line data={lineData} options={options} /> */}
+            {/* {studentsPerCourseData &&
                 <Pie data={studentsPerCourseData} />
-            }
+            } */}
         </div>
     </div>;
 }

@@ -11,6 +11,7 @@ export default function Submission() {
     const [selectedRequirement, setSelectedRequirement] = useState(null)
     const [isReUpload, setIsReUpload] = useState(false)
     const [department, setDepartment] = useState(null)
+    const [departments, setDepartments] = useState(null);
   
     const openUploadModal = () => setUploadModalOpen(true);
     const closeUploadModal = () => {setUploadModalOpen(false);setIsReUpload(false)};
@@ -20,11 +21,41 @@ export default function Submission() {
 
     const auth = Cookies.get('auth');
     const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
 
-    const fetchRequirements = async () => {
+    const fetchDepartments = async () => {
+		let response = null
+		if(JSON.parse(auth).userid) {
+			response = await fetch(`http://localhost:8080/department/user/${JSON.parse(auth).userid}`, {
+				method: 'GET',
+			})
+		}
         
-        const searchParams = new URLSearchParams(location.search);
-        const departmentId = searchParams.get('department');
+
+        if (response && response.ok) {
+            try {
+                const result = await response.json();
+                console.log("response: ",result)
+				setDepartments(result)
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Upload failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+    }
+
+    const fetchRequirements = async (departmentId = searchParams.get('department')) => {
 
         const response = await fetch(`http://localhost:8080/api/requirements/department/${departmentId}/course/${JSON.parse(auth).course.id}?userid=${JSON.parse(auth).userid}`, {
             method: 'GET',
@@ -53,10 +84,7 @@ export default function Submission() {
         }
     }
 
-    const fetchDepartment = async () => {
-        
-        const searchParams = new URLSearchParams(location.search);
-        const departmentId = searchParams.get('department');
+    const fetchDepartment = async (departmentId = searchParams.get('department')) => {
 
         const response = await fetch(`http://localhost:8080/department/${departmentId}`, {
             method: 'GET',
@@ -85,27 +113,59 @@ export default function Submission() {
         }
     }
 
-    const showRequirements = (term) => {
+    const showDepartments = () => {
         return (
-            requirements && <ul>
-                {requirements.map((item, index) => (
-                    (item.term && item.term.toLowerCase() == term) &&
+            departments && <ul>
+                {departments.map((item, index) => (
+                    department && 
                     <li key={index}>
-                        <a onClick={() => {
-                            // open upload modal if status is not available for this document
-                            if(item.documents.length == 0)
-                                openUploadModal();
-                            else
-                                openStatusModal();
-                            setSelectedRequirement(item)
-                        }}>{item.title} </a>
-                        {  
-                            item.documents.length > 0 && 
-                            <span className={"status-"+item.documents[0].status.toLowerCase()}>{(item.documents.length > 0 && item.documents[0].status)}</span>
-                        }
+                        <a className={department.id == item.id ? 'active' : ''} onClick={() => {
+                            fetchRequirements(item.id)
+                            setDepartment(item)
+                        }}>{item.name}</a>
                     </li>
                 ))}
             </ul>
+        );
+    }
+
+    const showRequirements = (term) => {
+        return (
+            requirements && <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {requirements.map((item, index) => (
+                        (!term || (item.term && item.term.toLowerCase() == term)) &&
+                        <tr key={index}>
+                            <td>{item.title}</td>
+                            <td>{item.term}</td>
+                            <td>
+                                {  
+                                    item.documents.length > 0 && 
+                                    <span className={"status-"+item.documents[0].status.toLowerCase()}>{(item.documents.length > 0 && item.documents[0].status)}</span>
+                                }
+                            </td>
+                            <td>
+                                <a href='javascript:;' onClick={() => {
+                                    // open upload modal if status is not available for this document
+                                    if(item.documents.length == 0)
+                                        openUploadModal();
+                                    else
+                                        openStatusModal();
+                                    setSelectedRequirement(item)
+                                }}>View</a>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         );
     }
 
@@ -170,6 +230,7 @@ export default function Submission() {
     const UploadModal = ({ closeModal, title }) => {
         return (
             <div className="modal-container">
+                <img className='modal-bg' src='/images/folder.png' />
                 <div className='modal-back' onClick={closeModal}><span>&lsaquo;</span>{department ? department.name : ""} Department</div>
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                     <h2>{title}</h2>
@@ -183,7 +244,7 @@ export default function Submission() {
                         )}
                         {!document && (
                             <div className='file-container'>
-                                <a type='button' className='file-upload'>Upload Document</a>
+                                <a type='button' className='file-upload'><img src="/icons/upload.png" />Upload Document</a>
                                 <input
                                 type='file'
                                 id='file-upload'
@@ -240,29 +301,24 @@ export default function Submission() {
     };
 
     useEffect(() => {
+        fetchDepartments()
         fetchRequirements()
         fetchDepartment()
     }, []);
   
     return (
-        <div id='submission'>
+        <div id='requirements'>
             <div className='wrapper'>
-                <section>
-                    <h2>PRELIM REQUIREMENTS</h2>
-                    {showRequirements("prelim")}
-                </section>
-                <section>
-                    <h2>MIDTERM REQUIREMENTS</h2>
-                    {showRequirements("midterm")}
-                </section>
-                <section>
-                    <h2>PRE-FINAL REQUIREMENTS</h2>
-                    {showRequirements("pre-final")}
-                </section>
-                <section>
-                    <h2>FINAL REQUIREMENTS</h2>
-                    {showRequirements("final")}
-                </section>
+                <div className='requirements-header'>
+                    <h1><img src='/icons/documents.png' />Requirements</h1>
+                    
+                </div>
+                <div className='requirements-nav'>
+                    {showDepartments()}
+                </div>
+                <div className='requirements-content'>
+                    {showRequirements()}
+                </div>
             </div>
             
             {/* modals */}
