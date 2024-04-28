@@ -53,7 +53,7 @@ body {
     content: "";
     background: #801C1C;
     position: absolute;
-    height: 840px;
+    height: 100%;
     width: 108%;
     clip-path: polygon(0px 0px, 100% 0px, 76.78% 99.84%, 0% 100%);
     }
@@ -76,7 +76,6 @@ body {
    .login-container1 {
     width: 100%;
     position: relative;
-    overflow: hidden;
    }
    
    .Logo1 {
