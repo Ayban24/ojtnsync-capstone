@@ -87,6 +87,7 @@ const Students = () => {
     return(
         <div id= "students">
             <div className='wrapper'>
+                <h1><img src="/icons/records.png" />Records</h1>
                 {showCoursesNav()}
                 <div className='header'>
                     <div className='header-actions'>

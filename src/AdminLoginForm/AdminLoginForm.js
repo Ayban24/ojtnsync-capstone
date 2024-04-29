@@ -54,90 +54,91 @@ const handleLogin = async () => {
   return (
     <div className= "App1">
     
-    <div className= "login-container1">
-    <div className= "left-side1">
-    <img className='Logo1' img src={logo1} alt="Logo" />
-    <Link to="/adminsignupform  ">
-    <h3>Create an Account</h3>
-    </Link>
-    </div>
-    
-    
-    <div className= "form1">
-    <div className='input1'>
- 
-      <h2>Faculty Login</h2>
-      
-      <div className='input1'>
-              <TextField
-                id="outlined-basic"
-                label="Faculty ID"
-                variant="outlined"
-                type="text"
-                fullWidth
-                value={adminId}
-                onChange={(e) => setAdminId(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <img src={login_icon} alt="loginIcon" style={{ width: '20px', height: '20px' }}/>
-                      
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-
-            <div className='input1'>
-              <TextField
-                id="outlined-basic"
-                label="Password"
-                variant="outlined"
-                type={showPassword ? 'text' : 'password'}
-                fullWidth
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <img
-                        src={password_icon}
-                        alt="PasswordIcon"
-                        style={{ width: '20px', height: '20px' }}
-                      />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        edge="end"
-                        aria-label="toggle password visibility"
-                        onClick={handleTogglePasswordVisibility}
-                      >
-                        {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-               
-      
-      </div>
-      <Button variant = "contained" onClick={handleLogin}>Login</Button>
-    
-      {loggedInUser && (
-        <div>
-          <h3>Welcome, {loggedInUser.firstName} {loggedInUser.lastName}!</h3>
-          <p>Email: {loggedInUser.email}</p>
-          <p>Course: {loggedInUser.department}</p>
-        </div>
-      )}
-
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
-    
-    </div>
+		<div className= "login-container1">
+			<div className='left-side1'>
+				<figure className='login-logo'><img src="/images/logo.png" /></figure>
+			</div>
+		
+			<div className= "right-side1">
+				<div className= "form1">
+					<div className='input1'>
+					<figure className='cit-logo'><img src="/images/cit_logo.png" /></figure>
+					<h2>Faculty Login</h2>
+					
+					<div className='input1'>
+							<TextField
+								id="outlined-basic"
+								label="Faculty ID"
+								variant="outlined"
+								type="text"
+								fullWidth
+								value={adminId}
+								onChange={(e) => setAdminId(e.target.value)}
+								InputProps={{
+								startAdornment: (
+									<InputAdornment position="start">
+									<img src={login_icon} alt="loginIcon" style={{ width: '20px', height: '20px' }}/>
+									
+									</InputAdornment>
+								),
+								}}
+							/>
+							</div>
+	
+							<div className='input1'>
+							<TextField
+								id="outlined-basic"
+								label="Password"
+								variant="outlined"
+								type={showPassword ? 'text' : 'password'}
+								fullWidth
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								InputProps={{
+								startAdornment: (
+									<InputAdornment position="start">
+									<img
+										src={password_icon}
+										alt="PasswordIcon"
+										style={{ width: '20px', height: '20px' }}
+									/>
+									</InputAdornment>
+								),
+								endAdornment: (
+									<InputAdornment position="end">
+									<IconButton
+										edge="end"
+										aria-label="toggle password visibility"
+										onClick={handleTogglePasswordVisibility}
+									>
+										{showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+									</IconButton>
+									</InputAdornment>
+								),
+								}}
+							/>
+							</div>
+							
+					
+					</div>
+						<Link to="/adminsignupform  ">
+							<h3>Create an Account</h3>
+						</Link>
+						<button className='login-button' variant = "contained" onClick={handleLogin}>Login</button>
+					
+					{loggedInUser && (
+						<div>
+						<h3>Welcome, {loggedInUser.firstName} {loggedInUser.lastName}!</h3>
+						<p>Email: {loggedInUser.email}</p>
+						<p>Course: {loggedInUser.department}</p>
+						</div>
+					)}
+	
+					{error && <p style={{ color: 'red' }}>{error}</p>}
+				</div>
+			</div>
+		
+		</div>
     
     </div>
     

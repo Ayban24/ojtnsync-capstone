@@ -42,6 +42,7 @@
   
   #documents-table {
     width: 100% !important;
+    border-collapse: collapse;
   }
   
   #documents-table thead th {
