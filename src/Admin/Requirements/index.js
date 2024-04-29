@@ -222,18 +222,22 @@ export default function Submission() {
                         <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}><i class="fa-solid fa-plus"></i> Add Requirement</a>
                     </div>
                 }
-                <section>
-                    <h2>PRELIM REQUIREMENTS</h2>
-                    {showRequirements("prelim")}
-                </section>
+                { auth.adminType != "NLO" &&
+                    <section>
+                        <h2>PRELIM REQUIREMENTS</h2>
+                        {showRequirements("prelim")}
+                    </section>
+                }
                 <section>
                     <h2>MIDTERM REQUIREMENTS</h2>
                     {showRequirements("midterm")}
                 </section>
-                <section>
-                    <h2>PRE-FINAL REQUIREMENTS</h2>
-                    {showRequirements("pre-final")}
-                </section>
+                { auth.adminType != "NLO" &&
+                    <section>
+                        <h2>PRE-FINAL REQUIREMENTS</h2>
+                        {showRequirements("pre-final")}
+                    </section>
+                }
                 <section>
                     <h2>FINAL REQUIREMENTS</h2>
                     {showRequirements("final")}
