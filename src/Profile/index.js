@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import './styles.css';
 import Cookies from 'js-cookie';
-import { useLocation } from 'react-router-dom';
-import { Verified } from '@mui/icons-material';
 
-export default function Submission() {
+export default function Profile() {
     const [isEditingProfile, setIsEditingProfile] = useState(false)
+    const [isEditingCompany, setIsEditingComppany] = useState(false)
     const [profile, setProfile] = useState(null)
     const auth = JSON.parse(Cookies.get('auth'));
 
-    const editProfileHandler = async () => {
-        if(isEditingProfile) {
-            console.log("profile: ",profile)
+    const editProfileHandler = async (section = 'profile') => {
+        if(isEditingProfile || isEditingCompany) {
             const formData = new FormData();
             formData.append('studentID', profile.studentID);
             formData.append('firstName', profile.firstName);
             formData.append('lastName', profile.lastName);
+            formData.append('companyName', profile.companyName);
+            formData.append('companyAddress', profile.companyAddress);
+            formData.append('contactPerson', profile.contactPerson);
+            formData.append('designation', profile.designation);
+            formData.append('dateStarted', profile.dateStarted);
             formData.append('phone', profile.phone);
             formData.append('course_id', profile.course.id);
             formData.append('email', profile.email);
@@ -29,6 +32,11 @@ export default function Submission() {
                 if (response.ok) {
                     auth.firstName = profile.firstName
                     auth.lastName = profile.lastName
+                    auth.companyName = profile.companyName
+                    auth.companyAddress = profile.companyAddress
+                    auth.contactPerson = profile.contactPerson
+                    auth.designation = profile.designation
+                    auth.dateStarted = profile.dateStarted
                     auth.phone = profile.phone
                     auth.email = profile.email
                     auth.course = profile.course
@@ -42,19 +50,35 @@ export default function Submission() {
                 console.error('Error during user update:', error);
             }
         }
-        setIsEditingProfile(!isEditingProfile)
+        if(section == 'profile')
+            setIsEditingProfile(!isEditingProfile)
+        else if(section == 'company')
+            setIsEditingComppany(!isEditingCompany)
+    }
+
+    const formatDate = (dateData) => {
+        const date = new Date(dateData);
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2); // Add leading zero if needed
+        const day = ('0' + date.getDate()).slice(-2); // Add leading zero if needed
+        return `${year}-${month}-${day}`;
     }
 
     useEffect(() => {
         setProfile({
-            userid      : auth.userid,
-            studentID   : auth.studentID,
-            firstName   : auth.firstName,
-            lastName    : auth.lastName,
-            email       : auth.email,
-            phone       : auth.phone,
-            course      : auth.course,
-            Verified    : auth.verified,
+            userid          : auth.userid,
+            studentID       : auth.studentID,
+            firstName       : auth.firstName,
+            lastName        : auth.lastName,
+            companyName     : auth.companyName,
+            companyAddress  : auth.companyAddress,
+            contactPerson   : auth.contactPerson,
+            designation     : auth.designation,
+            dateStarted     : formatDate(auth.dateStarted),
+            email           : auth.email,
+            phone           : auth.phone,
+            course          : auth.course,
+            Verified        : auth.verified,
         })
     },[])
 
@@ -139,35 +163,81 @@ export default function Submission() {
                                     <input disabled value={profile?.course.name} />
                                 </div>
                             </div>
-                            <button onClick={editProfileHandler}>{isEditingProfile ? 'Save' : 'Edit'}</button>
+                            <button onClick={() => editProfileHandler('profile')}>{isEditingProfile ? 'Save' : 'Edit'}</button>
                         </section>
                     </div>
                     <div className='profile-btm'>
                         <section>
                             <div className='profile-btm-header'>
                                 <h2>COMPANY DETAILS</h2>
-                                <button>Edit</button>
+                                <button onClick={() => editProfileHandler('company')}>{isEditingCompany ? 'Save' : 'Edit'}</button>
                             </div>
                             <div className='profile-btm-body'>
                                 <div className='profile-field'>
                                     <label>Company Name</label>
-                                    <input value="Knowles Institute" />
+                                    <input 
+                                        disabled={!isEditingCompany}
+                                        value={profile?.companyName} 
+                                        onChange={(e) => {
+                                            setProfile(prevProfile => ({
+                                                ...prevProfile,
+                                                companyName: e.target.value
+                                            }));
+                                        }}
+                                    />
                                 </div>
                                 <div className='profile-field'>
                                     <label>Company Address</label>
-                                    <input value="60 Paya Lebar Road, #07-54 Paya Lebar Square, Singapore" />
+                                    <input 
+                                        disabled={!isEditingCompany}
+                                        value={profile?.companyAddress} 
+                                        onChange={(e) => {
+                                            setProfile(prevProfile => ({
+                                                ...prevProfile,
+                                                companyAddress: e.target.value
+                                            }));
+                                        }}
+                                    />
                                 </div>
                                 <div className='profile-field'>
                                     <label>Name of Contact Person</label>
-                                    <input value="Mr. John Bawiga" />
+                                    <input 
+                                        disabled={!isEditingCompany}
+                                        value={profile?.contactPerson} 
+                                        onChange={(e) => {
+                                            setProfile(prevProfile => ({
+                                                ...prevProfile,
+                                                contactPerson: e.target.value
+                                            }));
+                                        }}
+                                    />
                                 </div>
                                 <div className='profile-field'>
                                     <label>Designation</label>
-                                    <input value="HR Director" />
+                                    <input 
+                                        disabled={!isEditingCompany}
+                                        value={profile?.designation} 
+                                        onChange={(e) => {
+                                            setProfile(prevProfile => ({
+                                                ...prevProfile,
+                                                designation: e.target.value
+                                            }));
+                                        }}
+                                    />
                                 </div>
                                 <div className='profile-field'>
                                     <label>Date Started</label>
-                                    <input value="January 11, 2024" />
+                                    <input 
+                                        type='date'
+                                        disabled={!isEditingCompany}
+                                        value={profile?.dateStarted} 
+                                        onChange={(e) => {
+                                            setProfile(prevProfile => ({
+                                                ...prevProfile,
+                                                dateStarted: e.target.value
+                                            }));
+                                        }}
+                                    />
                                 </div>
                             </div>
                         </section>
