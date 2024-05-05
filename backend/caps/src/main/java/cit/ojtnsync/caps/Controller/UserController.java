@@ -168,6 +168,7 @@ public class UserController {
         @PathVariable("studentId") String studentId,
         @RequestParam(name = "firstName", required = false) String firstName,
         @RequestParam(name = "lastName", required = false) String lastName,
+        @RequestParam(name = "phone", required = false) String phone,
         @RequestParam(name = "email", required = false) String email,
         @RequestParam(name = "status", required = false) String status
         // Add other form parameters as needed
@@ -180,6 +181,8 @@ public class UserController {
             user.setFirstName(firstName);
         if (lastName != null) 
             user.setLastName(lastName);
+        if (phone != null) 
+            user.setPhone(phone);
         if (email != null) 
             user.setEmail(email);
         if (status != null) 

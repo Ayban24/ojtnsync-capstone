@@ -2,50 +2,59 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
+import { Verified } from '@mui/icons-material';
 
 export default function Submission() {
     const [isEditingProfile, setIsEditingProfile] = useState(false)
     const [profile, setProfile] = useState(null)
-    const [courses, setCourses] = useState(null)
     const auth = JSON.parse(Cookies.get('auth'));
 
-    const fetchCourses = async () => {
-		let response = null
-        response = await fetch(`http://localhost:8080/courses`, {
-            method: 'GET',
-        })
+    const editProfileHandler = async () => {
+        if(isEditingProfile) {
+            console.log("profile: ",profile)
+            const formData = new FormData();
+            formData.append('studentID', profile.studentID);
+            formData.append('firstName', profile.firstName);
+            formData.append('lastName', profile.lastName);
+            formData.append('phone', profile.phone);
+            formData.append('course_id', profile.course.id);
+            formData.append('email', profile.email);
 
-        if (response.ok) {
-			try {
-				const result = await response.json();
-                console.log("courses: ",result)
-				setCourses(result)
-			} catch (error) {
-				console.error('Error parsing JSON:', error);
-			}
-		} else {
-			console.error('Fetching of courses failed:', response.status, response.statusText);
-			try {
-				const result = await response.json();
-				// Access specific properties from the result if needed
-				console.log('Error Message:', result.message);
-				// Handle failure, e.g., display an error message to the user
-			} catch (error) {
-				console.error('Error parsing JSON:', error);
-				// Handle unexpected JSON parsing error
-			}
-		}
+            try {
+                const response = await fetch(`http://localhost:8080/user/update/${profile.studentID}`, {
+                    method: 'PUT',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    auth.firstName = profile.firstName
+                    auth.lastName = profile.lastName
+                    auth.phone = profile.phone
+                    auth.email = profile.email
+                    auth.course = profile.course
+                    Cookies.set('auth', JSON.stringify(auth));
+                    console.log('User updated successfully');
+
+                } else {
+                    console.log("Error updating user")
+                }
+            } catch (error) {
+                console.error('Error during user update:', error);
+            }
+        }
+        setIsEditingProfile(!isEditingProfile)
     }
 
     useEffect(() => {
-        fetchCourses().then(() => {
-            setProfile({
-                firstName   : auth.firstName,
-                lastName    : auth.lastName,
-                email       : auth.email,
-                phone       : auth.phone,
-                course      : auth.course,
-            })
+        setProfile({
+            userid      : auth.userid,
+            studentID   : auth.studentID,
+            firstName   : auth.firstName,
+            lastName    : auth.lastName,
+            email       : auth.email,
+            phone       : auth.phone,
+            course      : auth.course,
+            Verified    : auth.verified,
         })
     },[])
 
@@ -63,28 +72,74 @@ export default function Submission() {
                         <section className='profile-top-right'>
                             <div className='profile-field-con'>
                                 <div className='profile-field'>
-                                    <label>Full Name</label>
-                                    <input 
-                                        value={profile?.firstName+' '+profile?.lastName}
-                                    />
+                                    {!isEditingProfile ?
+                                        <>
+                                            <label>Full Name</label>
+                                            <input 
+                                                disabled
+                                                value={profile?.firstName+' '+profile?.lastName}
+                                            />
+                                        </>
+                                        : <>
+                                           <div style={{ display: 'flex', height:"100%", alignItems: "center" }}>
+                                                <label style={{ width: '344px' }}>First Name</label>
+                                                <input 
+                                                    value={profile?.firstName}
+                                                    onChange={(e) => {
+                                                        setProfile(prevProfile => ({
+                                                            ...prevProfile,
+                                                            firstName: e.target.value
+                                                        }));
+                                                    }}
+                                                />
+                                            </div>
+                                            <div style={{ display: 'flex', height:"100%", alignItems: "center" }}>
+                                                <label style={{ width: '344px' }}>Last Name</label>
+                                                <input 
+                                                    value={profile?.lastName}
+                                                    onChange={(e) => {
+                                                        setProfile(prevProfile => ({
+                                                            ...prevProfile,
+                                                            lastName: e.target.value
+                                                        }));
+                                                    }}
+                                                />
+                                            </div>
+                                        </>
+                                    }
                                 </div>
                                 <div className='profile-field'>
                                     <label>Email</label>
                                     <input 
+                                        disabled={!isEditingProfile}
                                         value={profile?.email} 
-                                        onChange={(e) => {}}
+                                        onChange={(e) => {
+                                            setProfile(prevProfile => ({
+                                                ...prevProfile,
+                                                email: e.target.value
+                                            }));
+                                        }}
                                     />
                                 </div>
                                 <div className='profile-field'>
                                     <label>Phone</label>
-                                    <input value={profile?.phone} />
+                                    <input 
+                                        disabled={!isEditingProfile}
+                                        value={profile?.phone} 
+                                        onChange={(e) => {
+                                            setProfile(prevProfile => ({
+                                                ...prevProfile,
+                                                phone: e.target.value
+                                            }));
+                                        }}
+                                    />
                                 </div>
                                 <div className='profile-field'>
                                     <label>Course</label>
-                                    <input value={profile?.course.name} />
+                                    <input disabled value={profile?.course.name} />
                                 </div>
                             </div>
-                            <button>Edit</button>
+                            <button onClick={editProfileHandler}>{isEditingProfile ? 'Save' : 'Edit'}</button>
                         </section>
                     </div>
                     <div className='profile-btm'>
