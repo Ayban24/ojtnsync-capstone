@@ -25,6 +25,7 @@ public class UserEntity {
 
     private String email;
     private String password;
+    private String phone;
     
     private boolean isVerified;
 
@@ -33,21 +34,23 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public UserEntity(Long userid, String studentID, String firstName, String lastName, Course course, String email, String password, boolean isVerified) {
+    public UserEntity(Long userid, String studentID, String firstName, String lastName, String phone, Course course, String email, String password, boolean isVerified) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.phone = phone;
         this.course = course;
         this.email = email;
         this.password = password;
         this.isVerified = isVerified;
     }
 
-    public UserEntity(String studentID, String firstName, String lastName, Course course, String email, String password, boolean isVerified) {
+    public UserEntity(String studentID, String firstName, String lastName, String phone, Course course, String email, String password, boolean isVerified) {
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.phone = phone;
         this.course = course;
         this.email = email;
         this.password = password;
@@ -80,6 +83,14 @@ public class UserEntity {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Course getCourse() {

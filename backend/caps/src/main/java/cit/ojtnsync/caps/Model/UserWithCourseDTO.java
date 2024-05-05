@@ -7,15 +7,17 @@ public class UserWithCourseDTO {
     private String studentID;
     private String firstName;
     private String lastName;
+    private String phone;
     private String email;
     private Course course;
     private boolean isVerified;
 
-    public UserWithCourseDTO(Long userid, String studentID, String firstName, String lastName, String email, Course course, boolean isVerified) {
+    public UserWithCourseDTO(Long userid, String studentID, String firstName, String lastName, String phone, String email, Course course, boolean isVerified) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.phone = phone;
         this.email = email;
         this.course = course;
         this.isVerified = isVerified;
@@ -51,6 +53,14 @@ public class UserWithCourseDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getEmail() {

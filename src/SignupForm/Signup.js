@@ -10,6 +10,7 @@ const SignupForm = () => {
 	const [studentID, setStudentID] = useState('');
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
+	const [phone, setPhone] = useState('');
 	const [course, setCourse] = useState('');
 	const [courses, setCourses] = useState(null)
 	const [email, setEmail] = useState('');
@@ -71,6 +72,7 @@ const SignupForm = () => {
 		formData.append('studentID', studentID);
 		formData.append('firstName', firstName);
 		formData.append('lastName', lastName);
+		formData.append('phone', phone);
 		formData.append('course_id', course.id);
 		formData.append('email', email);
 		formData.append('password', password);
@@ -150,6 +152,16 @@ const SignupForm = () => {
 									id="lastName"
 									value={lastName}
 									onChange={(e) => setLastName(e.target.value)}
+									style={{ width: '100%', height: '100%'}}>         
+								</TextField>
+							</div>
+
+							<div className='input'> 
+								<TextField htmlFor="phone" label="Phone" variant="outlined"      
+									type="text"
+									id="phone"
+									value={phone}
+									onChange={(e) => setPhone(e.target.value)}
 									style={{ width: '100%', height: '100%'}}>         
 								</TextField>
 							</div>

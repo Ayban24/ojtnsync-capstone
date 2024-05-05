@@ -42,6 +42,7 @@ public class UserController {
                     user.getStudentID(),
                     user.getFirstName(),
                     user.getLastName(),
+                    user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
                     user.isVerified()
@@ -85,6 +86,7 @@ public class UserController {
                     user.getStudentID(),
                     user.getFirstName(),
                     user.getLastName(),
+                    user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
                     user.isVerified()
@@ -111,6 +113,7 @@ public class UserController {
                     user.getStudentID(),
                     user.getFirstName(),
                     user.getLastName(),
+                    user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
                     user.isVerified()
@@ -236,6 +239,7 @@ public class UserController {
                 user.getStudentID(),
                 user.getFirstName(),
                 user.getLastName(),
+                user.getPhone(),
                 user.getEmail(),
                 user.getCourse(),
                 user.isVerified()
@@ -257,12 +261,13 @@ public class UserController {
         @RequestParam("studentID") String studentID,
         @RequestParam("firstName") String firstName,
         @RequestParam("lastName") String lastName,
+        @RequestParam("phone") String phone,
         @RequestParam("course_id") int course_id,
         @RequestParam("email") String email,
         @RequestParam("password") String password) {
 
         Course course = courseService.getCourseById(course_id);
-        UserEntity user = new UserEntity(studentID, firstName, lastName, course, email, password, false);
+        UserEntity user = new UserEntity(studentID, firstName, lastName, phone, course, email, password, false);
         // Check if the studentID already exists
         if (userService.existsByStudentID(user.getStudentID())) {
             return new ResponseEntity<>("StudentID already exists", HttpStatus.BAD_REQUEST);
