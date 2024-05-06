@@ -63,7 +63,7 @@
   left: 0;
 }
 
-.student-courses {
+.student-courses .overview {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -85,4 +85,79 @@
   left:0;
   bottom: 0;
   border-radius: 10px;
+}
+
+.progress-counter {
+  display: flex;
+  justify-content: center;
+}
+
+.progress-counter section {
+  border: 2px solid #000;
+  border-radius: 15px;
+  position: relative;
+  padding: 5px 100px 5px 15px;
+}
+
+.progress-counter {
+  column-gap: 48px;
+}
+
+.progress-counter section img {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.progress-counter section h4 {
+  font-size: 64px;
+  margin: 0;
+}
+
+.progress-counter section p {
+  margin: 0 0 4px;
+}
+
+.progress-counter section {
+  padding: 14px 100px 14px 15px;
+}
+
+.progress-counter {
+  margin-bottom: 40px;
+}
+
+.update-profile-warning {
+  position: absolute;
+  right: 0;
+  top: -4px;
+}
+
+.update-profile-warning p {
+  border: 1px solid #000;
+  border-radius: 10px;
+  max-width: 100%;
+  position: relative;
+  transform: rotatez(4deg);
+  margin: 0;
+  font-size: 24px;
+  width: 177px;
+  padding: 18px 20px;
+  cursor: pointer;
+}
+
+.update-profile-warning img {
+  position: absolute;
+  top: -60px;
+  left: -67px;
+}
+
+.update-profile-warning a {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: rotatez(4deg);
 }
