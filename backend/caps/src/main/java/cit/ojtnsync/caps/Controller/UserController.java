@@ -3,8 +3,10 @@ package cit.ojtnsync.caps.Controller;
 import java.util.List;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +44,12 @@ public class UserController {
                     user.getStudentID(),
                     user.getFirstName(),
                     user.getLastName(),
+                    user.getCompanyName(),
+                    user.getCompanyAddress(),
+                    user.getContactPerson(),
+                    user.getDesignation(),
+                    user.getDateStarted(),
+                    user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
                     user.isVerified()
@@ -85,6 +93,12 @@ public class UserController {
                     user.getStudentID(),
                     user.getFirstName(),
                     user.getLastName(),
+                    user.getCompanyName(),
+                    user.getCompanyAddress(),
+                    user.getContactPerson(),
+                    user.getDesignation(),
+                    user.getDateStarted(),
+                    user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
                     user.isVerified()
@@ -111,6 +125,12 @@ public class UserController {
                     user.getStudentID(),
                     user.getFirstName(),
                     user.getLastName(),
+                    user.getCompanyName(),
+                    user.getCompanyAddress(),
+                    user.getContactPerson(),
+                    user.getDesignation(),
+                    user.getDateStarted(),
+                    user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
                     user.isVerified()
@@ -165,6 +185,12 @@ public class UserController {
         @PathVariable("studentId") String studentId,
         @RequestParam(name = "firstName", required = false) String firstName,
         @RequestParam(name = "lastName", required = false) String lastName,
+        @RequestParam(name = "companyName", required = false) String companyName,
+        @RequestParam(name = "companyAddress", required = false) String companyAddress,
+        @RequestParam(name = "contactPerson", required = false) String contactPerson,
+        @RequestParam(name = "designation", required = false) String designation,
+        @RequestParam(name = "dateStarted", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateStarted,
+        @RequestParam(name = "phone", required = false) String phone,
         @RequestParam(name = "email", required = false) String email,
         @RequestParam(name = "status", required = false) String status
         // Add other form parameters as needed
@@ -177,6 +203,18 @@ public class UserController {
             user.setFirstName(firstName);
         if (lastName != null) 
             user.setLastName(lastName);
+        if (companyName != null) 
+            user.setCompanyName(companyName);
+        if (companyAddress != null) 
+            user.setCompanyAddress(companyAddress);
+        if (contactPerson != null) 
+            user.setContactPerson(contactPerson);
+        if (designation != null) 
+            user.setDesignation(designation);
+        if (dateStarted != null) 
+            user.setDateStarted(dateStarted);
+        if (phone != null) 
+            user.setPhone(phone);
         if (email != null) 
             user.setEmail(email);
         if (status != null) 
@@ -236,6 +274,12 @@ public class UserController {
                 user.getStudentID(),
                 user.getFirstName(),
                 user.getLastName(),
+                user.getCompanyName(),
+                user.getCompanyAddress(),
+                user.getContactPerson(),
+                user.getDesignation(),
+                user.getDateStarted(),
+                user.getPhone(),
                 user.getEmail(),
                 user.getCourse(),
                 user.isVerified()
@@ -257,12 +301,13 @@ public class UserController {
         @RequestParam("studentID") String studentID,
         @RequestParam("firstName") String firstName,
         @RequestParam("lastName") String lastName,
+        @RequestParam("phone") String phone,
         @RequestParam("course_id") int course_id,
         @RequestParam("email") String email,
         @RequestParam("password") String password) {
 
         Course course = courseService.getCourseById(course_id);
-        UserEntity user = new UserEntity(studentID, firstName, lastName, course, email, password, false);
+        UserEntity user = new UserEntity(studentID, firstName, lastName, null, null, null, null, null, course, email, phone, password, false);
         // Check if the studentID already exists
         if (userService.existsByStudentID(user.getStudentID())) {
             return new ResponseEntity<>("StudentID already exists", HttpStatus.BAD_REQUEST);

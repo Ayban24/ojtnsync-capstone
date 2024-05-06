@@ -3,6 +3,7 @@ package cit.ojtnsync.caps.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="tbl_user")
@@ -17,6 +18,13 @@ public class UserEntity {
 
     private String firstName;
     private String lastName;
+    private String companyName;
+    private String companyAddress;
+    private String contactPerson;
+    private String designation;
+
+    @Temporal(TemporalType.DATE)
+    private Date dateStarted;
 
     @ManyToOne()
     @JsonIgnore
@@ -25,6 +33,7 @@ public class UserEntity {
 
     private String email;
     private String password;
+    private String phone;
     
     private boolean isVerified;
 
@@ -33,23 +42,35 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public UserEntity(Long userid, String studentID, String firstName, String lastName, Course course, String email, String password, boolean isVerified) {
+    public UserEntity(Long userid, String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, Course course, String email, String phone, boolean isVerified, String status) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.companyName = companyName;
+        this.companyAddress = companyAddress;
+        this.contactPerson = contactPerson;
+        this.designation = designation;
+        this.dateStarted = dateStarted;
         this.course = course;
         this.email = email;
-        this.password = password;
+        this.phone = phone;
         this.isVerified = isVerified;
+        this.status = status;
     }
 
-    public UserEntity(String studentID, String firstName, String lastName, Course course, String email, String password, boolean isVerified) {
+    public UserEntity(String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, Course course, String email, String phone, String password, boolean isVerified) {
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.companyName = companyName;
+        this.companyAddress = companyAddress;
+        this.contactPerson = contactPerson;
+        this.designation = designation;
+        this.dateStarted = dateStarted;
         this.course = course;
         this.email = email;
+        this.phone = phone;
         this.password = password;
         this.isVerified = isVerified;
     }
@@ -78,8 +99,56 @@ public class UserEntity {
         return lastName;
     }
 
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getCompanyAddress() {
+        return companyAddress;
+    }
+
+    public void setCompanyAddress(String companyAddress) {
+        this.companyAddress = companyAddress;
+    }
+
+    public String getContactPerson() {
+        return contactPerson;
+    }
+
+    public void setContactPerson(String contactPerson) {
+        this.contactPerson = contactPerson;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public Date getDateStarted() {
+        return dateStarted;
+    }
+
+    public void setDateStarted(Date dateStarted) {
+        this.dateStarted = dateStarted;
+    }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Course getCourse() {

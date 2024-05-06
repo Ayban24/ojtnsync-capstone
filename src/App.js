@@ -18,6 +18,7 @@ import AddStudent from './Admin/Students/Add';
 import DeleteStudent from './Admin/Students/Delete';
 import StudentDocuments from './Admin/Students/Documents';
 import Dashboard from './Admin/Dashboard';
+import Profile from './Profile';
 import './App.css';
 import Cookies from 'js-cookie';
 
@@ -50,6 +51,7 @@ function App() {
 					{ auth &&(
 					<>
 						<Route path="/homepage" element={<HomePage />} />
+						<Route path="/profile" element={<Profile />} />
 						<Route path="/templates" element={<Templates/>} />
 						<Route path="/submission" element={<Submission/>} />
 						{/* <Route path="/admin/homepage" element={<AdminHomepage />} /> */}

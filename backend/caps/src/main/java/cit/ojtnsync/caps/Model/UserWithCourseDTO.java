@@ -1,5 +1,7 @@
 package cit.ojtnsync.caps.Model;
 
+import java.util.Date;
+
 import cit.ojtnsync.caps.Entity.Course;
 
 public class UserWithCourseDTO {
@@ -7,15 +9,27 @@ public class UserWithCourseDTO {
     private String studentID;
     private String firstName;
     private String lastName;
+    private String companyName;
+    private String companyAddress;
+    private String contactPerson;
+    private String designation;
+    private Date dateStarted;
+    private String phone;
     private String email;
     private Course course;
     private boolean isVerified;
 
-    public UserWithCourseDTO(Long userid, String studentID, String firstName, String lastName, String email, Course course, boolean isVerified) {
+    public UserWithCourseDTO(Long userid, String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, String phone, String email, Course course, boolean isVerified) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.companyName = companyName;
+        this.companyAddress = companyAddress;
+        this.contactPerson = contactPerson;
+        this.designation = designation;
+        this.dateStarted = dateStarted;
+        this.phone = phone;
         this.email = email;
         this.course = course;
         this.isVerified = isVerified;
@@ -51,6 +65,54 @@ public class UserWithCourseDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getCompanyAddress() {
+        return companyAddress;
+    }
+
+    public void setCompanyAddress(String companyAddress) {
+        this.companyAddress = companyAddress;
+    }
+
+    public String getContactPerson() {
+        return contactPerson;
+    }
+
+    public void setContactPerson(String contactPerson) {
+        this.contactPerson = contactPerson;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public Date getDateStarted() {
+        return dateStarted;
+    }
+
+    public void setDateStarted(Date dateStarted) {
+        this.dateStarted = dateStarted;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getEmail() {
