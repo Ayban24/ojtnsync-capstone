@@ -169,6 +169,30 @@ export default function Submission() {
         );
     }
 
+    const showNloRequirements = (term) => {
+        return (
+            requirements && <div className='nlo-requirements'>
+                <ul>
+                    {requirements.map((item, index) => (
+                            <>
+                                    <li key={index}>
+                                        <a href='javascript:;' onClick={() => {
+                                            // open upload modal if status is not available for this document
+                                            if(item.documents.length == 0)
+                                                openUploadModal();
+                                            else
+                                                openStatusModal();
+                                            setSelectedRequirement(item)
+                                        }}>{item.title}</a>
+                                    </li>
+                                
+                            </>
+                    ))}
+                </ul>
+            </div>
+        );
+    }
+
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -317,7 +341,7 @@ export default function Submission() {
                     {showDepartments()}
                 </div>
                 <div className='requirements-content'>
-                    {showRequirements()}
+                    {department && department.name.toLowerCase() != 'nlo' ? showRequirements() : showNloRequirements()}
                 </div>
             </div>
             

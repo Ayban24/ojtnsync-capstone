@@ -18,7 +18,8 @@ export default function Profile() {
             formData.append('companyAddress', profile.companyAddress);
             formData.append('contactPerson', profile.contactPerson);
             formData.append('designation', profile.designation);
-            formData.append('dateStarted', profile.dateStarted);
+            if (profile.dateStarted != null)
+                formData.append('dateStarted', profile.dateStarted);
             formData.append('phone', profile.phone);
             formData.append('course_id', profile.course.id);
             formData.append('email', profile.email);
@@ -74,7 +75,7 @@ export default function Profile() {
             companyAddress  : auth.companyAddress,
             contactPerson   : auth.contactPerson,
             designation     : auth.designation,
-            dateStarted     : formatDate(auth.dateStarted),
+            dateStarted     : auth.dateStarted ? formatDate(auth.dateStarted) : null,
             email           : auth.email,
             phone           : auth.phone,
             course          : auth.course,

@@ -50,8 +50,6 @@ export default function ActionAreaCard() {
 				if(item.documents[0].status.toLowerCase() == "approved")
 					approvedCount++
 		})
-		console.log("requirements length: ",requirementsLength)
-		console.log("approved count: ",approvedCount)
 		return approvedCount > 0 ? (approvedCount / requirementsLength * 100).toFixed(0) + "%" : 0 + "%"
 	}
 
@@ -88,19 +86,18 @@ export default function ActionAreaCard() {
 
 	const validateCompany = () => {
 		const user = JSON.parse(auth)
-		return !(
-			user.companyName && user.companyName != ""
-			&& user.companyAddress && user.companyAddress != ""
-			&& user.contactPerson && user.contactPerson != ""
-			&& user.designation && user.designation != ""
-			&& user.dateStarted && user.dateStarted != ""
+		return (
+			user.companyName != null && user.companyName != ""
+			&& user.companyAddress != null && user.companyAddress != ""
+			&& user.contactPerson != null && user.contactPerson != ""
+			&& user.designation != null && user.designation != ""
+			&& user.dateStarted != null && user.dateStarted != ""
 		)
 	}
 
 	useEffect(() => {
         fetchDepartments()
 		setIsUpdatedCompany(validateCompany())
-		console.log("vaalidate: ",validateCompany())
     }, []);
 
   	const renderCards = () => {
@@ -130,11 +127,13 @@ export default function ActionAreaCard() {
   	};
 
   return <div className='student-courses'>
-			<div className='update-profile-warning'>
-				<p>Update your<br />Profile Now!</p>
-				<img src="/icons/update_profile_warning.png" />
-				<Link to="/profile"></Link>
-			</div>
+			{ !isUpdatedCompany &&
+				<div className='update-profile-warning'>
+					<p>Update your<br />Profile Now!</p>
+					<img src="/icons/update_profile_warning.png" />
+					<Link to="/profile"></Link>
+				</div>
+			}
 			<div className='progress-counter'>
 				<section>
 					<p>APPROVED DOCUMENTS</p>
