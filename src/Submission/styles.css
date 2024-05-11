@@ -17,16 +17,16 @@
   cursor: pointer;
   }
 
-.requirements-content table {
+.requirements-content table.tbl-requirements {
   width: 100%;
   border-collapse: collapse;
 }
 
-.requirements-content table thead {
+.requirements-content table.tbl-requirements thead {
   background: #D9D9D9;
 }
 
-.requirements-content table th, .requirements-content table td {
+.requirements-content table.tbl-requirements th, .requirements-content table.tbl-requirements td {
   padding: 10px 10px;
 }
 
@@ -34,7 +34,7 @@
   margin-bottom: 25px;
 }
 
-.requirements-content table thead th {
+.requirements-content table.tbl-requirements thead th {
   text-align: left;
 }
 
@@ -214,11 +214,33 @@
   display: flex;
   flex-wrap: wrap;
   row-gap: 5px;
+  justify-content: space-between;
 }
 
 .nlo-requirements ul li {
-  width: 100%;
+  width: 33%;
   padding: 5px 55px;
   box-sizing: border-box;
   background: #7A2E2E2F;
+}
+
+.tbl-requirements-status td, .tbl-requirements-status th {
+  border: 1px solid #B9B9B9;
+}
+
+.tbl-requirements-status {
+  border-collapse: collapse;
+}
+
+.tbl-requirements-status td i {
+  display: block;
+  height: 39px;
+  background: #C23C3C;
+  border-radius: 100%;
+  margin: 10px;
+  width: 39px;
+}
+
+.status.status-approved {
+  background: #60AA5E;
 }

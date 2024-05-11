@@ -31,7 +31,7 @@ const Navbar = () => {
                     }
                     <Link to="/templates" className={isPathActive(`/templates`) ? 'active' : ''}>Templates</Link>
                 </div>
-                <Link to="/profile" className='profile-menu'><img src="/images/profile.png" /></Link>
+                <Link to={(JSON.parse(auth).adminid) ? '' : '/profile'} className='profile-menu'><img src="/images/profile.png" /></Link>
             </div>
             <div className={`nav-toggle ${isOpen && "open"}`} onClick={() =>setIsOpen(!isOpen)}>
                 <div className='bar'></div>
