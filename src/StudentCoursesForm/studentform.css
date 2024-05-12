@@ -51,7 +51,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  right: 22%;
+  right: 11px;
+  width: 264px;
+  max-width: 100%;
   margin: 0;
 }
 

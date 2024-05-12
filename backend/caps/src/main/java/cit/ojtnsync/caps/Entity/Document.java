@@ -30,7 +30,7 @@ public class Document {
     @JoinColumn(name = "requirement_id")
     private Requirement requirement;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "submitted_by")
     private UserEntity submittedBy;
 
