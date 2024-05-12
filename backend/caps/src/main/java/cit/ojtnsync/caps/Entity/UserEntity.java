@@ -36,13 +36,13 @@ public class UserEntity {
     private String phone;
     
     private boolean isVerified;
-
+    private String remarks;
     private String status = "active";
 
     public UserEntity() {
     }
 
-    public UserEntity(Long userid, String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, Course course, String email, String phone, boolean isVerified, String status) {
+    public UserEntity(Long userid, String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, Course course, String email, String phone, boolean isVerified, String remarks, String status) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
@@ -56,6 +56,7 @@ public class UserEntity {
         this.email = email;
         this.phone = phone;
         this.isVerified = isVerified;
+        this.remarks = remarks;
         this.status = status;
     }
 
@@ -183,7 +184,14 @@ public class UserEntity {
         this.isVerified = isVerified;
     }
 
-    // Getter and setter for status field
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
     public String getStatus() {
         return status;
     }

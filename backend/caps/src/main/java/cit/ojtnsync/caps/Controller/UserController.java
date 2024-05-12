@@ -52,6 +52,7 @@ public class UserController {
                     user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
+                    user.getRemarks(),
                     user.isVerified()
             ));
         }
@@ -101,6 +102,7 @@ public class UserController {
                     user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
+                    user.getRemarks(),
                     user.isVerified()
             ));
         }
@@ -133,6 +135,7 @@ public class UserController {
                     user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
+                    user.getRemarks(),
                     user.isVerified()
             ));
         }
@@ -282,6 +285,7 @@ public class UserController {
                 user.getPhone(),
                 user.getEmail(),
                 user.getCourse(),
+                user.getRemarks(),
                 user.isVerified()
             );
         }
@@ -347,6 +351,7 @@ public class UserController {
                 user.getPhone(),
                 user.getEmail(),
                 user.getCourse(),
+                user.getRemarks(),
                 user.isVerified()
             );
             return ResponseEntity.ok(userWithCourseDTO);

@@ -32,6 +32,12 @@ const Navbar = () => {
                     <Link to="/templates" className={isPathActive(`/templates`) ? 'active' : ''}>Templates</Link>
                 </div>
                 <Link to={(JSON.parse(auth).adminid) ? '' : '/profile'} className='profile-menu'><img src="/images/profile.png" /></Link>
+                {/* <a className='profile-menu'>
+                    <div className='profile-modal'>
+                        <Link to={(JSON.parse(auth).adminid) ? '' : '/profile'}></Link>
+                    </div>
+                    <img src="/images/profile.png" />
+                </a> */}
             </div>
             <div className={`nav-toggle ${isOpen && "open"}`} onClick={() =>setIsOpen(!isOpen)}>
                 <div className='bar'></div>

@@ -234,12 +234,19 @@
   background: #7A2E2E2F;
 }
 
+.tbl-requirements-status-con {
+  display: flex;
+  margin-top: 40px;
+  column-gap: 5px;
+}
 .tbl-requirements-status td, .tbl-requirements-status th {
   border: 1px solid #B9B9B9;
 }
 
 .tbl-requirements-status {
   border-collapse: collapse;
+  flex: 1;
+text-align: center;
 }
 
 .tbl-requirements-status td i {
