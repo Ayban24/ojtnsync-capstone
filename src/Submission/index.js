@@ -35,7 +35,7 @@ export default function Submission() {
         if (response && response.ok) {
             try {
                 const result = await response.json();
-                console.log("response: ",result)
+                console.log("departments: ",result)
 				setDepartments(result)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
@@ -137,35 +137,25 @@ export default function Submission() {
             requirements && 
             <>
                 <table className='tbl-requirements'>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Deadline</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
                     <tbody>
                         {requirements.map((item, index) => (
                             (!term || (item.term && item.term.toLowerCase() == term)) &&
                             <tr key={index}>
-                                <td>{item.title}</td>
-                                <td>{item.term}</td>
                                 <td>
-                                    {  
-                                        item.documents.length > 0 && 
-                                        <span className={"status-"+item.documents[0].status.toLowerCase()}>{(item.documents.length > 0 && item.documents[0].status)}</span>
-                                    }
-                                </td>
-                                <td>
-                                    <a href='javascript:;' onClick={() => {
+                                    <a href="javascript:;" onClick={() => {
                                         // open upload modal if status is not available for this document
                                         if(item.documents.length == 0)
                                             openUploadModal();
                                         else
                                             openStatusModal();
                                         setSelectedRequirement(item)
-                                    }}>View</a>
+                                    }}>{item.title}</a>
+                                </td>
+                                <td>
+                                    {  
+                                        item.documents.length > 0 && 
+                                        <span className={"status-"+item.documents[0].status.toLowerCase()}>{(item.documents.length > 0 && item.documents[0].status)}</span>
+                                    }
                                 </td>
                             </tr>
                         ))}
@@ -430,7 +420,27 @@ export default function Submission() {
                     {showDepartments()}
                 </div>
                 <div className='requirements-content'>
-                    {department && department.name.toLowerCase() != 'nlo' ? showRequirements() : showNloRequirements()}
+                    {department && department.name.toLowerCase() != 'nlo' 
+                        ? 
+                        <>
+                            <section>
+                                <h2>PRELIM REQUIREMENTS</h2>
+                                {showRequirements("prelim")}
+                            </section>
+                            <section>
+                                <h2>MIDTERM REQUIREMENTS</h2>
+                                {showRequirements("midterm")}
+                            </section>
+                            <section>
+                                <h2>PRE-FINAL REQUIREMENTS</h2>
+                                {showRequirements("pre-final")}
+                            </section>
+                            <section>
+                                <h2>FINAL REQUIREMENTS</h2>
+                                {showRequirements("final")}
+                            </section>
+                        </>
+                        : showNloRequirements()}
                 </div>
             </div>
             

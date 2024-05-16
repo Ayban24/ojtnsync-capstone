@@ -60,7 +60,7 @@ export default function Submission() {
     return (
         <div id='submission'>
             <div className='wrapper'>
-            <section>
+                <section>
                     <h2>PRELIM REQUIREMENTS</h2>
                     {showRequirements("prelim")}
                 </section>
