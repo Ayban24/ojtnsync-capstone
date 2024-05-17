@@ -6,6 +6,7 @@ import Logo from '../icons/logo1.png';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [activeProfileMenu, setActiveProfileMenu] = useState(false)
     const auth = Cookies.get('auth');
     const location = useLocation();
 
@@ -13,6 +14,11 @@ const Navbar = () => {
     const isPathActive = (path) => {
         return location.pathname === path;
     };
+
+    const logout = () => {
+        Cookies.remove('auth');
+        window.location.replace("/")
+    }
 
     return(
         <div className= "Navbar">
@@ -31,7 +37,16 @@ const Navbar = () => {
                     }
                     <Link to="/templates" className={isPathActive(`/templates`) ? 'active' : ''}>Templates</Link>
                 </div>
-                <Link to="/profile" className='profile-menu'><img src="/images/profile.png" /></Link>
+                {/* <Link to={(JSON.parse(auth).adminid) ? '' : '/profile'} className='profile-menu'><img src="/images/profile.png" /></Link> */}
+                <a className='profile-menu' onClick={() => setActiveProfileMenu(!activeProfileMenu)}>
+                    {activeProfileMenu &&
+                        <div className='profile-modal'>
+                            <Link to={(JSON.parse(auth).adminid) ? '' : '/profile'}>View Profile</Link>
+                            <a onClick={logout}>Logout</a>
+                        </div>
+                    }
+                    <img src="/images/profile.png" />
+                </a>
             </div>
             <div className={`nav-toggle ${isOpen && "open"}`} onClick={() =>setIsOpen(!isOpen)}>
                 <div className='bar'></div>

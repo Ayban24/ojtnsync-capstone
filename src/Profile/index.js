@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './styles.css';
 import Cookies from 'js-cookie';
 
@@ -6,7 +7,11 @@ export default function Profile() {
     const [isEditingProfile, setIsEditingProfile] = useState(false)
     const [isEditingCompany, setIsEditingComppany] = useState(false)
     const [profile, setProfile] = useState(null)
+    const [isReadOnly, setIsReadOnly] = useState(true)
     const auth = JSON.parse(Cookies.get('auth'));
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    
 
     const editProfileHandler = async (section = 'profile') => {
         if(isEditingProfile || isEditingCompany) {
@@ -18,7 +23,8 @@ export default function Profile() {
             formData.append('companyAddress', profile.companyAddress);
             formData.append('contactPerson', profile.contactPerson);
             formData.append('designation', profile.designation);
-            formData.append('dateStarted', profile.dateStarted);
+            if (profile.dateStarted != null)
+                formData.append('dateStarted', profile.dateStarted);
             formData.append('phone', profile.phone);
             formData.append('course_id', profile.course.id);
             formData.append('email', profile.email);
@@ -64,33 +70,71 @@ export default function Profile() {
         return `${year}-${month}-${day}`;
     }
 
-    useEffect(() => {
-        setProfile({
-            userid          : auth.userid,
-            studentID       : auth.studentID,
-            firstName       : auth.firstName,
-            lastName        : auth.lastName,
-            companyName     : auth.companyName,
-            companyAddress  : auth.companyAddress,
-            contactPerson   : auth.contactPerson,
-            designation     : auth.designation,
-            dateStarted     : formatDate(auth.dateStarted),
-            email           : auth.email,
-            phone           : auth.phone,
-            course          : auth.course,
-            Verified        : auth.verified,
+    const fetchUser = async (userId) => {
+        const response = await fetch(`http://localhost:8080/userByID/${userId}`, {
+            method: 'GET',
         })
+        if (response && response.ok) {
+            try {
+                const result = await response.json();
+                setProfile(result)
+				console.log("user profile: ",result)
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Response failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+    }
+
+    useEffect(() => {
+        const userId = searchParams.get('userid')
+        if(userId) {
+            fetchUser(userId)
+        }
+        else {
+            setIsReadOnly(false)
+            setProfile({
+                userid          : auth.userid,
+                studentID       : auth.studentID,
+                firstName       : auth.firstName,
+                lastName        : auth.lastName,
+                companyName     : auth.companyName,
+                companyAddress  : auth.companyAddress,
+                contactPerson   : auth.contactPerson,
+                designation     : auth.designation,
+                dateStarted     : auth.dateStarted ? formatDate(auth.dateStarted) : null,
+                email           : auth.email,
+                phone           : auth.phone,
+                course          : auth.course,
+                verified        : auth.verified,
+            })
+        }
+        
     },[])
 
     return (
         <div id='profile'>
             <div className='wrapper'>
+                { isReadOnly &&
+                <Link to={`/admin/student/documents?userid=${profile?.userid}&course=${profile?.course?.id}`} className='back'><img src="/icons/back.png" /></Link>
+                }
                 <div className='profile-con'>
                     <div className='profile-top'>
                         <section className='profile-top-left'>
                             <figure><img src='/images/profile_placeholder.png' /></figure>
                             <h2>{profile?.firstName} {profile?.lastName}</h2>
-                            <p>{auth.course.name}</p>
+                            <p>{auth?.course?.name}</p>
                             <p>{profile?.phone}</p>
                         </section>
                         <section className='profile-top-right'>
@@ -163,14 +207,18 @@ export default function Profile() {
                                     <input disabled value={profile?.course.name} />
                                 </div>
                             </div>
+                            { !isReadOnly &&
                             <button onClick={() => editProfileHandler('profile')}>{isEditingProfile ? 'Save' : 'Edit'}</button>
+                            }
                         </section>
                     </div>
                     <div className='profile-btm'>
                         <section>
                             <div className='profile-btm-header'>
                                 <h2>COMPANY DETAILS</h2>
+                                { !isReadOnly &&
                                 <button onClick={() => editProfileHandler('company')}>{isEditingCompany ? 'Save' : 'Edit'}</button>
+                                }
                             </div>
                             <div className='profile-btm-body'>
                                 <div className='profile-field'>

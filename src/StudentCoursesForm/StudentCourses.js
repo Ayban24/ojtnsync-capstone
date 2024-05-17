@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 export default function ActionAreaCard() {
 
 	const [departments, setDepartments] = useState(null);
+	const [isUpdatedCompany, setIsUpdatedCompany] = useState(false)
 	const auth = Cookies.get('auth');
 
 	const fetchDepartments = async () => {
@@ -49,8 +50,6 @@ export default function ActionAreaCard() {
 				if(item.documents[0].status.toLowerCase() == "approved")
 					approvedCount++
 		})
-		console.log("requirements length: ",requirementsLength)
-		console.log("approved count: ",approvedCount)
 		return approvedCount > 0 ? (approvedCount / requirementsLength * 100).toFixed(0) + "%" : 0 + "%"
 	}
 
@@ -74,8 +73,31 @@ export default function ActionAreaCard() {
         );
     }
 
+	const getCount = (status) => {
+		let count = 0
+		departments.forEach(department => {
+			department.requirements.forEach(requirement => {
+				if(requirement.documents.length > 0 && requirement.documents[0].status.toLowerCase() == status)
+					count++
+			})
+		})
+		return count
+    }
+
+	const validateCompany = () => {
+		const user = JSON.parse(auth)
+		return (
+			user.companyName != null && user.companyName != ""
+			&& user.companyAddress != null && user.companyAddress != ""
+			&& user.contactPerson != null && user.contactPerson != ""
+			&& user.designation != null && user.designation != ""
+			&& user.dateStarted != null && user.dateStarted != ""
+		)
+	}
+
 	useEffect(() => {
         fetchDepartments()
+		setIsUpdatedCompany(validateCompany())
     }, []);
 
   	const renderCards = () => {
@@ -105,7 +127,39 @@ export default function ActionAreaCard() {
   	};
 
   return <div className='student-courses'>
-			<h4 className='cards-header'><img src="/icons/documents.png" />Overview</h4>
-			{showDepartments()}
+			{ !isUpdatedCompany &&
+				<div className='update-profile-warning'>
+					<p>Update your<br />Profile Now!</p>
+					<img src="/icons/update_profile_warning.png" />
+					<Link to="/profile"></Link>
+				</div>
+			}
+			<div className='progress-counter'>
+				<section>
+					<p>APPROVED DOCUMENTS</p>
+					<img src='/icons/doc_approved.png' />
+					{departments && 
+						<h4>{getCount("approved")}</h4>
+					}
+				</section>
+				<section>
+					<p>PENDING DOCUMENTS</p>
+					<img src='/icons/doc_pending.png' />
+					{departments && 
+						<h4>{getCount("pending")}</h4>
+					}
+				</section>
+				<section>
+					<p>DECLINED DOCUMENTS</p>
+					<img src='/icons/doc_declined.png' />
+					{departments && 
+						<h4>{getCount("declined")}</h4>
+					}
+				</section>
+            </div>
+			<div className='overview'>
+				<h4 className='cards-header'><img src="/icons/documents.png" />Overview</h4>
+				{showDepartments()}
+			</div>
 		</div>;
 }

@@ -126,8 +126,12 @@ export default function Submission() {
     const showAddModal = () => {
         return (
             <CustomModal show={isAddModal} onHide={(val) => {setIsAddModal(val)}}>
+                    <figure className='background'><img src="/images/folder_modal.png" /></figure>
                     <div className='add-requirement-modal'>
-                        <h2>Create Requirement</h2>
+                        <div className='header'>
+                            <h4>{courses[selectedCourse].name} <a onClick={() => setIsAddModal(false)} href='javascript:;'><img src="/icons/close.png" /></a></h4>
+                            <h2>Create Requirement</h2>
+                        </div>
                         <div className='title-con'><label>Title: </label><input type='text' id='add-modal-title' onChange={(e) => setRequirementTitle(e.target.value)} /></div>
                         <div className='body-con'>
                             <div className='sidebar'>

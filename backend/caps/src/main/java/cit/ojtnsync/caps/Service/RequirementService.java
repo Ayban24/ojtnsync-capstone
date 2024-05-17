@@ -88,7 +88,9 @@ public class RequirementService {
     }
 
     public void deleteRequirement(int id) {
-        requirementRepository.deleteById(id);
+        Requirement requirement = requirementRepository.findById(id).orElse(null);
+        requirement.setStatus("Inactive");
+        requirementRepository.save(requirement);
     }
 
     public List<Requirement> filterActive(List<Requirement> requirements) {

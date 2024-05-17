@@ -15,6 +15,7 @@ const StudentDocuments = () => {
     const [selectedCourse, setSelectedCourse] = useState()
     const [check, setCheck] = useState(false)
     const [checkInfo, setCheckInfo] = useState(null)
+    const [userProfile, setUserProfile] = useState(null)
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
     const location = useLocation();
@@ -29,16 +30,22 @@ const StudentDocuments = () => {
         const response2 = await fetch(`http://localhost:8080/courses?departmentId=${auth.departmentId}`, {
             method: 'GET',
         })
+        const response3 = await fetch(`http://localhost:8080/userByID/${userId}`, {
+            method: 'GET',
+        })
 
-        if (response && response.ok && response2 && response.ok) {
+        if (response && response.ok && response2 && response.ok && response3 && response3.ok) {
             try {
                 const result = await response.json();
                 const result2 = await response2.json();
+                const result3 = await response3.json();
                 setCourses(result2)
                 setDocuments(result)
                 setSelectedCourse(result2.findIndex((item) => item.id == courseId))
+                setUserProfile(result3)
 				console.log("documents: ",result)
                 console.log("courses: ",result2)
+                console.log("user profile: ",result3)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -59,26 +66,6 @@ const StudentDocuments = () => {
 
     const showDocuments = () => {
         return (
-            // <DataTable>
-            //     <table>
-            //         <thead>
-            //             <tr>
-            //                 <th>File name</th>
-            //                 <th>Status</th>
-            //             </tr>
-            //         </thead>
-            //         <tbody>
-            //             {(documents && documents.length > 0) &&
-            //                 documents.map((item, index) => (
-            //                     <tr key={index}>
-            //                         <td><a href="#!" onClick={() => {setCheck(true);setCheckInfo(item)}}>{item.fileName}</a></td>
-            //                         <td>{item.status}</td>
-            //                     </tr>
-            //                 ))
-            //             }
-            //         </tbody>
-            //     </table>
-            // </DataTable>
             <DataTable 
                 showFilter={false} 
                 header={['File name', 'Status']} 
@@ -131,10 +118,31 @@ const StudentDocuments = () => {
 
     return(
         <div id= "students">
-            <div className='wrapper'>
-                {showCoursesNav()}
-                <div className='header'>
+            <div className="wrapper">
+                <Link to="/admin/students" className='back'><img src="/icons/back.png" /></Link>
+                <div className="records-profile">
+                    <section>
+                        <figure><img src="/images/profile_placeholder.png" /></figure>
+                    </section>
+                    <section>
+                        <p>Name</p>
+                        <p>Email</p>
+                        <p>Company Name</p>
+                    </section>
+                    <section>
+                        { userProfile &&
+                        <>
+                            <p>{userProfile?.firstName} {userProfile?.lastName}</p>
+                            <p>{userProfile?.email}</p>
+                            <p>{userProfile?.companyName}</p>
+                        </>
+                        }
+                    </section>
+                    <section>
+                        <Link to={'/profile?userid='+searchParams.get('userid')} href="javascript:;">View Profile</Link>
+                    </section>
                 </div>
+                {showCoursesNav()}
                 {showDocuments()}
             </div>
             {(check && checkInfo) && showDocument()}

@@ -17,24 +17,45 @@
   cursor: pointer;
   }
 
-.requirements-content table {
+.requirements-content table.tbl-requirements {
   width: 100%;
   border-collapse: collapse;
 }
 
-.requirements-content table thead {
+.requirements-content table.tbl-requirements thead {
   background: #D9D9D9;
 }
 
-.requirements-content table th, .requirements-content table td {
+.requirements-content table.tbl-requirements th, .requirements-content table.tbl-requirements td {
   padding: 10px 10px;
+}
+
+.requirements-content table.tbl-requirements td:last-child {
+  width: 100px;
+}
+
+.requirements-content section h2 {
+  background: #801C1C;
+  color: #fff;
+  padding: 10px 28px;
+  border-radius: 10px;
+  font-weight: 400;
+  font-size: 18px;
+}
+
+.requirements-content table.tbl-requirements tr {
+  background: #D9D9D9;
+}
+  .requirements-content table.tbl-requirements tr td {
+  border-bottom: 20px solid #fff;
+  padding: 10px 50px;
 }
 
 .requirements-nav {
   margin-bottom: 25px;
 }
 
-.requirements-content table thead th {
+.requirements-content table.tbl-requirements thead th {
   text-align: left;
 }
 
@@ -130,14 +151,19 @@
     right: 0;
     top: 0;
     bottom: 0;
-    width: 164px;
-    height: 17px;
     margin: auto;
     text-align: center;
     line-height: 17px;
-    border: 1px solid #000;
-    padding: 10px 20px;
     cursor: pointer;
+    width: 208px;
+    height: 60px;
+    border: 1px solid #801C1C;
+    padding: 3px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #D9D9D9;
+    border-radius: 4px;
   }
   .file-container input {
     width: 100%;
@@ -152,6 +178,11 @@
   .file-upload {
     color: #000;
     text-decoration: none !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 14px;
+    font-weight: 600;
     }
   .file-info {
     background: #D9D9D9;
@@ -206,4 +237,48 @@
     margin: 29px auto 0;
     cursor: pointer;
   }
-  
+
+.nlo-requirements ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 5px;
+  justify-content: space-between;
+}
+
+.nlo-requirements ul li {
+  width: 33%;
+  padding: 5px 55px;
+  box-sizing: border-box;
+  background: #7A2E2E2F;
+}
+
+.tbl-requirements-status-con {
+  display: flex;
+  margin-top: 40px;
+  column-gap: 5px;
+}
+.tbl-requirements-status td, .tbl-requirements-status th {
+  border: 1px solid #B9B9B9;
+}
+
+.tbl-requirements-status {
+  border-collapse: collapse;
+  flex: 1;
+text-align: center;
+}
+
+.tbl-requirements-status td i {
+  display: block;
+  height: 39px;
+  background: #C23C3C;
+  border-radius: 100%;
+  margin: 10px;
+  width: 39px;
+}
+
+.status.status-approved {
+  background: #60AA5E;
+}

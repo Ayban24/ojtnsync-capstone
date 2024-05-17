@@ -10,10 +10,11 @@ public class UserWithDepartmentDTO {
     private String phone;
     private String email;
     private Department department;
+    private String remarks;
     private boolean isVerified;
     // Add other department attributes as needed
 
-    public UserWithDepartmentDTO(Long userid, String studentID, String firstName, String lastName, String phone, String email, Department department, boolean isVerified) {
+    public UserWithDepartmentDTO(Long userid, String studentID, String firstName, String lastName, String phone, String email, Department department, String remarks, boolean isVerified) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
@@ -21,6 +22,7 @@ public class UserWithDepartmentDTO {
         this.phone = phone;
         this.email = email;
         this.department = department;
+        this.remarks = remarks;
         this.isVerified = isVerified;
     }
 
@@ -78,6 +80,14 @@ public class UserWithDepartmentDTO {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 
     public boolean isVerified() {

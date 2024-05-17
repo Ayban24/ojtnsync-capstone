@@ -35,7 +35,7 @@ export default function Submission() {
         if (response && response.ok) {
             try {
                 const result = await response.json();
-                console.log("response: ",result)
+                console.log("departments: ",result)
 				setDepartments(result)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
@@ -115,57 +115,160 @@ export default function Submission() {
 
     const showDepartments = () => {
         return (
-            departments && <ul>
-                {departments.map((item, index) => (
-                    department && 
-                    <li key={index}>
-                        <a className={department.id == item.id ? 'active' : ''} onClick={() => {
-                            fetchRequirements(item.id)
-                            setDepartment(item)
-                        }}>{item.name}</a>
-                    </li>
-                ))}
-            </ul>
+            departments && 
+            <>
+                <ul>
+                    {departments.map((item, index) => (
+                        department && 
+                        <li key={index}>
+                            <a className={department.id == item.id ? 'active' : ''} onClick={() => {
+                                fetchRequirements(item.id)
+                                setDepartment(item)
+                            }}>{item.name}</a>
+                        </li>
+                    ))}
+                </ul>
+            </>
         );
     }
 
     const showRequirements = (term) => {
         return (
-            requirements && <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Deadline</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {requirements.map((item, index) => (
-                        (!term || (item.term && item.term.toLowerCase() == term)) &&
-                        <tr key={index}>
-                            <td>{item.title}</td>
-                            <td>{item.term}</td>
-                            <td>
-                                {  
-                                    item.documents.length > 0 && 
-                                    <span className={"status-"+item.documents[0].status.toLowerCase()}>{(item.documents.length > 0 && item.documents[0].status)}</span>
-                                }
-                            </td>
-                            <td>
-                                <a href='javascript:;' onClick={() => {
+            requirements && 
+            <>
+                <table className='tbl-requirements'>
+                    <tbody>
+                        {requirements.map((item, index) => (
+                            (!term || (item.term && item.term.toLowerCase() == term)) &&
+                            <tr key={index}>
+                                <td>
+                                    <a href="javascript:;" onClick={() => {
+                                        // open upload modal if status is not available for this document
+                                        if(item.documents.length == 0)
+                                            openUploadModal();
+                                        else
+                                            openStatusModal();
+                                        setSelectedRequirement(item)
+                                    }}>{item.title}</a>
+                                </td>
+                                <td>
+                                    {  
+                                        item.documents.length > 0 && 
+                                        <span className={"status-"+item.documents[0].status.toLowerCase()}>{(item.documents.length > 0 && item.documents[0].status)}</span>
+                                    }
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </>
+        );
+    }
+
+    const showNloRequirements = (term) => {
+
+        let nloRequirements = {}
+        
+        if(requirements) {
+            nloRequirements = {
+                'OC: Orientation Certificate'       : ['OC',null,'#677800'],
+                'CL: Confirmation Letter'           : ['CL',null,'#E900FE'],
+                'MOA: Memorandum of Agreement'      : ['MOA',null,'#000000'],
+                'DOU: Deed of Undertaking'          : ['DOU',null,'#FF0808'],
+                'EL: Endorsement Letter'            : ['EL',null,'#F19F00'],
+                'W: Waiver'                         : ['W',null,'#047016'],
+                'LOU: Letter of Undertaking'        : ['LOU',null,'#000AFF'],
+                'OSL: Official Study Load'          : ['OSL',null,'#FF006B'],
+                'COC: Certificate of Completion'    : ['COC',null,'#0DB09C'],
+            }
+
+            requirements.forEach(item => {
+                if(nloRequirements.hasOwnProperty(item.title))
+                    nloRequirements[item.title][1] = item?.documents?.[0]?.status.toLowerCase()
+            });
+            console.log("requirements: ",Object.entries(nloRequirements).filter((value) => {
+                return (value?.[1]?.[1] != "approved")
+            })
+            .map(val => val[1][0]))
+        }
+        
+        return (
+            requirements && 
+            <>
+                <div className='nlo-requirements'>
+                    <ul>
+                        {requirements
+                        .filter(req => nloRequirements[req.title] && nloRequirements[req.title].length > 0)
+                        .map((item, index) => (
+                            <li key={index}>
+                                <a style={{color: nloRequirements[item.title] ? nloRequirements[item.title][2] : '#000'}} href='javascript:;' onClick={() => {
                                     // open upload modal if status is not available for this document
                                     if(item.documents.length == 0)
                                         openUploadModal();
                                     else
                                         openStatusModal();
                                     setSelectedRequirement(item)
-                                }}>View</a>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                                }}>{item.title}</a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                <div className='tbl-requirements-status-con'>
+                    <table className='tbl-requirements-status tbl-requirements-status1'>
+                        <thead>
+                            <tr>
+                                {
+                                    Object.entries(nloRequirements).map(([key, value]) => {
+                                        return <th style={{color:value[2]}}>{value[0]}</th>
+                                    })
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                { nloRequirements && requirements &&
+                                    Object.entries(nloRequirements).map(([key, value]) => {
+                                        return <td><i className={`status status-${value[1]}`}></i></td>
+                                    })
+                                }
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table className='tbl-requirements-status'>
+                        <thead>
+                            <tr>
+                                <th>Lacking File/Files</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    {
+                                        nloRequirements && 
+                                        Object.entries(nloRequirements).filter((value) => {
+                                            return (value?.[1]?.[1] != "approved")
+                                        })
+                                        .map(val => val[1]?.[0])
+                                        .join(", ")
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table className='tbl-requirements-status'>
+                        <thead>
+                            <tr><th>Remarks</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    {JSON.parse(auth)?.remarks}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </>
         );
     }
 
@@ -317,7 +420,27 @@ export default function Submission() {
                     {showDepartments()}
                 </div>
                 <div className='requirements-content'>
-                    {showRequirements()}
+                    {department && department.name.toLowerCase() != 'nlo' 
+                        ? 
+                        <>
+                            <section>
+                                <h2>PRELIM REQUIREMENTS</h2>
+                                {showRequirements("prelim")}
+                            </section>
+                            <section>
+                                <h2>MIDTERM REQUIREMENTS</h2>
+                                {showRequirements("midterm")}
+                            </section>
+                            <section>
+                                <h2>PRE-FINAL REQUIREMENTS</h2>
+                                {showRequirements("pre-final")}
+                            </section>
+                            <section>
+                                <h2>FINAL REQUIREMENTS</h2>
+                                {showRequirements("final")}
+                            </section>
+                        </>
+                        : showNloRequirements()}
                 </div>
             </div>
             

@@ -52,6 +52,7 @@ public class UserController {
                     user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
+                    user.getRemarks(),
                     user.isVerified()
             ));
         }
@@ -101,6 +102,7 @@ public class UserController {
                     user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
+                    user.getRemarks(),
                     user.isVerified()
             ));
         }
@@ -133,6 +135,7 @@ public class UserController {
                     user.getPhone(),
                     user.getEmail(),
                     user.getCourse(),
+                    user.getRemarks(),
                     user.isVerified()
             ));
         }
@@ -282,6 +285,7 @@ public class UserController {
                 user.getPhone(),
                 user.getEmail(),
                 user.getCourse(),
+                user.getRemarks(),
                 user.isVerified()
             );
         }
@@ -328,6 +332,31 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-	
 
+    @GetMapping("/userByID/{id}")
+    public ResponseEntity<UserWithCourseDTO> getUserByID(@PathVariable long id) {
+        // Call the service method to fetch user data by id
+        UserEntity user = userService.findById(id);
+        if(user != null) {
+            UserWithCourseDTO userWithCourseDTO = new UserWithCourseDTO(
+                user.getUserid(),
+                user.getStudentID(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getCompanyName(),
+                user.getCompanyAddress(),
+                user.getContactPerson(),
+                user.getDesignation(),
+                user.getDateStarted(),
+                user.getPhone(),
+                user.getEmail(),
+                user.getCourse(),
+                user.getRemarks(),
+                user.isVerified()
+            );
+            return ResponseEntity.ok(userWithCourseDTO);
+        }
+        else
+            return ResponseEntity.notFound().build();
+    }
 }
