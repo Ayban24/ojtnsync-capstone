@@ -231,10 +231,18 @@ a.requirement-list-delete-btn {
   bottom: 30px;
   text-decoration: none !important;
 }
-#submission .status-approved {
+.status {
+  display: block;
+  height: 39px;
+  background: #C23C3C;
+  border-radius: 100%;
+  margin: 10px;
+  width: 39px;
+}
+.status-approved {
   color: green;
 }
-#submission .status-declined {
+.status-declined {
   color: red;
 }
 
@@ -305,4 +313,26 @@ a.requirement-list-delete-btn {
 }
 .add-requirement-modal .header h2 {
   margin-bottom: 88px;
+}
+
+
+.datatable tbody tr td {
+  padding: 10px 5px;
+}
+
+.datatable thead th {
+  padding: 9px 5px;
+}
+
+#requirements-view .profile {
+  display: flex;
+  justify-content: space-between;
+}
+
+#requirements-view .profile section p {
+  text-align: left;
+}
+
+#requirements-view .profile section:nth-child(3) {
+  width: 31%;
 }

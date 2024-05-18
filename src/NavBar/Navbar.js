@@ -32,7 +32,7 @@ const Navbar = () => {
                     {JSON.parse(auth).userid && 
                         <Link to={`/submission?department=${JSON.parse(auth).course.department.id}`} className={isPathActive(`/submission`) ? 'active' : ''}>Requirements</Link>
                     }
-                    {JSON.parse(auth).adminid && 
+                    {JSON.parse(auth).adminid && JSON.parse(auth).adminType && JSON.parse(auth).adminType == 'faculty' && 
                         <Link to={`/admin/students`} className={isPathActive(`/admin/students`) ? 'active' : ''}>Records</Link>
                     }
                     <Link to="/templates" className={isPathActive(`/templates`) ? 'active' : ''}>Templates</Link>

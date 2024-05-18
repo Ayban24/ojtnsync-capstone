@@ -11,7 +11,6 @@ export default function Profile() {
     const auth = JSON.parse(Cookies.get('auth'));
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    
 
     const editProfileHandler = async (section = 'profile') => {
         if(isEditingProfile || isEditingCompany) {
@@ -127,7 +126,7 @@ export default function Profile() {
         <div id='profile'>
             <div className='wrapper'>
                 { isReadOnly &&
-                <Link to={`/admin/student/documents?userid=${profile?.userid}&course=${profile?.course?.id}`} className='back'><img src="/icons/back.png" /></Link>
+                <a className='back' onClick={() => {window.history.back()}}><img src="/icons/back.png" /></a>
                 }
                 <div className='profile-con'>
                     <div className='profile-top'>

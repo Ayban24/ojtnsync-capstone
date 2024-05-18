@@ -167,29 +167,24 @@ export default function Submission() {
 
     const showNloRequirements = (term) => {
 
-        let nloRequirements = {}
+        const  nloRequirements = {
+            'OC: Orientation Certificate'       : ['OC',null,'#677800'],
+            'CL: Confirmation Letter'           : ['CL',null,'#E900FE'],
+            'MOA: Memorandum of Agreement'      : ['MOA',null,'#000000'],
+            'DOU: Deed of Undertaking'          : ['DOU',null,'#FF0808'],
+            'EL: Endorsement Letter'            : ['EL',null,'#F19F00'],
+            'W: Waiver'                         : ['W',null,'#047016'],
+            'LOU: Letter of Undertaking'        : ['LOU',null,'#000AFF'],
+            'OSL: Official Study Load'          : ['OSL',null,'#FF006B'],
+            'COC: Certificate of Completion'    : ['COC',null,'#0DB09C'],
+        }
         
         if(requirements) {
-            nloRequirements = {
-                'OC: Orientation Certificate'       : ['OC',null,'#677800'],
-                'CL: Confirmation Letter'           : ['CL',null,'#E900FE'],
-                'MOA: Memorandum of Agreement'      : ['MOA',null,'#000000'],
-                'DOU: Deed of Undertaking'          : ['DOU',null,'#FF0808'],
-                'EL: Endorsement Letter'            : ['EL',null,'#F19F00'],
-                'W: Waiver'                         : ['W',null,'#047016'],
-                'LOU: Letter of Undertaking'        : ['LOU',null,'#000AFF'],
-                'OSL: Official Study Load'          : ['OSL',null,'#FF006B'],
-                'COC: Certificate of Completion'    : ['COC',null,'#0DB09C'],
-            }
-
+            // Sets the status for each requirements
             requirements.forEach(item => {
                 if(nloRequirements.hasOwnProperty(item.title))
                     nloRequirements[item.title][1] = item?.documents?.[0]?.status.toLowerCase()
             });
-            console.log("requirements: ",Object.entries(nloRequirements).filter((value) => {
-                return (value?.[1]?.[1] != "approved")
-            })
-            .map(val => val[1][0]))
         }
         
         return (
