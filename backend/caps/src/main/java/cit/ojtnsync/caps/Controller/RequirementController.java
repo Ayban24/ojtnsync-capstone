@@ -8,6 +8,9 @@ import cit.ojtnsync.caps.Entity.Course;
 import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
+import cit.ojtnsync.caps.Entity.UserEntity;
+import cit.ojtnsync.caps.Model.RequirementWithCourseDTO;
+import cit.ojtnsync.caps.Model.UserWithCourseDTO;
 import cit.ojtnsync.caps.Service.AdminService;
 import cit.ojtnsync.caps.Service.CourseService;
 import cit.ojtnsync.caps.Service.DepartmentService;
@@ -103,9 +106,22 @@ public class RequirementController {
 
     // Mapping to get all requirements by department
     @GetMapping("/admin/department/{departmentId}")
-    public ResponseEntity<List<Requirement>> getRequirementsByDepartment(@PathVariable int departmentId) {
+    public ResponseEntity<List<RequirementWithCourseDTO>> getRequirementsByDepartment(@PathVariable int departmentId) {
         List<Requirement> requirements = requirementService.getRequirementsByDepartment(departmentId);
-        return ResponseEntity.ok(requirements);
+        List<RequirementWithCourseDTO> requirementWithCourseDTO = new ArrayList<>();
+        for (Requirement req : requirements) {
+            requirementWithCourseDTO.add(new RequirementWithCourseDTO(
+                    req.getId(),
+                    req.getTitle(),
+                    req.getDocuments(),
+                    req.getTerm(),
+                    req.getStatus(),
+                    req.getDepartment().getId(),
+                    req.getCourse().getId(),
+                    req.getCourse().getName()
+            ));
+        }
+        return ResponseEntity.ok(requirementWithCourseDTO);
     }
 
     // Mapping to get all requirements by NLO

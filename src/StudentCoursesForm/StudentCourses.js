@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 export default function ActionAreaCard() {
 
 	const [departments, setDepartments] = useState(null);
+	const [requirements, setRequirements] = useState(null)
 	const [isUpdatedCompany, setIsUpdatedCompany] = useState(false)
 	const auth = Cookies.get('auth');
 
@@ -23,12 +24,41 @@ export default function ActionAreaCard() {
                 const result = await response.json();
                 console.log("response: ",result)
 				setDepartments(result)
+				fetchRequirements()
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
             }
         } else {
             console.error('Upload failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+    }
+
+	const fetchRequirements = async () => {
+        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${JSON.parse(auth).course.department.id}`, {
+            method: 'GET',
+        })
+
+        if (response && response.ok) {
+            try {
+                const result = await response.json();
+				setRequirements(result)
+                console.log("requirements: ",result)
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Response failed:', response.status, response.statusText);
             try {
                 const result = await response.json();
                 // Access specific properties from the result if needed

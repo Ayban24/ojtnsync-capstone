@@ -3,6 +3,7 @@ import './styles.css';
 import Cookies from 'js-cookie';
 import { useLocation, Link } from 'react-router-dom';
 import CustomModal from '../../common/Modal'
+import DataTable from '../../common/DataTable';
 
 export default function Submission() {
     const [requirements, setRequirements] = useState(null)
@@ -11,7 +12,7 @@ export default function Submission() {
     const [requirementTerm, setRequirementTerm] = useState("Prelim")
     const [courses, setCourses] = useState(null)
     const [selectedCourse, setSelectedCourse] = useState(0)
-    const [nloIsSelected, setNloIsSelected] = useState(false)
+    const [nloIsSelected, setNloIsSelected] = useState(true)
     const [filteredCourses, setFilteredCourses] = useState(null)
 
     const auth = JSON.parse(Cookies.get('auth'));
@@ -51,7 +52,7 @@ export default function Submission() {
         return null;
     }
 
-    const fetchRequirements = async (courseId, isNlo) => {
+    const fetchRequirements = async (courseId, isNlo = true) => {
         
         const departmentId = searchParams.get('department');
 
@@ -164,7 +165,7 @@ export default function Submission() {
                             onClick={() => {
                                     setSelectedCourse(index);
                                     setNloIsSelected(false)
-                                    fetchRequirements(courses[index].id, false);
+                                    fetchRequirements(courses[index].id, true);
                                 }
                             } 
                             key={index}>{item.name}
@@ -198,6 +199,106 @@ export default function Submission() {
         }
     }
 
+    // Deep clone function
+    function deepClone(obj) {
+        if (Array.isArray(obj)) {
+            return obj.map(deepClone);
+        } else if (typeof obj === 'object' && obj !== null) {
+            return Object.fromEntries(
+                Object.entries(obj).map(([key, val]) => [key, deepClone(val)])
+            );
+        } else {
+            return obj;
+        }
+    }
+
+    const showNloRequirements = () => {
+        const nloRequirements = {
+            'OC: Orientation Certificate'       : ['OC',null,'#677800'],
+            'CL: Confirmation Letter'           : ['CL',null,'#E900FE'],
+            'MOA: Memorandum of Agreement'      : ['MOA',null,'#000000'],
+            'DOU: Deed of Undertaking'          : ['DOU',null,'#FF0808'],
+            'EL: Endorsement Letter'            : ['EL',null,'#F19F00'],
+            'W: Waiver'                         : ['W',null,'#047016'],
+            'LOU: Letter of Undertaking'        : ['LOU',null,'#000AFF'],
+            'OSL: Official Study Load'          : ['OSL',null,'#FF006B'],
+            'COC: Certificate of Completion'    : ['COC',null,'#0DB09C'],
+        }
+
+        let students = []
+
+        // Sets the status for requirement on each students
+        courses[selectedCourse].students.forEach(student => {
+            // copy the static nlo requirement and change the status of the requirements for each student
+            const studentRequirement = deepClone(nloRequirements)
+            requirements.forEach(item => {
+                if(studentRequirement.hasOwnProperty(item.title) && item.documents && item.documents.length > 0) {
+                    item.documents.forEach(doc => {
+                        if(doc.submittedBy.userid == student.userid) {
+                            studentRequirement[item.title][1] = doc.status.toLowerCase()
+                        }
+                    })
+                }
+            });
+            students.push({details: student, documents: studentRequirement})
+        })
+
+        const requirementList = Object.entries(nloRequirements).map(([key, value]) => {
+            return <th style={{color:value[2]}}>{value[0]}</th>
+        })
+
+        return (
+            <>
+                {requirements && 
+                    <>
+                        <div className='nlo-requirements'>
+                            <ul>
+                                {requirements
+                                .filter(req => nloRequirements[req.title] && nloRequirements[req.title].length > 0)
+                                .map((item, index) => (
+                                    <li key={index}>
+                                        <a style={{color: nloRequirements[item.title] ? nloRequirements[item.title][2] : '#000'}}>{item.title}</a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </>
+                }
+                {students.length > 0 && 
+                <>
+                    <DataTable 
+                        header={[
+                            'User ID',
+                            'Firstname',
+                            'Lastname',
+                            ...requirementList,
+                            'Lacking Files',
+                            'Action'
+                        ]} 
+                        data={students.map((item, index) => {
+                                return [
+                                    item.details.userid,
+                                    item.details.firstName, 
+                                    item.details.lastName, 
+                                    ...Object.entries(item?.documents).map(([key, value]) => {
+                                        return <td><i className={`status status-${value[1]}`}></i></td>
+                                    }),
+                                    Object.entries(item?.documents).filter((value) => {
+                                        return (value?.[1]?.[1] != "approved")
+                                    })
+                                    .map(val => val[1]?.[0])
+                                    .join(", "),
+                                    <Link to={`/admin/requirements/view?userid=${item.details.userid}`}>View</Link>
+                                ]
+                            }
+                        )} 
+                    />
+                </>
+                }
+            </>
+        );
+    }
+
     useEffect(() => {
         fetchCourses().then((course) => {
             console.log("courses useeffect: ",course)
@@ -207,40 +308,13 @@ export default function Submission() {
   
     return (
         <div id='submission'>
-            {/* left navbar */}
             {courses && showPrograms()}
-
-            <div className='wrapper nav-wrapper'>
-                <h1 className='page-title'><img src="/icons/documents.png" />Requirements</h1>
-                { (auth.adminType != "NLO") &&
-                    <div className='action-nav'>
-                        <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}><i class="fa-solid fa-plus"></i> Add Requirement</a>
-                    </div>
-                }
-                { auth.adminType != "NLO" &&
-                    <section>
-                        <h2>PRELIM REQUIREMENTS</h2>
-                        {showRequirements("prelim")}
-                    </section>
-                }
-                <section>
-                    <h2>MIDTERM REQUIREMENTS</h2>
-                    {showRequirements("midterm")}
-                </section>
-                { auth.adminType != "NLO" &&
-                    <section>
-                        <h2>PRE-FINAL REQUIREMENTS</h2>
-                        {showRequirements("pre-final")}
-                    </section>
-                }
-                <section>
-                    <h2>FINAL REQUIREMENTS</h2>
-                    {showRequirements("final")}
-                </section>
+            <div className='wrapper'>
+                <h1 className='page-title'><img src="/icons/documents.png" />OJT Records</h1>
+                {requirements && showNloRequirements()}
+                
+                {isAddModal && showAddModal()}
             </div>
-            
-            {isAddModal && showAddModal()}
-            
         </div>
     );
   }
