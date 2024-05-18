@@ -10,12 +10,12 @@ import { Line, Pie } from 'react-chartjs-2';
 export default function Dashboard() {
 
     const [courses, setCourses] = useState(null)
-    const [studentsPerCourseData, setStudentsPerCourseData] = useState(null)
+    const [requirements, setRequirements] = useState(null)
 
 	const auth = Cookies.get('auth');
 
     const fetchStudents = async () => {
-        const response = await fetch(`http://localhost:8080/courses`, {
+        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${JSON.parse(auth).departmentId}`, {
             method: 'GET',
         })
 
@@ -41,9 +41,53 @@ export default function Dashboard() {
             }
         }
     }
-    
-    const initStudentsPerCourseData = (courses) => {
-        console.log("courses: ",courses)
+
+    const fetchRequirements = async () => {
+        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${JSON.parse(auth).departmentId}`, {
+            method: 'GET',
+        })
+
+        if (response && response.ok) {
+            try {
+                const result = await response.json();
+				setRequirements(result)
+                console.log("requirements: ",result)
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Response failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+    }
+
+    const showStudentCounts = () => {
+        if(courses && courses.length > 0) {
+            console.log("courses: ",courses)
+            return <>
+                { courses.map(course => {
+                    return <section className='dashboard-section'>
+                        <span>{course.name}</span>
+                        <h2>{course.students.length}</h2>
+                    </section>
+                })}
+            </>
+        }
+    }
+
+    const showDocumentStatusChart = () => {
+        console.log("test req: ",requirements)
+        const dataCharts = []
+        const statusPerCourse = []
         const colors = [
             '#8B008B',
             '#FF6347',
@@ -56,17 +100,44 @@ export default function Dashboard() {
             '#00FF00',
             '#FF4500'
         ];
-        const data = {
-            labels: courses.map((course) => course.name),
-            datasets: [
-              {
-                data: courses.map((course) => course.students.length),
-                backgroundColor: colors,
-                hoverBackgroundColor: colors,
-              },
-            ],
-        };
-        setStudentsPerCourseData(data)
+
+        courses.forEach(course => {
+            const status = {
+                pending: 0,
+                approved: 0,
+                declined: 0
+            }
+            requirements.forEach(req => {
+                if(course.id == req.courseId)
+                    status[req.documents[0].status.toLowerCase()] = status[req.documents[0].status.toLowerCase()] + 1
+            })
+            statusPerCourse.push({
+                course: course.name,
+                status: status
+            })
+        })
+        statusPerCourse.forEach(item => {
+            const data = {
+                labels: Object.entries(item.status).map(([key, value]) => key),
+                datasets: [
+                  {
+                    data: Object.entries(item.status).map(([key, value]) => value),
+                    backgroundColor: colors,
+                    hoverBackgroundColor: colors,
+                  },
+                ],
+            };
+            dataCharts.push({course: item.course, data: data})
+        })
+        console.log("data charts: ",dataCharts)
+        return <>
+            {dataCharts.map(item => {
+                return <section className='dashboard-section'>
+                    <span>{item.course}</span>
+                    <Pie data={item.data} />
+                </section>
+            })}
+        </>
     }
 
     const lineData = {
@@ -108,18 +179,27 @@ export default function Dashboard() {
 
 
 	useEffect(() => {
-        fetchStudents().then((courses) => {
-            initStudentsPerCourseData(courses)
-        })
+        fetchStudents()
+        fetchRequirements()
     }, []);
 
     return <div className='student-courses'>
-        <div>
+        <div className='wrapper'>
             <h1>Dashboard</h1>
-            <Line data={lineData} options={options} />
-            {studentsPerCourseData &&
-                <Pie data={studentsPerCourseData} />
-            }
+            <p style={{textAlign:"left"}}>Welcome to OJTnSync</p>
+            <main id='dashboard-main'>
+                {courses && 
+                    <div className='student-counts'>
+                        {showStudentCounts()}
+                    </div>
+                }
+                {/* <Line data={lineData} options={options} /> */}
+                {courses &&
+                    <div className='student-documents-status'>
+                        {showDocumentStatusChart()}
+                    </div>
+                }
+            </main>
         </div>
     </div>;
 }

@@ -27,15 +27,17 @@ const Navbar = () => {
                 <div className={`nav-items ${isOpen && "open"}`}>
                     <Link to={JSON.parse(auth).adminid ? `/admin/homepage` : '/homepage'} className={isPathActive(`/admin/homepage`) || isPathActive(`/homepage`) ? 'active' : ''}>Dashboard</Link>
                     {JSON.parse(auth).adminid && 
-                        <Link to={`/admin/requirements?department=${JSON.parse(auth).departmentId}`} className={isPathActive(`/admin/requirements`) ? 'active' : ''}>Requirements</Link>
+                        <Link to={`/admin/requirements?department=${JSON.parse(auth).departmentId}`} className={isPathActive(`/admin/requirements`) ? 'active' : ''}>{JSON.parse(auth).adminType && JSON.parse(auth).adminType == 'faculty' ? 'Requirements' : 'Records'}</Link>
                     }
                     {JSON.parse(auth).userid && 
                         <Link to={`/submission?department=${JSON.parse(auth).course.department.id}`} className={isPathActive(`/submission`) ? 'active' : ''}>Requirements</Link>
                     }
                     {JSON.parse(auth).adminid && JSON.parse(auth).adminType && JSON.parse(auth).adminType == 'faculty' && 
-                        <Link to={`/admin/students`} className={isPathActive(`/admin/students`) ? 'active' : ''}>Records</Link>
+                        <>
+                            <Link to={`/admin/students`} className={isPathActive(`/admin/students`) ? 'active' : ''}>Records</Link>
+                            <Link to="/templates" className={isPathActive(`/templates`) ? 'active' : ''}>Templates</Link>
+                        </>
                     }
-                    <Link to="/templates" className={isPathActive(`/templates`) ? 'active' : ''}>Templates</Link>
                 </div>
                 {/* <Link to={(JSON.parse(auth).adminid) ? '' : '/profile'} className='profile-menu'><img src="/images/profile.png" /></Link> */}
                 <a className='profile-menu' onClick={() => setActiveProfileMenu(!activeProfileMenu)}>

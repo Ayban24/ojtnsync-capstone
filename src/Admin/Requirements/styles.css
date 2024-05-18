@@ -336,3 +336,17 @@ a.requirement-list-delete-btn {
 #requirements-view .profile section:nth-child(3) {
   width: 31%;
 }
+
+.nlo-requirements-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 38px;
+}
+
+.requirement-section {
+  border: 1px solid #D9D9D9;
+  border-radius: 12px;
+  margin-bottom: 17px;
+  padding: 16px 18px;
+}

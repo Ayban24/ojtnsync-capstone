@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import Cookies from 'js-cookie';
 import { Link, useLocation } from 'react-router-dom';
+import DataTable from '../../common/DataTable';
 
 export default function Submission() {
     const [requirements, setRequirements] = useState(null)
@@ -89,75 +90,102 @@ export default function Submission() {
                     nloRequirements[item.title][1] = item?.documents?.[0]?.status.toLowerCase()
             });
         }
+
+        const requirementDetails = requirements?.filter(item => item?.documents?.[0]).map(item2 => {
+            return [
+                item2.documents[0].fileName,
+                item2.title,
+                item2.documents[0].status
+            ]
+        })
+        console.log("req details: ",requirementDetails)
         
         return (
             requirements && 
             <>
-                <div className='nlo-requirements'>
-                    <ul>
-                        {requirements
-                        .filter(req => nloRequirements[req.title] && nloRequirements[req.title].length > 0)
-                        .map((item, index) => (
-                            <li key={index}>
-                                <a style={{color: nloRequirements[item.title] ? nloRequirements[item.title][2] : '#000'}} href='javascript:;'>{item.title}</a>
-                            </li>
-                        ))}
-                    </ul>
+                <div className='student-documents requirement-section'>
+                    <DataTable 
+                        showFilter={false}
+                        header={['File name', 'Requirement Name', 'Status']} 
+                        data={requirementDetails} 
+                    />
                 </div>
-                <div className='tbl-requirements-status-con'>
-                    <table className='tbl-requirements-status tbl-requirements-status1'>
-                        <thead>
-                            <tr>
-                                {
-                                    Object.entries(nloRequirements).map(([key, value]) => {
-                                        return <th style={{color:value[2]}}>{value[0]}</th>
-                                    })
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                { nloRequirements && requirements &&
-                                    Object.entries(nloRequirements).map(([key, value]) => {
-                                        return <td><i className={`status status-${value[1]}`}></i></td>
-                                    })
-                                }
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table className='tbl-requirements-status'>
-                        <thead>
-                            <tr>
-                                <th>Lacking File/Files</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
+
+                <div className='nlo-requirements-con requirement-section'>
+                    <div className='nlo-requirements'>
+                        <div className='nlo-requirements-header'>
+                            <h2>NLO RECORDS</h2>
+                            <a href='javascript:;' className='edit-btn btn-yellow'>EDIT</a>
+                        </div>
+                        <ul>
+                            {requirements
+                            .filter(req => nloRequirements[req.title] && nloRequirements[req.title].length > 0)
+                            .map((item, index) => (
+                                <li key={index}>
+                                    <a style={{color: nloRequirements[item.title] ? nloRequirements[item.title][2] : '#000'}} href='javascript:;'>{item.title}</a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div className='tbl-requirements-status-con'>
+
+                        <table className='tbl-requirements-status tbl-requirements-status1'>
+                            <thead>
+                                <tr>
                                     {
-                                        nloRequirements && 
-                                        Object.entries(nloRequirements).filter((value) => {
-                                            return (value?.[1]?.[1] != "approved")
+                                        Object.entries(nloRequirements).map(([key, value]) => {
+                                            return <th style={{color:value[2]}}>{value[0]}</th>
                                         })
-                                        .map(val => val[1]?.[0])
-                                        .join(", ")
                                     }
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table className='tbl-requirements-status'>
-                        <thead>
-                            <tr><th>Remarks</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    {student?.remarks}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    { nloRequirements && requirements &&
+                                        Object.entries(nloRequirements).map(([key, value]) => {
+                                            return <td><i className={`status status-${value[1]}`}></i></td>
+                                        })
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table className='tbl-requirements-status'>
+                            <thead>
+                                <tr>
+                                    <th>Lacking File/Files</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {
+                                            nloRequirements && 
+                                            Object.entries(nloRequirements).filter((value) => {
+                                                return (value?.[1]?.[1] != "approved")
+                                            })
+                                            .map(val => val[1]?.[0])
+                                            .join(", ")
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table className='tbl-requirements-status'>
+                            <thead>
+                                <tr><th>Remarks</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {student?.remarks}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </>
         );
@@ -175,7 +203,7 @@ export default function Submission() {
     return (
         <div id='requirements-view'>
             <div className='wrapper'>
-                <div className='profile'>
+                <div className='profile requirement-section'>
                     <section><img src="/images/profile_placeholder.png" /></section>
                     <section>
                         <p>Name</p>
@@ -192,7 +220,7 @@ export default function Submission() {
                         }
                     </section>
                     <section>
-                    <Link to={`/profile?userid=${student?.userid}`}>View Profile</Link>
+                    <Link to={`/profile?userid=${student?.userid}`} className='btn-yellow'>View Profile</Link>
                     </section>
                 </div>
                 <div className='requirements-content'>

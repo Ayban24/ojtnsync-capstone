@@ -24,6 +24,10 @@ public class Department {
     @OneToMany(mappedBy = "department", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Requirement> requirements = new ArrayList<>();
 
+    @OneToMany(mappedBy = "department", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
+    private List<Course> courses = new ArrayList<>();
+
     // Constructors, getters, and setters (you can generate them using your IDE)
 
     public Department() {
