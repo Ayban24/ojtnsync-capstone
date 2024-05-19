@@ -1,10 +1,13 @@
 package cit.ojtnsync.caps.Controller;
 
 import cit.ojtnsync.caps.Entity.Document;
+import cit.ojtnsync.caps.Entity.Requirement;
 import cit.ojtnsync.caps.Entity.UserEntity;
 import cit.ojtnsync.caps.Service.DocumentService;
+import cit.ojtnsync.caps.Service.RequirementService;
 import cit.ojtnsync.caps.Service.UserService;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +20,12 @@ public class DocumentController {
 
     private final DocumentService documentService;
     private final UserService userService;
+    private final RequirementService requirementService;
 
-    public DocumentController(DocumentService documentService, UserService userService) {
+    public DocumentController(DocumentService documentService, UserService userService, RequirementService requirementService) {
         this.documentService = documentService;
         this.userService = userService;
+        this.requirementService = requirementService;
     }
 
     @GetMapping
@@ -77,9 +82,22 @@ public class DocumentController {
             return ResponseEntity.ok(documents);
         } else {
             return ResponseEntity.notFound().build();
+        }
     }
-}
 
+    @PostMapping("/nlo/create")
+    public ResponseEntity<Document> createNloDocument(
+            @RequestParam("requirementId") int requirementId,
+            @RequestParam("userId") long userId) {
+
+        Document document = new Document();
+        Requirement requirement = requirementService.getRequirementById(requirementId);
+        UserEntity user = userService.findById(userId);
+        document.setRequirement(requirement);
+        document.setSubmittedBy(user);
+
+        return ResponseEntity.ok(document);
+    }
 
 }
 

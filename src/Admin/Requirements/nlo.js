@@ -227,7 +227,6 @@ export default function Submission() {
                 <div className='nlo-records'>
                     <div className='nlo-records-header'>
                         <h2>NLO RECORDS</h2>
-                        <a href="javascript:;" className='btn-yellow'>Edit</a>
                     </div>
                     <DataTable 
                         header={[
