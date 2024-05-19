@@ -22,9 +22,21 @@ export default function ActionAreaCard() {
         if (response && response.ok) {
             try {
                 const result = await response.json();
-                console.log("response: ",result)
-				setDepartments(result)
-				fetchRequirements()
+				new Promise((resolve, reject) => {
+					result.map(dep => {
+						fetchRequirements(dep.id).then(req => {
+							if(req) {
+								const newReq = req
+								dep.requirements = newReq
+							}
+						})
+					})
+					resolve(result)
+				})
+				.then(resolvedData => {
+					console.log("departments: ",resolvedData)
+					setDepartments(resolvedData)
+				})
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -43,8 +55,8 @@ export default function ActionAreaCard() {
         }
     }
 
-	const fetchRequirements = async () => {
-        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${JSON.parse(auth).course.department.id}`, {
+	const fetchRequirements = async (departmentId) => {
+        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${departmentId}`, {
             method: 'GET',
         })
 
@@ -52,7 +64,7 @@ export default function ActionAreaCard() {
             try {
                 const result = await response.json();
 				setRequirements(result)
-                console.log("requirements: ",result)
+				return result
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -72,14 +84,26 @@ export default function ActionAreaCard() {
     }
 
 	const getCompleted = (index) => {
-		const requirements = departments[index].requirements
+		const requirements = departments[index].requirements.filter(req => {
+			if(departments[index].name.toLowerCase() != 'nlo') {
+				return (req.courseId == JSON.parse(auth).course.id)
+			}
+			else {
+				return true
+			}
+		})
 		const requirementsLength = requirements.length
 		let approvedCount = 0
 		requirements.forEach((item, i) => {
-			if(item.documents.length > 0)
-				if(item.documents[0].status.toLowerCase() == "approved")
-					approvedCount++
+			if(item.documents.length > 0) {
+				item.documents.forEach(document => {
+					if(document.status.toLowerCase() == "approved" && document.submittedBy.userid == JSON.parse(auth).userid)
+						approvedCount++
+				})
+				 
+			}
 		})
+		console.log("requirements: ",requirements)
 		return approvedCount > 0 ? (approvedCount / requirementsLength * 100).toFixed(0) + "%" : 0 + "%"
 	}
 
@@ -107,8 +131,13 @@ export default function ActionAreaCard() {
 		let count = 0
 		departments.forEach(department => {
 			department.requirements.forEach(requirement => {
-				if(requirement.documents.length > 0 && requirement.documents[0].status.toLowerCase() == status)
-					count++
+				if(requirement.documents && requirement.documents.length > 0) {
+					requirement.documents.forEach(doc => {
+						if(doc.status.toLowerCase() == status 
+							&& doc.submittedBy.userid == JSON.parse(auth).userid)
+								count++
+					})
+				}
 			})
 		})
 		return count
@@ -129,32 +158,6 @@ export default function ActionAreaCard() {
         fetchDepartments()
 		setIsUpdatedCompany(validateCompany())
     }, []);
-
-  	const renderCards = () => {
-
-		// return	<div className='cards'>
-		// 	<div className="card">
-		// 		<h2>IT DEPARTMENT </h2>
-		// 		<h4>Upcoming</h4>
-		// 		<ul>
-		// 			<li>Deed of Undertaking / Waiver</li>
-		// 		</ul>
-		// 		<p>25% completed</p>
-		// 		<Link to="/submission"></Link>
-		// 	</div>
-		// 	<div className="card">
-		// 		<h2>NLO DEPARTMENT</h2>
-		// 		<h4>Upcoming</h4>
-		// 		<ul>
-		// 			<li>Endorsement Letter</li>
-		// 			<li>Confirmation Letter</li>
-		// 		</ul>
-		// 		<p>50% completed</p>
-		// 		<Link to="/submission"></Link>
-		// 	</div>
-		// </div>
-
-  	};
 
   return <div className='student-courses'>
 			{ !isUpdatedCompany &&

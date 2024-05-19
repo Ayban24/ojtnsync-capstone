@@ -43,7 +43,9 @@ const Navbar = () => {
                 <a className='profile-menu' onClick={() => setActiveProfileMenu(!activeProfileMenu)}>
                     {activeProfileMenu &&
                         <div className='profile-modal'>
-                            <Link to={(JSON.parse(auth).adminid) ? '' : '/profile'}>View Profile</Link>
+                            {JSON.parse(auth).userid &&
+                                <Link to={(JSON.parse(auth).adminid) ? '' : '/profile'}>View Profile</Link>
+                            }
                             <a onClick={logout}>Logout</a>
                         </div>
                     }

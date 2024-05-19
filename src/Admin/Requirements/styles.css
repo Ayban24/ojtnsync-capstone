@@ -350,3 +350,40 @@ a.requirement-list-delete-btn {
   margin-bottom: 17px;
   padding: 16px 18px;
 }
+
+.nlo-records-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nlo-records-header h2 {
+  margin: 0;
+}
+
+.nlo-records {
+  margin-top: 20px;
+}
+
+.edit-records-modal .student-documents.requirement-section {
+  display: none;
+}
+
+.edit-records-modal .nlo-requirements {
+  display: none;
+}
+
+.edit-records-modal .nlo-requirements-con.requirement-section {
+  border: none;
+  padding: 0;
+}
+
+.edit-records-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-records-modal .custom-modal .body {
+  max-width: 1190px;
+}

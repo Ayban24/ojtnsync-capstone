@@ -2,18 +2,16 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import Cookies from 'js-cookie';
 import { useLocation, Link } from 'react-router-dom';
-import CustomModal from '../../common/Modal'
 import DataTable from '../../common/DataTable';
 
 export default function Submission() {
     const [requirements, setRequirements] = useState(null)
-    const [isAddModal, setIsAddModal] = useState(false)
     const [requirementTitle, setRequirementTitle] = useState(null)
     const [requirementTerm, setRequirementTerm] = useState("Prelim")
     const [courses, setCourses] = useState(null)
     const [selectedCourse, setSelectedCourse] = useState(0)
-    const [nloIsSelected, setNloIsSelected] = useState(true)
     const [filteredCourses, setFilteredCourses] = useState(null)
+    const [activeEditRecords, setActiveEditRecords] = useState(false)
 
     const auth = JSON.parse(Cookies.get('auth'));
     const location = useLocation();
@@ -86,69 +84,6 @@ export default function Submission() {
         }
     }
 
-    const handleDelete = async (id) => {
-        const response = await fetch(`http://localhost:8080/api/requirements/${id}`, {
-            method: 'DELETE',
-        })
-
-        if (response.ok) {
-            console.log("requirement deleted")
-            window.location.reload()
-        } else {
-            console.error('Deletion failed:', response.status, response.statusText);
-            try {
-                const result = await response.json();
-                // Access specific properties from the result if needed
-                console.log('Error Message:', result.message);
-                // Handle failure, e.g., display an error message to the user
-            } catch (error) {
-                console.error('Error parsing JSON:', error);
-                // Handle unexpected JSON parsing error
-            }
-        }
-    }
-
-    const showRequirements = (term) => {
-        return (
-            requirements && <ul className='requirement-list'>
-                {requirements.map((item, index) => (
-                    (item.term && item.term.toLowerCase() == term) &&
-                    <li key={index}>
-                        <div className='title-con'><Link to={`/admin/validate?requirementId=${item.id}`}>{item.title}</Link></div>
-                        { (auth.adminType != "NLO") &&
-                            <a className='requirement-list-delete-btn' href="#!" onClick={() => handleDelete(item.id)}>Delete</a>
-                        }
-                    </li>
-                ))}
-            </ul>
-        );
-    }
-
-    const showAddModal = () => {
-        return (
-            <CustomModal show={isAddModal} onHide={(val) => {setIsAddModal(val)}}>
-                    <figure className='background'><img src="/images/folder_modal.png" /></figure>
-                    <div className='add-requirement-modal'>
-                        <div className='header'>
-                            <h4>{courses[selectedCourse].name} <a onClick={() => setIsAddModal(false)} href='javascript:;'><img src="/icons/close.png" /></a></h4>
-                            <h2>Create Requirement</h2>
-                        </div>
-                        <div className='title-con'><label>Title: </label><input type='text' id='add-modal-title' onChange={(e) => setRequirementTitle(e.target.value)} /></div>
-                        <div className='body-con'>
-                            <div className='sidebar'>
-                                <h4>Choose</h4>
-                                <label htmlFor="term1" className={requirementTerm == 'Prelim' ? "active-term" : ""}><input id='term1' type='radio' name="term" value="Prelim" onChange={handleTermChange} defaultChecked />Prelim</label>
-                                <label htmlFor="term2" className={requirementTerm == 'Midterm' ? "active-term" : ""}><input id='term2' type='radio' name="term" value="Midterm" onChange={handleTermChange} />Midterm</label>
-                                <label htmlFor="term3" className={requirementTerm == 'Pre-Final' ? "active-term" : ""}><input id='term3' type='radio' name="term" value="Pre-Final" onChange={handleTermChange} />Pre-Final</label>
-                                <label htmlFor="term4" className={requirementTerm == 'Final' ? "active-term" : ""}><input id='term4' type='radio' name="term" value="Final" onChange={handleTermChange} />Final</label>
-                            </div>
-                            <a href="#!" className='confirm-btn' onClick={submitRequirement}>Confirm</a>
-                        </div>
-                    </div>
-            </CustomModal>
-        )
-    }
-
     const handleSearch = (e) => {
         const searchVal = e.target.value
         const filtered = courses.filter((val) => (val.name.toLowerCase().includes(searchVal)))
@@ -161,11 +96,10 @@ export default function Submission() {
                 <input placeholder='Search' onChange={handleSearch} />
                 {courses && <ul>
                     {(filteredCourses ? filteredCourses : courses ? courses : []).map((item, index) => (
-                        <li className={(selectedCourse == index && !nloIsSelected) ? "active" : ""} 
+                        <li className={(selectedCourse == index) ? "active" : ""} 
                             onClick={() => {
                                     setSelectedCourse(index);
-                                    setNloIsSelected(false)
-                                    fetchRequirements(courses[index].id, true);
+                                    fetchRequirements((filteredCourses ? filteredCourses[index].id : courses[index].id), true);
                                 }
                             } 
                             key={index}>{item.name}
@@ -174,29 +108,6 @@ export default function Submission() {
                 </ul>}
             </div>
         )
-    }
-
-    const handleTermChange = (event) => {
-        setRequirementTerm(event.target.value);
-    };
-
-    const submitRequirement = async () => {
-        const formData = new FormData();
-        const departmentId = searchParams.get('department');
-        formData.append('requirementTitle', requirementTitle)
-        formData.append('requirementTerm', requirementTerm)
-        formData.append('departmentId', departmentId)
-        if(selectedCourse != null)
-            formData.append('courseId', courses[selectedCourse].id)
-
-        const response = await fetch("http://localhost:8080/api/requirements", {
-            method: 'POST',
-            body: formData,
-        })
-
-        if(response && response.ok) {
-            window.location.reload()
-        }
     }
 
     // Deep clone function
@@ -211,6 +122,31 @@ export default function Submission() {
             return obj;
         }
     }
+
+    // const handleDocumentStatus = async (documentId = null) => {
+    //     const formData = new FormData();
+    //     formData.append('comment', comment)
+    //     formData.append('status', documentStatus)
+    //     const response = await fetch(`http://localhost:8080/api/documents/${documentId}`, {
+    //         method: 'PUT',
+    //         body: formData,
+    //     })
+    //     if(response && response.ok) {
+    //         console.log("Update success")
+    //         window.location.reload();
+    //     } else {
+    //         console.error('Upload failed:', response.status, response.statusText);
+    //         try {
+    //             const result = await response.json();
+    //             // Access specific properties from the result if needed
+    //             console.log('Error Message:', result.message);
+    //             // Handle failure, e.g., display an error message to the user
+    //         } catch (error) {
+    //             console.error('Error parsing JSON:', error);
+    //             // Handle unexpected JSON parsing error
+    //         }
+    //     }
+    // }
 
     const showNloRequirements = () => {
         const nloRequirements = {
@@ -265,7 +201,10 @@ export default function Submission() {
                     </>
                 }
                 {students.length > 0 && 
-                <>
+                <div className='nlo-records'>
+                    <div className='nlo-records-header'>
+                        <h2>NLO RECORDS</h2>
+                    </div>
                     <DataTable 
                         header={[
                             'User ID',
@@ -293,7 +232,7 @@ export default function Submission() {
                             }
                         )} 
                     />
-                </>
+                </div>
                 }
             </>
         );
@@ -312,8 +251,6 @@ export default function Submission() {
             <div className='wrapper'>
                 <h1 className='page-title'><img src="/icons/documents.png" />OJT Records</h1>
                 {requirements && showNloRequirements()}
-                
-                {isAddModal && showAddModal()}
             </div>
         </div>
     );

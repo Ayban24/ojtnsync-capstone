@@ -3,10 +3,12 @@ import './styles.css';
 import Cookies from 'js-cookie';
 import { Link, useLocation } from 'react-router-dom';
 import DataTable from '../../common/DataTable';
+import CustomModal from '../../common/Modal'
 
 export default function Submission() {
     const [requirements, setRequirements] = useState(null)
     const [student, setStudent] = useState(null)
+    const [activeEditRecords, setActiveEditRecords] = useState(false)
 
     const auth = Cookies.get('auth');
     const location = useLocation();
@@ -23,6 +25,39 @@ export default function Submission() {
                 console.log("student: ",result)
                 setStudent(result)
                 return result
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Upload failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+    }
+
+    const toggleNloRecords = async (requirementId, status) => {
+        const formData = new FormData();
+        formData.append('requirementId', requirementId)
+        formData.append('userId', JSON.parse(auth.userid))
+        formData.append('status', status)
+
+        const response = await fetch(`http://localhost:8080/api/documents/nlo/create`, {
+            method: 'POST',
+            body: formData,
+        })
+
+        if (response && response.ok) {
+            try {
+                const result = await response.json();
+                console.log("nlo record toggle: ",result)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -69,7 +104,7 @@ export default function Submission() {
         }
     }
 
-    const showNloRequirements = (term) => {
+    const showNloRequirements = () => {
 
         const  nloRequirements = {
             'OC: Orientation Certificate'       : ['OC',null,'#677800'],
@@ -98,7 +133,6 @@ export default function Submission() {
                 item2.documents[0].status
             ]
         })
-        console.log("req details: ",requirementDetails)
         
         return (
             requirements && 
@@ -115,7 +149,7 @@ export default function Submission() {
                     <div className='nlo-requirements'>
                         <div className='nlo-requirements-header'>
                             <h2>NLO RECORDS</h2>
-                            <a href='javascript:;' className='edit-btn btn-yellow'>EDIT</a>
+                            <a href='javascript:;' className='edit-btn btn-yellow' onClick={() => setActiveEditRecords(true)}>EDIT</a>
                         </div>
                         <ul>
                             {requirements
@@ -144,7 +178,13 @@ export default function Submission() {
                                 <tr>
                                     { nloRequirements && requirements &&
                                         Object.entries(nloRequirements).map(([key, value]) => {
-                                            return <td><i className={`status status-${value[1]}`}></i></td>
+                                            return <td>
+                                                <a href='javascript:;' className={`status status-${value[1]}`} onClick={() => {
+                                                    const req = requirements.find(item => item.title == key)
+                                                    // const newStatus = (req.status == 'Active') ? ''
+                                                    // toggleNloRecords(req.id, req.status)
+                                                }}></a>
+                                            </td>
                                         })
                                     }
                                 </tr>
@@ -191,6 +231,18 @@ export default function Submission() {
         );
     }
 
+    const showEditRecordsModal = () => {
+        return <div className="edit-records-modal">
+            <CustomModal show={true}>
+                <div className='edit-records-modal-header'>
+                    <h2>Edit Records</h2>
+                    <a href='javascript:;' onClick={() => setActiveEditRecords(false)}><img src="/icons/close.png" /></a>
+                </div>
+                {showNloRequirements()}
+            </CustomModal>
+        </div>
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             const student = await fetchUser();
@@ -227,6 +279,7 @@ export default function Submission() {
                     {showNloRequirements()}
                 </div>
             </div>
+            {activeEditRecords && showEditRecordsModal()}
         </div>
     );
   }

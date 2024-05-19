@@ -11,7 +11,7 @@ const Students = () => {
     const [selectedCourse, setSelectedCourse] = useState(0)
 
     const fetchStudents = async () => {
-        const response = await fetch(`http://localhost:8080/courses`, {
+        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${auth.departmentId}`, {
             method: 'GET',
         })
 
