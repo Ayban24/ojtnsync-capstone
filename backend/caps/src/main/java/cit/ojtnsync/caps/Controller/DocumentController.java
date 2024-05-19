@@ -88,13 +88,16 @@ public class DocumentController {
     @PostMapping("/nlo/create")
     public ResponseEntity<Document> createNloDocument(
             @RequestParam("requirementId") int requirementId,
-            @RequestParam("userId") long userId) {
+            @RequestParam("userId") long userId,
+            @RequestParam("status") String status) {
 
         Document document = new Document();
         Requirement requirement = requirementService.getRequirementById(requirementId);
         UserEntity user = userService.findById(userId);
         document.setRequirement(requirement);
         document.setSubmittedBy(user);
+        document.setStatus(status);
+        documentService.saveDocument(document);
 
         return ResponseEntity.ok(document);
     }

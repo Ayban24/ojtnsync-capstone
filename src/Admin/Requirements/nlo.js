@@ -99,7 +99,7 @@ export default function Submission() {
                         <li className={(selectedCourse == index) ? "active" : ""} 
                             onClick={() => {
                                     setSelectedCourse(index);
-                                    fetchRequirements(courses[index].id, true);
+                                    fetchRequirements((filteredCourses ? filteredCourses[index].id : courses[index].id), true);
                                 }
                             } 
                             key={index}>{item.name}
@@ -108,29 +108,6 @@ export default function Submission() {
                 </ul>}
             </div>
         )
-    }
-
-    const handleTermChange = (event) => {
-        setRequirementTerm(event.target.value);
-    };
-
-    const submitRequirement = async () => {
-        const formData = new FormData();
-        const departmentId = searchParams.get('department');
-        formData.append('requirementTitle', requirementTitle)
-        formData.append('requirementTerm', requirementTerm)
-        formData.append('departmentId', departmentId)
-        if(selectedCourse != null)
-            formData.append('courseId', courses[selectedCourse].id)
-
-        const response = await fetch("http://localhost:8080/api/requirements", {
-            method: 'POST',
-            body: formData,
-        })
-
-        if(response && response.ok) {
-            window.location.reload()
-        }
     }
 
     // Deep clone function

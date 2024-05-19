@@ -32,11 +32,11 @@ public class AdminController {
 	
 	@GetMapping("/admin/login")
 	@CrossOrigin(origins = "*")
-	public ResponseEntity findByFacultyId(
-			@RequestParam(name = "adminId", required = false) long adminId,
+	public ResponseEntity loginFaculty(
+			@RequestParam(name = "facultyId", required = false) String facultyId,
 			@RequestParam(name = "password", required = false, defaultValue = "0") String password) {    
 
-		AdminEntity admin = adminService.findById(adminId);
+		AdminEntity admin = adminService.findByFacultyId(facultyId);
 		if (admin != null && admin.getPassword().equals(password)) {
 			int departmentId = admin.getDepartment().getId();
 

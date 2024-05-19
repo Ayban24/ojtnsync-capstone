@@ -43,6 +43,39 @@ export default function Submission() {
         }
     }
 
+    const toggleNloRecords = async (requirementId, status) => {
+        const formData = new FormData();
+        formData.append('requirementId', requirementId)
+        formData.append('userId', JSON.parse(auth.userid))
+        formData.append('status', status)
+
+        const response = await fetch(`http://localhost:8080/api/documents/nlo/create`, {
+            method: 'POST',
+            body: formData,
+        })
+
+        if (response && response.ok) {
+            try {
+                const result = await response.json();
+                console.log("nlo record toggle: ",result)
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Upload failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+    }
+
     const fetchRequirements = async (student) => {
         const response = await fetch(`http://localhost:8080/api/requirements/department/${JSON.parse(auth).adminid}/course/${student.course.id}?userid=${student.userid}`, {
             method: 'GET',
@@ -147,7 +180,9 @@ export default function Submission() {
                                         Object.entries(nloRequirements).map(([key, value]) => {
                                             return <td>
                                                 <a href='javascript:;' className={`status status-${value[1]}`} onClick={() => {
-                                                    console.log("reqq: ",requirements)
+                                                    const req = requirements.find(item => item.title == key)
+                                                    // const newStatus = (req.status == 'Active') ? ''
+                                                    // toggleNloRecords(req.id, req.status)
                                                 }}></a>
                                             </td>
                                         })

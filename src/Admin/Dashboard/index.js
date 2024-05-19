@@ -109,7 +109,7 @@ export default function Dashboard() {
             }
             requirements.forEach(req => {
                 if(course.id == req.courseId)
-                    status[req.documents[0].status.toLowerCase()] = status[req.documents[0].status.toLowerCase()] + 1
+                    status[req.documents?.[0]?.status.toLowerCase()] = status[req.documents?.[0]?.status.toLowerCase()] + 1
             })
             statusPerCourse.push({
                 course: course.name,
@@ -194,9 +194,9 @@ export default function Dashboard() {
                     </div>
                 }
                 {/* <Line data={lineData} options={options} /> */}
-                {courses &&
+                {courses && requirements && 
                     <div className='student-documents-status'>
-                        {/* {showDocumentStatusChart()} */}
+                        {showDocumentStatusChart()}
                     </div>
                 }
             </main>
