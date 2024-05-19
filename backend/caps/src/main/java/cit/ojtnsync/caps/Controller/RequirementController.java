@@ -117,8 +117,8 @@ public class RequirementController {
                     req.getTerm(),
                     req.getStatus(),
                     req.getDepartment().getId(),
-                    req.getCourse().getId(),
-                    req.getCourse().getName()
+                    req.getCourse() != null ? req.getCourse().getId() : 0,
+                    req.getCourse() != null ? req.getCourse().getName() : null
             ));
         }
         return ResponseEntity.ok(requirementWithCourseDTO);

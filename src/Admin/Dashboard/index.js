@@ -196,7 +196,7 @@ export default function Dashboard() {
                 {/* <Line data={lineData} options={options} /> */}
                 {courses &&
                     <div className='student-documents-status'>
-                        {showDocumentStatusChart()}
+                        {/* {showDocumentStatusChart()} */}
                     </div>
                 }
             </main>
