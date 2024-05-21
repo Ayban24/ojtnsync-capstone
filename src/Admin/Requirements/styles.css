@@ -387,3 +387,34 @@ a.requirement-list-delete-btn {
 .edit-records-modal .custom-modal .body {
   max-width: 1190px;
 }
+
+.edit-records-accept-btn {
+  display: none;
+}
+
+.edit-records-modal .edit-records-accept-btn {
+  display: block;
+  width: 56px;
+  text-align: center;
+  margin: 20px 0 0 auto;
+}
+
+.tbl-requirements-status {
+  pointer-events: none;
+}
+
+.edit-records-modal .tbl-requirements-status {
+  pointer-events: all;
+}
+
+.tbl-requirements-status-remarks {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 10px;
+  border: 0;
+  pointer-events: none;
+}
+
+.edit-records-modal .tbl-requirements-status-remarks {
+  pointer-events: all;
+}

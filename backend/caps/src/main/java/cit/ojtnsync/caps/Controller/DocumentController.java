@@ -85,17 +85,24 @@ public class DocumentController {
         }
     }
 
-    @PostMapping("/nlo/create")
-    public ResponseEntity<Document> createNloDocument(
+    @PostMapping("/nlo/create-or-update")
+    public ResponseEntity<Document> createOrUpdateNloDocument(
             @RequestParam("requirementId") int requirementId,
             @RequestParam("userId") long userId,
-            @RequestParam("status") String status) {
+            @RequestParam("status") String status,
+            @RequestParam("documentId") int documentId) {
 
-        Document document = new Document();
-        Requirement requirement = requirementService.getRequirementById(requirementId);
-        UserEntity user = userService.findById(userId);
-        document.setRequirement(requirement);
-        document.setSubmittedBy(user);
+        Document document;
+        // if document id is greater than zero, create a new document, else, update the existing document with the new status
+        if(documentId > 0)
+            document = documentService.getDocumentById(documentId);
+        else {
+            document = new Document();
+            Requirement requirement = requirementService.getRequirementById(requirementId);
+            UserEntity user = userService.findById(userId);
+            document.setRequirement(requirement);
+            document.setSubmittedBy(user);
+        }
         document.setStatus(status);
         documentService.saveDocument(document);
 
