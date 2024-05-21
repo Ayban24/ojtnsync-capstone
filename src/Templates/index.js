@@ -40,12 +40,34 @@ export default function Templates() {
         }
     }
 
+    const deleteTemplate = async (templateId) => {
+        const response = await fetch(`http://localhost:8080/templates/delete/${templateId}`, {
+            method: 'DELETE',
+        })
+
+        if (response.ok) {
+            window.location.replace("/templates")
+        } else {
+            console.error('Response failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+    }
+
     const showTemplates = () => {
         return (
             templates && <ul>
                 {templates.map((item, index) => (
                     <li key={index}> 
                         <a href={`http://localhost:8080/templates/download/${item.id}`} target='_blank' rel='noopener noreferrer'>{item.title}</a>
+                        <a className='template-delete-btn' onClick={() => deleteTemplate(item.id)}>Delete</a>
                     </li>
                 ))}
             </ul>

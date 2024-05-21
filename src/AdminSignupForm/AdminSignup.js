@@ -110,141 +110,140 @@ const SignupForm = () => {
   return (
     <div className= "App">
 
-    <div className= "signup-container">
-    <div className= "left-side">
-    <img className='Logo' img src={logo1} alt="Logo" />
-    <Link to="/adminloginform">
-    <h3>Already have an account?</h3>
-    </Link>
-    </div>
-
-    <div className= "form">
-    <div className='input'>
-      <h2>Signup</h2>
-      
-        <div className='input'>
-          <TextField htmlFor="studentID" label="Faculty ID" variant="outlined"
-          
-            type="text"
-            id="facultyId"
-            value={facultyId}
-            onChange={(e) => setFacultyId(e.target.value)}
-            style={{ width: '100%', height: '100%'}}>
-            </TextField>
-        </div>
-
-
-        <div className='input'> 
-          <TextField htmlFor="firstName" label="Firstname" variant="outlined"         
-            type="text"
-            id="firstName"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            style={{ width: '100%', height: '100%'}}>
-          </TextField>
-        </div>
-
-
-        <div className='input'> 
-          <TextField htmlFor="lastName" label="Lastname" variant="outlined"      
-            type="text"
-            id="lastName"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            style={{ width: '100%', height: '100%'}}>         
-        </TextField>
-        </div>
-        
-        <div className='input'>
-        <FormControl fullWidth>
-          <InputLabel id="course-label">Department</InputLabel>
-          <Select
-          labelId="course-label"
-          id="course"
-          value={department.name}
-          onChange={(e) => setDepartment(departments[e.target.value])}
-          >
-          {showDepartments()}
-          </Select>
-        </FormControl>
-</div>
-
-        <div className='input'>
-          <TextField htmlFor="email" label="Email" variant="outlined" 
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ width: '100%', height: '100%'}}>
-            </TextField>
-        </div>
-
-        <div className='input'>
-          <TextField htmlFor="password" label="Password" variant="outlined"
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ width: '100%', height: '100%'}}>
-          </TextField>
-        </div>
-        <div className='input'>
-    <TextField
-      htmlFor='confirmPassword'
-      label='Confirm Password'
-      variant='outlined'
-      type='password'
-      id='confirmPassword'
-      value={confirmPassword}
-      onChange={(e) => setConfirmPassword(e.target.value)}
-      style={{ width: '100%', height: '100%' }}
-    />
-  </div> 
-        <div className='input'>
-        <Button variant = "contained" onClick={handleSignup}>
-          Sign Up
-        </Button>
-        </div>
-
+      <div className= "signup-container1">
+        <div className='left-side'>
+          <div className= "form">
+          <div className='input'>
+            <figure className='cit-logo'><img src="/images/cit_logo.png" /></figure>
+            <h2>Signup</h2>
+            
+              <div className='input'>
+                <TextField htmlFor="studentID" label="Faculty ID" variant="outlined"
+                
+                  type="text"
+                  id="facultyId"
+                  value={facultyId}
+                  onChange={(e) => setFacultyId(e.target.value)}
+                  style={{ width: '100%', height: '100%'}}>
+                  </TextField>
+              </div>
+  
+  
+              <div className='input'> 
+                <TextField htmlFor="firstName" label="Firstname" variant="outlined"         
+                  type="text"
+                  id="firstName"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  style={{ width: '100%', height: '100%'}}>
+                </TextField>
+              </div>
+  
+  
+              <div className='input'> 
+                <TextField htmlFor="lastName" label="Lastname" variant="outlined"      
+                  type="text"
+                  id="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  style={{ width: '100%', height: '100%'}}>         
+              </TextField>
+              </div>
+              
+              <div className='input'>
+              <FormControl fullWidth>
+                <InputLabel id="course-label">Department</InputLabel>
+                <Select
+                labelId="course-label"
+                id="course"
+                value={department.name}
+                onChange={(e) => setDepartment(departments[e.target.value])}
+                >
+                {showDepartments()}
+                </Select>
+              </FormControl>
       </div>
-      </div>
-    </div>
-    <Modal
-        open={isSuccessModalOpen}
-        onClose={handleCloseModal}
-        aria-labelledby="user-created-modal-title"
-        aria-describedby="user-created-modal-description"
-      >
-        <div className="modal-paper">
-          <Typography variant="h6" id="user-created-modal-title">
-            Admin Created Successfully!
-          </Typography>
-          <Typography id="user-created-modal-description">
-            Congratulations! Your account has been successfully created.
-          </Typography>
-          <Button variant="contained" onClick={handleCloseModal}>
-            Close
-          </Button>
+  
+              <div className='input'>
+                <TextField htmlFor="email" label="Email" variant="outlined" 
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={{ width: '100%', height: '100%'}}>
+                  </TextField>
+              </div>
+  
+              <div className='input'>
+                <TextField htmlFor="password" label="Password" variant="outlined"
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={{ width: '100%', height: '100%'}}>
+                </TextField>
+              </div>
+              <div className='input'>
+          <TextField
+            htmlFor='confirmPassword'
+            label='Confirm Password'
+            variant='outlined'
+            type='password'
+            id='confirmPassword'
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            style={{ width: '100%', height: '100%' }}
+          />
+        </div> 
+              <div className='input'>
+              <Button variant = "contained" onClick={handleSignup}>
+                Sign Up
+              </Button>
+              </div>
+  
+            </div>
+          </div>
         </div>
-      </Modal>
+        <div className= "right-side">
+          <figure className='login-logo'><img src="/images/logo.png" /></figure>
+        </div>
+      </div>
       <Modal
-          open={isErrorModalOpen}
-          onClose={handleCloseErrorModal}
-          aria-labelledby="error-modal-title"
-          aria-describedby="error-modal-description"
+          open={isSuccessModalOpen}
+          onClose={handleCloseModal}
+          aria-labelledby="user-created-modal-title"
+          aria-describedby="user-created-modal-description"
         >
           <div className="modal-paper">
-            <Typography variant="h6" id="error-modal-title">
-              Error
+            <Typography variant="h6" id="user-created-modal-title">
+              Admin Created Successfully!
             </Typography>
-            <Typography id="error-modal-description">
-              {errorMessage || 'An error occurred during signup.'}
+            <Typography id="user-created-modal-description">
+              Congratulations! Your account has been successfully created.
             </Typography>
-            <Button variant="contained" onClick={handleCloseErrorModal}>
+            <Button variant="contained" onClick={handleCloseModal}>
               Close
             </Button>
           </div>
-        </Modal>  
+        </Modal>
+        <Modal
+            open={isErrorModalOpen}
+            onClose={handleCloseErrorModal}
+            aria-labelledby="error-modal-title"
+            aria-describedby="error-modal-description"
+          >
+            <div className="modal-paper">
+              <Typography variant="h6" id="error-modal-title">
+                Error
+              </Typography>
+              <Typography id="error-modal-description">
+                {errorMessage || 'An error occurred during signup.'}
+              </Typography>
+              <Button variant="contained" onClick={handleCloseErrorModal}>
+                Close
+              </Button>
+            </div>
+          </Modal>  
     </div>
   );
 };
