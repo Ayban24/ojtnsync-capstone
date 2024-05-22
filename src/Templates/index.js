@@ -67,7 +67,9 @@ export default function Templates() {
                 {templates.map((item, index) => (
                     <li key={index}> 
                         <a href={`http://localhost:8080/templates/download/${item.id}`} target='_blank' rel='noopener noreferrer'>{item.title}</a>
-                        <a className='template-delete-btn' onClick={() => deleteTemplate(item.id)}>Delete</a>
+                        { auth.adminid && auth.adminType && auth.adminType.toLowerCase() != 'nlo' &&
+                            <a className='template-delete-btn' onClick={() => deleteTemplate(item.id)}>Delete</a>
+                        }
                     </li>
                 ))}
             </ul>
@@ -130,7 +132,7 @@ export default function Templates() {
         <div className='wrapper'>
             <h1><img src="/icons/template.png" />List of Requirements</h1>
 
-            { auth.adminid &&
+            { auth.adminid && auth.adminType && auth.adminType.toLowerCase() != 'nlo' &&
                 <a className='add-btn' href="#!" onClick={() => setShowModal(true)}>Add Template</a>
             }
             <div className='template-list'>
@@ -148,7 +150,7 @@ export default function Templates() {
                     id='file-upload'
                     onChange={handleFileChange}
                 />
-                <button type='button' onClick={submitHandler} >Upload</button>
+                <button className='btn-yellow' type='button' onClick={submitHandler} >Upload</button>
 
             </Modal>
             }

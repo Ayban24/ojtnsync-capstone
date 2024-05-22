@@ -65,7 +65,10 @@ function App() {
 								<Route path="/admin/requirements" element={<NLORequirements />} />
 								<Route path="/admin/requirements/view" element={<ViewNLORequirements />} />
 							  </>
-							: <Route path="/admin/requirements" element={<Requirements />} />
+							: <>
+								<Route path="/admin/requirements" element={<Requirements />} />
+								<Route path="/admin/requirements/view" element={<ViewNLORequirements />} />
+							  </>
 						}
 						<Route path="/admin/students" element={<Students />} />
 						<Route path="/admin/students/add" element={<AddStudent />} />

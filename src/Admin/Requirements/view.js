@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { Link, useLocation } from 'react-router-dom';
 import DataTable from '../../common/DataTable';
 import CustomModal from '../../common/Modal'
+import { Document, Page, pdfjs } from 'react-pdf';
 
 export default function Submission() {
     const [requirements, setRequirements] = useState(null)
@@ -11,10 +12,13 @@ export default function Submission() {
     const [student, setStudent] = useState(null)
     const [activeEditRecords, setActiveEditRecords] = useState(false)
     const [remarks, setRemarks] = useState('')
+    const [check, setCheck] = useState(false)
+    const [checkInfo, setCheckInfo] = useState(null)
 
     const auth = Cookies.get('auth');
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
     const fetchUser = async () => {
         const response = await fetch(`http://localhost:8080/userByID/${searchParams.get('userid')}`, {
@@ -138,7 +142,7 @@ export default function Submission() {
 
         const requirementDetails = studentRequirements?.filter(item => item?.documents?.[0]).map(item2 => {
             return [
-                item2.documents[0].fileName,
+                <a href="javascript:;" onClick={() => {setCheck(true);setCheckInfo(item2.documents[0])}}>{item2.documents[0].fileName}</a>,
                 item2.title,
                 item2.documents[0].status
             ]
@@ -159,14 +163,16 @@ export default function Submission() {
                     <div className='nlo-requirements'>
                         <div className='nlo-requirements-header'>
                             <h2>NLO RECORDS</h2>
-                            <a href='javascript:;' className='edit-btn btn-yellow' onClick={() => setActiveEditRecords(true)}>EDIT</a>
+                            {JSON.parse(auth).adminType && JSON.parse(auth).adminType.toLowerCase() == 'nlo' &&
+                                <a href='javascript:;' className='edit-btn btn-yellow' onClick={() => setActiveEditRecords(true)}>EDIT</a>
+                            }
                         </div>
                         <ul>
                             {requirements
                             .filter(req => nloRequirements[req.title] && nloRequirements[req.title].length > 0)
                             .map((item, index) => (
                                 <li key={index}>
-                                    <a style={{color: nloRequirements[item.title] ? nloRequirements[item.title][2] : '#000'}} href='javascript:;'>{item.title}</a>
+                                    <a style={{color: nloRequirements[item.title] ? nloRequirements[item.title][2] : '#000'}}>{item.title}</a>
                                 </li>
                             ))}
                         </ul>
@@ -294,10 +300,32 @@ export default function Submission() {
         </div>
     }
 
+    const showDocument = () => {
+        return (
+        <div className='document-con'>
+            <button className='back-btn' onClick={() => setCheck(false)}>&lsaquo;</button>
+            <div className='document-info'>
+                <div className='header'>
+                    <h4>{checkInfo.submittedBy.firstName} {checkInfo.submittedBy.lastName}</h4>
+                    <div className='actions'>
+                        <a href={`http://localhost:8080/file/download/${checkInfo.id}`}>Download</a>
+                    </div>
+                </div>
+                {checkInfo.extName == "pdf" 
+                    ?   <Document file={`http://localhost:8080/file/download/${checkInfo.id}`} >
+                            <Page pageNumber={1} />
+                        </Document>
+                    :   <figure><img src={`http://localhost:8080/file/download/${checkInfo.id}`} /></figure>
+                }
+            </div>
+        </div>
+        )
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             const student = await fetchUser();
-            fetchRequirements(student, JSON.parse(auth).departmentId, true);
+            fetchRequirements(student, 1, true);
             fetchRequirements(student, student.course.department.id, false)
         };
     
@@ -332,6 +360,7 @@ export default function Submission() {
                 </div>
             </div>
             {activeEditRecords && showEditRecordsModal()}
+            {(check && checkInfo) && showDocument()}
         </div>
     );
   }
