@@ -135,7 +135,6 @@ export default function Submission() {
                 }
             });
         }
-        console.log("nlo req: ",nloRequirements)
 
         const requirementDetails = studentRequirements?.filter(item => item?.documents?.[0]).map(item2 => {
             return [
