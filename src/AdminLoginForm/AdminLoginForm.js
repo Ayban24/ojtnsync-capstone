@@ -126,13 +126,13 @@ const handleLogin = async () => {
 						</Link>
 						<button className='login-button' variant = "contained" onClick={handleLogin}>Login</button>
 					
-					{loggedInUser && (
+					{/* {loggedInUser && (
 						<div>
 						<h3>Welcome, {loggedInUser.firstName} {loggedInUser.lastName}!</h3>
 						<p>Email: {loggedInUser.email}</p>
 						<p>Course: {loggedInUser.department}</p>
 						</div>
-					)}
+					)} */}
 	
 					{error && <p style={{ color: 'red' }}>{error}</p>}
 				</div>
