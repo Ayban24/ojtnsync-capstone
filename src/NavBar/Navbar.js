@@ -35,8 +35,11 @@ const Navbar = () => {
                     {JSON.parse(auth).adminid && JSON.parse(auth).adminType && JSON.parse(auth).adminType == 'faculty' && 
                         <>
                             <Link to={`/admin/students`} className={isPathActive(`/admin/students`) ? 'active' : ''}>Records</Link>
-                            <Link to="/templates" className={isPathActive(`/templates`) ? 'active' : ''}>Templates</Link>
+                            
                         </>
+                    }
+                    {!(JSON.parse(auth).adminType && JSON.parse(auth).adminType == 'nlo') && 
+                        <Link to="/templates" className={isPathActive(`/templates`) ? 'active' : ''}>Templates</Link>
                     }
                 </div>
                 {/* <Link to={(JSON.parse(auth).adminid) ? '' : '/profile'} className='profile-menu'><img src="/images/profile.png" /></Link> */}

@@ -196,7 +196,6 @@ public class UserController {
         @RequestParam(name = "phone", required = false) String phone,
         @RequestParam(name = "email", required = false) String email,
         @RequestParam(name = "status", required = false) String status
-        // Add other form parameters as needed
     ) {
         // Fetch the user from the database
         UserEntity user = userService.findByStudentID(studentId);
@@ -223,12 +222,24 @@ public class UserController {
         if (status != null) 
             user.setStatus(status);
 
-        // Update other properties as needed
-
         // Save the updated user
         userService.createUser(user);
 
         return ResponseEntity.ok("User updated successfully");
+    }
+
+
+    @PutMapping("/user/remarks/update/{userid}")
+    public ResponseEntity<String> updateRemarks(
+        @PathVariable("userid") long userid,
+        @RequestParam(name = "remarks", required = true) String remarks
+    ) {
+        UserEntity user = userService.findById(userid);
+
+        user.setRemarks(remarks);
+        userService.createUser(user);
+
+        return ResponseEntity.ok("Remarks updated successfully");
     }
 
 

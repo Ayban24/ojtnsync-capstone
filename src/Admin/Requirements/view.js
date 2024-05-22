@@ -7,8 +7,10 @@ import CustomModal from '../../common/Modal'
 
 export default function Submission() {
     const [requirements, setRequirements] = useState(null)
+    const [studentRequirements, setStudentRequirements] = useState(null)
     const [student, setStudent] = useState(null)
     const [activeEditRecords, setActiveEditRecords] = useState(false)
+    const [remarks, setRemarks] = useState('')
 
     const auth = Cookies.get('auth');
     const location = useLocation();
@@ -24,6 +26,7 @@ export default function Submission() {
                 const result = await response.json();
                 console.log("student: ",result)
                 setStudent(result)
+                setRemarks(result.remarks)
                 return result
             } catch (error) {
                 console.error('Error parsing JSON:', error);
@@ -43,13 +46,14 @@ export default function Submission() {
         }
     }
 
-    const toggleNloRecords = async (requirementId, status) => {
+    const toggleNloRecords = async (requirementId, status, documentId) => {
         const formData = new FormData();
         formData.append('requirementId', requirementId)
-        formData.append('userId', JSON.parse(auth.userid))
+        formData.append('userId', student.userid)
         formData.append('status', status)
+        formData.append('documentId', documentId ? documentId : 0)
 
-        const response = await fetch(`http://localhost:8080/api/documents/nlo/create`, {
+        const response = await fetch(`http://localhost:8080/api/documents/nlo/create-or-update`, {
             method: 'POST',
             body: formData,
         })
@@ -58,6 +62,7 @@ export default function Submission() {
             try {
                 const result = await response.json();
                 console.log("nlo record toggle: ",result)
+                fetchRequirements(student, JSON.parse(auth).departmentId, true);
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -76,16 +81,19 @@ export default function Submission() {
         }
     }
 
-    const fetchRequirements = async (student) => {
-        const response = await fetch(`http://localhost:8080/api/requirements/department/${JSON.parse(auth).adminid}/course/${student.course.id}?userid=${student.userid}`, {
+    const fetchRequirements = async (student, departmentId, isNlo) => {
+        const response = await fetch(`http://localhost:8080/api/requirements/department/${departmentId}/course/${student.course.id}?userid=${student.userid}`, {
             method: 'GET',
         })
 
         if (response.ok) {
             try {
                 const result = await response.json();
-                setRequirements(result)
-                console.log("response: ",result)
+                if(isNlo)
+                    setRequirements(result)
+                else
+                    setStudentRequirements(result)
+                console.log("requirements: ",result)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -107,26 +115,28 @@ export default function Submission() {
     const showNloRequirements = () => {
 
         const  nloRequirements = {
-            'OC: Orientation Certificate'       : ['OC',null,'#677800'],
-            'CL: Confirmation Letter'           : ['CL',null,'#E900FE'],
-            'MOA: Memorandum of Agreement'      : ['MOA',null,'#000000'],
-            'DOU: Deed of Undertaking'          : ['DOU',null,'#FF0808'],
-            'EL: Endorsement Letter'            : ['EL',null,'#F19F00'],
-            'W: Waiver'                         : ['W',null,'#047016'],
-            'LOU: Letter of Undertaking'        : ['LOU',null,'#000AFF'],
-            'OSL: Official Study Load'          : ['OSL',null,'#FF006B'],
-            'COC: Certificate of Completion'    : ['COC',null,'#0DB09C'],
+            'OC: Orientation Certificate'       : ['OC',null,'#677800',null],
+            'CL: Confirmation Letter'           : ['CL',null,'#E900FE',null],
+            'MOA: Memorandum of Agreement'      : ['MOA',null,'#000000',null],
+            'DOU: Deed of Undertaking'          : ['DOU',null,'#FF0808',null],
+            'EL: Endorsement Letter'            : ['EL',null,'#F19F00',null],
+            'W: Waiver'                         : ['W',null,'#047016',null],
+            'LOU: Letter of Undertaking'        : ['LOU',null,'#000AFF',null],
+            'OSL: Official Study Load'          : ['OSL',null,'#FF006B',null],
+            'COC: Certificate of Completion'    : ['COC',null,'#0DB09C',null],
         }
         
         if(requirements) {
             // Sets the status for each requirements
             requirements.forEach(item => {
-                if(nloRequirements.hasOwnProperty(item.title))
+                if(nloRequirements.hasOwnProperty(item.title)) {
                     nloRequirements[item.title][1] = item?.documents?.[0]?.status.toLowerCase()
+                    nloRequirements[item.title][3] = item?.documents?.[0]?.id
+                }
             });
         }
 
-        const requirementDetails = requirements?.filter(item => item?.documents?.[0]).map(item2 => {
+        const requirementDetails = studentRequirements?.filter(item => item?.documents?.[0]).map(item2 => {
             return [
                 item2.documents[0].fileName,
                 item2.title,
@@ -180,9 +190,11 @@ export default function Submission() {
                                         Object.entries(nloRequirements).map(([key, value]) => {
                                             return <td>
                                                 <a href='javascript:;' className={`status status-${value[1]}`} onClick={() => {
-                                                    const req = requirements.find(item => item.title == key)
-                                                    // const newStatus = (req.status == 'Active') ? ''
-                                                    // toggleNloRecords(req.id, req.status)
+                                                    if(activeEditRecords) {
+                                                        const req = requirements.find(item => item.title == key)
+                                                        const newStatus = (value[1] == 'approved') ? 'Disapproved' : 'Approved'
+                                                        toggleNloRecords(req.id, newStatus, value[3])
+                                                    }
                                                 }}></a>
                                             </td>
                                         })
@@ -220,20 +232,59 @@ export default function Submission() {
                             <tbody>
                                 <tr>
                                     <td>
-                                        {student?.remarks}
+                                        <input 
+                                            type='text' 
+                                            onChange={(e) => setRemarks(e.target.value)} 
+                                            value={remarks} 
+                                            className='tbl-requirements-status-remarks'
+                                        />
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+                    <a className='edit-records-accept-btn btn-yellow' href='javascript:;' onClick={() => {
+                        updateRemarks()
+                        setActiveEditRecords(false)
+                    }}>Accept</a>
                 </div>
             </>
         );
     }
 
+    const updateRemarks = async () => {
+        const formData = new FormData();
+        formData.append('remarks', remarks);
+
+        const response = await fetch(`http://localhost:8080/user/remarks/update/${searchParams.get('userid')}`, {
+            method: 'PUT',
+            body: formData,
+        })
+
+        if (response && response.ok) {
+            try {
+                const result = await response.json();
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Upload failed:');
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+    }
+
     const showEditRecordsModal = () => {
         return <div className="edit-records-modal">
-            <CustomModal show={true}>
+            <CustomModal show={true} onHide={() => setActiveEditRecords(false)}>
                 <div className='edit-records-modal-header'>
                     <h2>Edit Records</h2>
                     <a href='javascript:;' onClick={() => setActiveEditRecords(false)}><img src="/icons/close.png" /></a>
@@ -246,7 +297,8 @@ export default function Submission() {
     useEffect(() => {
         const fetchData = async () => {
             const student = await fetchUser();
-            fetchRequirements(student);
+            fetchRequirements(student, JSON.parse(auth).departmentId, true);
+            fetchRequirements(student, student.course.department.id, false)
         };
     
         fetchData();
