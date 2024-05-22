@@ -194,7 +194,7 @@ export default function Dashboard() {
                     </div>
                 }
                 {/* <Line data={lineData} options={options} /> */}
-                {courses && requirements && 
+                {courses && requirements && JSON.parse(auth).adminType.toLowerCase() != 'nlo' && 
                     <div className='student-documents-status'>
                         {showDocumentStatusChart()}
                     </div>
