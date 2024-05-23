@@ -62,7 +62,8 @@ const Students = () => {
                         item.lastName, 
                         item.email, 
                         getApprovedDocuments(courses[selectedCourse], item), 
-                        <Link to={`/admin/student/documents?userid=${item.userid}&course=${courses[selectedCourse].id}`}>View</Link>
+                        // <Link to={`/admin/student/documents?userid=${item.userid}&course=${courses[selectedCourse].id}`}>View</Link>
+                        <Link to={`/admin/requirements/view?userid=${item.userid}`}>View</Link>
                     ]))
                 } 
             />

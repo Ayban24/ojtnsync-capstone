@@ -79,17 +79,6 @@ const StudentDocuments = () => {
         )
     }
 
-    const showCoursesNav = () => {
-        return (<div className='course-nav'>
-            {(courses && courses.length > 0) && 
-                courses.map((item, index) => (
-                    <a className={selectedCourse == index ? "active" : ""} key={index}>{item.name} DEPARTMENT</a>
-                ))
-            }
-            
-        </div>)
-    }
-
     const showDocument = () => {
         return (
         <div className='document-con'>
@@ -142,7 +131,6 @@ const StudentDocuments = () => {
                         <Link to={'/profile?userid='+searchParams.get('userid')} href="javascript:;">View Profile</Link>
                     </section>
                 </div>
-                {showCoursesNav()}
                 {showDocuments()}
             </div>
             {(check && checkInfo) && showDocument()}
