@@ -9,6 +9,7 @@ import SplashScreen from './SplashScreen'; // Import the SplashScreen component
 import Templates from './Templates';
 import Navbar from './NavBar/Navbar';
 import Submission from './Submission';
+import NloSubmission from './Submission/nlo'
 import AdminHomepage from './Admin/Homepage';
 import AdminSubmission from './Admin/Submission';
 import Validate from './Admin/Validate'
@@ -57,6 +58,7 @@ function App() {
 						<Route path="/profile" element={<Profile />} />
 						<Route path="/templates" element={<Templates/>} />
 						<Route path="/submission" element={<Submission/>} />
+						<Route path='/submission/nlo' element={<NloSubmission/>} />
 						{/* <Route path="/admin/homepage" element={<AdminHomepage />} /> */}
 						<Route path="/admin/homepage" element={<Dashboard />} />
 						<Route path="/admin/submission" element={<AdminSubmission />} />

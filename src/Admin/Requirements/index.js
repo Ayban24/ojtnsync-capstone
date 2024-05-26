@@ -10,7 +10,7 @@ export default function Submission() {
     const [requirementTitle, setRequirementTitle] = useState(null)
     const [requirementTerm, setRequirementTerm] = useState("Prelim")
     const [courses, setCourses] = useState(null)
-    const [selectedCourse, setSelectedCourse] = useState(0)
+    const [selectedCourse, setSelectedCourse] = useState(null)
     const [nloIsSelected, setNloIsSelected] = useState(false)
     const [filteredCourses, setFilteredCourses] = useState(null)
     const [yearSemesters, setYearSemesters] = useState(null)
@@ -33,6 +33,8 @@ export default function Submission() {
             try {
                 const result = await response.json();
                 setCourses(result)
+                if(result.length > 0)
+                    setSelectedCourse(result[0])
                 console.log("courses: ",result)
                 return result
             } catch (error) {
@@ -160,7 +162,7 @@ export default function Submission() {
                     <figure className='background'><img src="/images/folder_modal.png" /></figure>
                     <div className='add-requirement-modal'>
                         <div className='header'>
-                            <h4>{courses[selectedCourse].name} <a onClick={() => setIsAddModal(false)} href='javascript:;'><img src="/icons/close.png" /></a></h4>
+                            <h4>{selectedCourse.name} <a onClick={() => setIsAddModal(false)} href='javascript:;'><img src="/icons/close.png" /></a></h4>
                             <h2>Create Requirement</h2>
                         </div>
                         <div className='title-con'><label>Title: </label><input type='text' id='add-modal-title' onChange={(e) => setRequirementTitle(e.target.value)} /></div>
@@ -201,9 +203,9 @@ export default function Submission() {
                 <input placeholder='Search' onChange={handleSearch} />
                 {courses && <ul>
                     {(filteredCourses ? filteredCourses : courses ? courses : []).map((item, index) => (
-                        <li className={(selectedCourse == index && !nloIsSelected) ? "active" : ""} 
+                        <li className={(selectedCourse.id == item.id && !nloIsSelected) ? "active" : ""} 
                             onClick={() => {
-                                    setSelectedCourse(index);
+                                    setSelectedCourse(item);
                                     setNloIsSelected(false)
                                     fetchRequirements(courses[index].id, false);
                                 }
@@ -228,7 +230,7 @@ export default function Submission() {
         formData.append('departmentId', departmentId)
         formData.append('ysId', selectedYearSemester)
         if(selectedCourse != null)
-            formData.append('courseId', courses[selectedCourse].id)
+            formData.append('courseId', selectedCourse.id)
 
         const response = await fetch("http://localhost:8080/api/requirements", {
             method: 'POST',
