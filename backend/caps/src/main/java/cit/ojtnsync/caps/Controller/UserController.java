@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import cit.ojtnsync.caps.Entity.Course;
 import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Entity.UserEntity;
+import cit.ojtnsync.caps.Entity.YearSemester;
 import cit.ojtnsync.caps.Model.UserWithCourseDTO;
 import cit.ojtnsync.caps.Model.UserWithDepartmentDTO;
 import cit.ojtnsync.caps.Service.CourseService;
 import cit.ojtnsync.caps.Service.DepartmentService;
 import cit.ojtnsync.caps.Service.UserService;
+import cit.ojtnsync.caps.Service.YearSemesterService;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -32,6 +34,9 @@ public class UserController {
 
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private YearSemesterService yearSemesterService;
 
     @GetMapping("/users")
     public ResponseEntity<List<UserWithCourseDTO>> getAllUsersWithCourse() {
@@ -53,6 +58,7 @@ public class UserController {
                     user.getEmail(),
                     user.getCourse(),
                     user.getRemarks(),
+                    user.getYearSemester().getId(),
                     user.isVerified()
             ));
         }
@@ -103,6 +109,7 @@ public class UserController {
                     user.getEmail(),
                     user.getCourse(),
                     user.getRemarks(),
+                    user.getYearSemester().getId(),
                     user.isVerified()
             ));
         }
@@ -136,6 +143,7 @@ public class UserController {
                     user.getEmail(),
                     user.getCourse(),
                     user.getRemarks(),
+                    user.getYearSemesterId(),
                     user.isVerified()
             ));
         }
@@ -297,6 +305,7 @@ public class UserController {
                 user.getEmail(),
                 user.getCourse(),
                 user.getRemarks(),
+                user.getYearSemester().getId(),
                 user.isVerified()
             );
         }
@@ -319,10 +328,12 @@ public class UserController {
         @RequestParam("phone") String phone,
         @RequestParam("course_id") int course_id,
         @RequestParam("email") String email,
-        @RequestParam("password") String password) {
+        @RequestParam("password") String password,
+        @RequestParam("ysId") int ysId) {
 
         Course course = courseService.getCourseById(course_id);
-        UserEntity user = new UserEntity(studentID, firstName, lastName, null, null, null, null, null, course, email, phone, password, false);
+        YearSemester yearSemester = yearSemesterService.getYearSemesterById(ysId);
+        UserEntity user = new UserEntity(studentID, firstName, lastName, null, null, null, null, null, course, email, phone, password, false, yearSemester);
         // Check if the studentID already exists
         if (userService.existsByStudentID(user.getStudentID())) {
             return new ResponseEntity<>("StudentID already exists", HttpStatus.BAD_REQUEST);
@@ -363,6 +374,7 @@ public class UserController {
                 user.getEmail(),
                 user.getCourse(),
                 user.getRemarks(),
+                user.getYearSemester().getId(),
                 user.isVerified()
             );
             return ResponseEntity.ok(userWithCourseDTO);

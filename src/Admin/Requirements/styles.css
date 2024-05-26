@@ -103,6 +103,8 @@
 }
 .add-requirement-modal .body-con {
   position: relative;
+  display: flex;
+  column-gap: 20px;
 }
 
 .add-requirement-modal .sidebar label.active-term {

@@ -60,6 +60,10 @@ public class RequirementService {
                 .collect(Collectors.toList());
     }
 
+    public List<Requirement> getRequirementsByDepartmentAndYearSemesterId(int departmentId, int ysId) {
+        return requirementRepository.findAllByDepartmentIdAndYearSemesterId(departmentId, ysId);
+    }
+
     // Get requirements based on department
     public List<Requirement> getRequirementsByCourse(int courseId) {
         return requirementRepository.findAll().stream()

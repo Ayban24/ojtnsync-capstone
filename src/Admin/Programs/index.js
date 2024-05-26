@@ -7,6 +7,7 @@ export default function ActionAreaCard() {
 
 	const [courses, setCourses] = useState(null);
 	const auth = Cookies.get('auth');
+    const ys = JSON.parse(Cookies.get('ys'));
 
 	const fetchCourses = async () => {
 		let response = null

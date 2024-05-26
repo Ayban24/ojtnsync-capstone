@@ -18,6 +18,7 @@ export default function Submission() {
     const auth = Cookies.get('auth');
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
+    const ys = JSON.parse(Cookies.get('ys'));
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
     const fetchUser = async () => {
@@ -86,7 +87,7 @@ export default function Submission() {
     }
 
     const fetchRequirements = async (student, departmentId, isNlo) => {
-        const response = await fetch(`http://localhost:8080/api/requirements/department/${departmentId}/course/${student.course.id}?userid=${student.userid}`, {
+        const response = await fetch(`http://localhost:8080/api/requirements/department/${departmentId}/course/${student.course.id}?userid=${student.userid}&ysId=${ys.id}`, {
             method: 'GET',
         })
 

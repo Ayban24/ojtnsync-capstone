@@ -19,10 +19,13 @@ const SignupForm = () => {
 	const [isErrorModalOpen, setErrorModalOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
+	const [yearSemesters, setYearSemesters] = useState(null)
+    const [selectedYearSemester, setSelectedYearSemester] = useState(null)
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		fetchCourses()
+		fetchYearSemesters()
 	}, []);
 	
 	const fetchCourses = async () => {
@@ -50,10 +53,43 @@ const SignupForm = () => {
 			}
 		}
 	}
+
+	const fetchYearSemesters = async () => {
+        const response = await fetch(`http://localhost:8080/yearSemesters`, {
+            method: 'GET',
+        })
+
+        if (response.ok) {
+            try {
+                const result = await response.json();
+                setYearSemesters(result)
+                console.log("year semesters: ",result)
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Response failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+    }
 	
 	const showCourses = () => {
 		if(courses && courses.length > 0)
 			return courses.map((course, index) => course.name != "NLO" && <MenuItem key={course.id} value={index}>{course.name}</MenuItem>);
+	}
+
+	const showYearSemesters = () => {
+		if(yearSemesters && yearSemesters.length > 0)
+			return yearSemesters.map((yearSemester, index) => <MenuItem key={yearSemester.id} value={index}>{yearSemester.year} - {yearSemester.semester}</MenuItem>);
 	}
 
 	const handleSignup = async () => {
@@ -76,6 +112,7 @@ const SignupForm = () => {
 		formData.append('course_id', course.id);
 		formData.append('email', email);
 		formData.append('password', password);
+		formData.append('ysId', selectedYearSemester);
 
 		try {
 			const response = await fetch('http://localhost:8080/signup', {
@@ -171,6 +208,20 @@ const SignupForm = () => {
 										onChange={(e) => setCourse(courses[e.target.value])}
 										>
 										{showCourses()}
+										</Select>
+									</FormControl>
+								</div>
+
+								<div className='input'>
+									<FormControl fullWidth>
+										<InputLabel id="course-label">Year & Semester</InputLabel>
+										<Select
+										labelId="course-label"
+										id="course"
+										value={course.name}
+										onChange={(e) => setSelectedYearSemester(e.target.value)}
+										>
+										{showYearSemesters()}
 										</Select>
 									</FormControl>
 								</div>

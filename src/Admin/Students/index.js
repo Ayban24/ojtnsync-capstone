@@ -7,11 +7,12 @@ import DataTable from '../../common/DataTable';
 const Students = () => {
 
     const auth = JSON.parse(Cookies.get('auth'));
+    const ys = JSON.parse(Cookies.get('ys'));
     const [courses, setCourses] = useState(null)
     const [selectedCourse, setSelectedCourse] = useState(0)
 
     const fetchStudents = async () => {
-        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${auth.departmentId}`, {
+        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${auth.departmentId}&ysId=${ys.id}`, {
             method: 'GET',
         })
 

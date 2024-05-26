@@ -21,6 +21,7 @@ import DeleteStudent from './Admin/Students/Delete';
 import StudentDocuments from './Admin/Students/Documents';
 import Dashboard from './Admin/Dashboard';
 import Profile from './Profile';
+import YearSemester from './Admin/YearSemester';
 import './App.css';
 import Cookies from 'js-cookie';
 
@@ -35,7 +36,7 @@ function App() {
 	// Conditionally render the Nav component
 	const renderNav = () => {
 		if (!isSignupOrLogin && auth && currentPath != '/') {
-		return <Navbar />;
+			return <Navbar />;
 		}
 		return null;
 	};
@@ -74,6 +75,7 @@ function App() {
 						<Route path="/admin/students/add" element={<AddStudent />} />
 						<Route path="/admin/students/delete" element={<DeleteStudent />} />
 						<Route path="/admin/student/documents" element={<StudentDocuments />} />
+						<Route path="/admin/yearSemester" element={<YearSemester />} />
 					</>
 					)
 					}
