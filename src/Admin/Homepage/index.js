@@ -1,10 +1,8 @@
 import React from 'react';
 import './styles.css'
 import Programs from '../Programs'
-import Cookies from 'js-cookie';
 
 const HomePage = () => {
-	const ys = JSON.parse(Cookies.get('ys'));
 
 	return (
 	

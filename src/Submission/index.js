@@ -19,7 +19,7 @@ export default function Submission() {
     const openStatusModal = () => setStatusModalOpen(true);
     const closeStatusModal = () => setStatusModalOpen(false);
 
-    const auth = Cookies.get('auth');
+    const auth = localStorage.getItem('auth');
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
 
@@ -142,7 +142,7 @@ export default function Submission() {
                             (!term || (item.term && item.term.toLowerCase() == term)) &&
                             <tr key={index}>
                                 <td>
-                                    <a href="javascript:;" onClick={() => {
+                                    <a href="#!" onClick={() => {
                                         // open upload modal if status is not available for this document
                                         if(item.documents.length == 0)
                                             openUploadModal();
@@ -196,7 +196,7 @@ export default function Submission() {
                         .filter(req => nloRequirements[req.title] && nloRequirements[req.title].length > 0)
                         .map((item, index) => (
                             <li key={index}>
-                                <a style={{color: nloRequirements[item.title] ? nloRequirements[item.title][2] : '#000'}} href='javascript:;' onClick={() => {
+                                <a style={{color: nloRequirements[item.title] ? nloRequirements[item.title][2] : '#000'}} href='#!' onClick={() => {
                                     // open upload modal if status is not available for this document
                                     if(item.documents.length == 0)
                                         openUploadModal();
@@ -214,7 +214,7 @@ export default function Submission() {
                             <tr>
                                 {
                                     Object.entries(nloRequirements).map(([key, value]) => {
-                                        return <th style={{color:value[2]}}>{value[0]}</th>
+                                        return <th key={key} style={{color:value[2]}}>{value[0]}</th>
                                     })
                                 }
                             </tr>
@@ -223,7 +223,7 @@ export default function Submission() {
                             <tr>
                                 { nloRequirements && requirements &&
                                     Object.entries(nloRequirements).map(([key, value]) => {
-                                        return <td><i className={`status status-${value[1]}`}></i></td>
+                                        return <td key={key}><i className={`status status-${value[1]}`}></i></td>
                                     })
                                 }
                             </tr>

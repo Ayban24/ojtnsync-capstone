@@ -16,7 +16,7 @@ export default function Submission() {
     const [yearSemesters, setYearSemesters] = useState(null)
     const [selectedYearSemester, setSelectedYearSemester] = useState(null)
 
-    const auth = JSON.parse(Cookies.get('auth'));
+    const auth = JSON.parse(localStorage.getItem('auth'));
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const ys = JSON.parse(Cookies.get('ys'));
@@ -162,7 +162,7 @@ export default function Submission() {
                     <figure className='background'><img src="/images/folder_modal.png" /></figure>
                     <div className='add-requirement-modal'>
                         <div className='header'>
-                            <h4>{selectedCourse.name} <a onClick={() => setIsAddModal(false)} href='javascript:;'><img src="/icons/close.png" /></a></h4>
+                            <h4>{selectedCourse.name} <a onClick={() => setIsAddModal(false)} href='#!'><img src="/icons/close.png" /></a></h4>
                             <h2>Create Requirement</h2>
                         </div>
                         <div className='title-con'><label>Title: </label><input type='text' id='add-modal-title' onChange={(e) => setRequirementTitle(e.target.value)} /></div>
@@ -174,7 +174,7 @@ export default function Submission() {
                                 <label htmlFor="term3" className={requirementTerm == 'Pre-Final' ? "active-term" : ""}><input id='term3' type='radio' name="term" value="Pre-Final" onChange={handleTermChange} />Pre-Final</label>
                                 <label htmlFor="term4" className={requirementTerm == 'Final' ? "active-term" : ""}><input id='term4' type='radio' name="term" value="Final" onChange={handleTermChange} />Final</label>
                             </div>
-                            <div className='sidebar'>
+                            {/* <div className='sidebar'>
                                 <h4>Year & Semester</h4>
                                 <select value={selectedYearSemester} onChange={(e) => setSelectedYearSemester(e.target.value)}>
                                     {yearSemesters && yearSemesters.map((item) => (
@@ -183,7 +183,7 @@ export default function Submission() {
                                     </option>
                                     ))}
                                 </select>
-                            </div>
+                            </div> */}
                             <a href="#!" className='confirm-btn' onClick={submitRequirement}>Confirm</a>
                         </div>
                     </div>
@@ -228,7 +228,7 @@ export default function Submission() {
         formData.append('requirementTitle', requirementTitle)
         formData.append('requirementTerm', requirementTerm)
         formData.append('departmentId', departmentId)
-        formData.append('ysId', selectedYearSemester)
+        formData.append('ysId', ys.id)
         if(selectedCourse != null)
             formData.append('courseId', selectedCourse.id)
 
@@ -259,7 +259,7 @@ export default function Submission() {
                 <h1 className='page-title'><img src="/icons/documents.png" />Requirements</h1>
                 { (auth.adminType != "NLO") &&
                     <div className='action-nav'>
-                        <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}><i class="fa-solid fa-plus"></i> Add Requirement</a>
+                        <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}><i className="fa-solid fa-plus"></i> Add Requirement</a>
                     </div>
                 }
                 { auth.adminType != "NLO" &&

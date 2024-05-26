@@ -6,7 +6,7 @@ import { useLocation, Link } from 'react-router-dom';
 export default function Submission() {
     const [requirements, setRequirements] = useState(null)
 
-    const auth = Cookies.get('auth');
+    const auth = localStorage.getItem('auth');
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
 

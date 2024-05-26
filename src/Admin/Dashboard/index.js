@@ -12,7 +12,7 @@ export default function Dashboard() {
     const [courses, setCourses] = useState(null)
     const [requirements, setRequirements] = useState(null)
 
-	const auth = Cookies.get('auth');
+	const auth = localStorage.getItem('auth');
     const ys = JSON.parse(Cookies.get('ys'));
 
     const fetchStudents = async () => {
@@ -74,8 +74,8 @@ export default function Dashboard() {
     const showStudentCounts = () => {
         if(courses && courses.length > 0) {
             return <>
-                { courses.map(course => {
-                    return <section className='dashboard-section'>
+                { courses.map((course, index) => {
+                    return <section key={index} className='dashboard-section'>
                         <span>{course.name}</span>
                         <h2>{course.students.length}</h2>
                     </section>
@@ -104,9 +104,18 @@ export default function Dashboard() {
             const status = {
                 pending: 0,
                 approved: 0,
-                declined: 0
+            declined: 0
             }
             requirements.forEach(req => {
+                if(req.documents && req.documents.length > 0) {
+                    if(course.id == req.courseId) {
+                        req.documents.forEach(doc => {
+                            if(doc.status) {
+                                status[doc.status.toLowerCase()]++
+                            }
+                        })
+                    }
+                }
                 if(course.id == req.courseId && req.documents?.[0]?.status)
                     status[req.documents?.[0]?.status.toLowerCase()] = status[req.documents?.[0]?.status.toLowerCase()] + 1
             })
@@ -129,8 +138,8 @@ export default function Dashboard() {
             dataCharts.push({course: item.course, data: data})
         })
         return <>
-            {dataCharts.map(item => {
-                return <section className='dashboard-section'>
+            {dataCharts.map((item,index) => {
+                return <section key={index} className='dashboard-section'>
                     <span>{item.course}</span>
                     <Pie data={item.data} />
                 </section>

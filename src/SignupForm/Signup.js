@@ -20,7 +20,7 @@ const SignupForm = () => {
 	const [errorMessage, setErrorMessage] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [yearSemesters, setYearSemesters] = useState(null)
-    const [selectedYearSemester, setSelectedYearSemester] = useState(null)
+    const [selectedYearSemester, setSelectedYearSemester] = useState('')
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -112,7 +112,7 @@ const SignupForm = () => {
 		formData.append('course_id', course.id);
 		formData.append('email', email);
 		formData.append('password', password);
-		formData.append('ysId', selectedYearSemester);
+		formData.append('ysId', selectedYearSemester.id);
 
 		try {
 			const response = await fetch('http://localhost:8080/signup', {
@@ -214,12 +214,12 @@ const SignupForm = () => {
 
 								<div className='input'>
 									<FormControl fullWidth>
-										<InputLabel id="course-label">Year & Semester</InputLabel>
+										<InputLabel id="year-semester-label">Year & Semester</InputLabel>
 										<Select
-										labelId="course-label"
+										labelId="year-semester-label"
 										id="course"
-										value={course.name}
-										onChange={(e) => setSelectedYearSemester(e.target.value)}
+										value={selectedYearSemester.id}
+										onChange={(e) => setSelectedYearSemester(yearSemesters[e.target.value])}
 										>
 										{showYearSemesters()}
 										</Select>

@@ -8,7 +8,7 @@ export default function Profile() {
     const [isEditingCompany, setIsEditingComppany] = useState(false)
     const [profile, setProfile] = useState(null)
     const [isReadOnly, setIsReadOnly] = useState(true)
-    const auth = JSON.parse(Cookies.get('auth'));
+    const auth = JSON.parse(localStorage.getItem('auth'));
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
 
@@ -45,7 +45,7 @@ export default function Profile() {
                     auth.phone = profile.phone
                     auth.email = profile.email
                     auth.course = profile.course
-                    Cookies.set('auth', JSON.stringify(auth));
+                    localStorage.setItem('auth', JSON.stringify(auth));
                     console.log('User updated successfully');
 
                 } else {

@@ -7,7 +7,7 @@ import Logo from '../icons/logo1.png';
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [activeProfileMenu, setActiveProfileMenu] = useState(false)
-    const auth = Cookies.get('auth');
+    const auth = localStorage.getItem('auth');
     const location = useLocation();
     const ys = Cookies.get('ys');
 
@@ -17,7 +17,7 @@ const Navbar = () => {
     };
 
     const logout = () => {
-        Cookies.remove('auth');
+        localStorage.removeItem('auth');
         Cookies.remove('ys');
         window.location.replace("/")
     }
@@ -50,7 +50,7 @@ const Navbar = () => {
                     </div>
                 }
                 {/* <Link to={(JSON.parse(auth).adminid) ? '' : '/profile'} className='profile-menu'><img src="/images/profile.png" /></Link> */}
-                <a className='profile-menu' onClick={() => setActiveProfileMenu(!activeProfileMenu)}>
+                <div className='profile-menu' onClick={() => setActiveProfileMenu(!activeProfileMenu)}>
                     {activeProfileMenu &&
                         <div className='profile-modal'>
                             {JSON.parse(auth).userid &&
@@ -60,7 +60,7 @@ const Navbar = () => {
                         </div>
                     }
                     <img src="/images/profile.png" />
-                </a>
+                </div>
             </div>
             <div className={`nav-toggle ${isOpen && "open"}`} onClick={() =>setIsOpen(!isOpen)}>
                 <div className='bar'></div>

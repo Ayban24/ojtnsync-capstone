@@ -31,7 +31,7 @@ const handleLogin = async () => {
 
     if (response.ok) {
       setLoggedInUser(data);
-      Cookies.set('auth', JSON.stringify(data.user));
+	  localStorage.setItem('auth', JSON.stringify(data.user));
       setError(null);
       window.location.replace('/homepage');
       

@@ -11,7 +11,6 @@ const YearSemester = () => {
     const [activeAddModal, setActiveAddModal] = useState(false)
     const [yearInput, setYearInput] = useState(null)
     const [semesterInput, setSemesterInput] = useState(null)
-    const auth = JSON.parse(Cookies.get('auth'));
     const navigate = useNavigate();
 
     const fetchYearSemesters = async () => {
@@ -77,8 +76,8 @@ const YearSemester = () => {
 
     const showYearSemesters = () => {
         return <>
-            { yearSemesters && yearSemesters.map((ys) => {
-                return <section onClick={() => onYearSemesterClick(ys)}>
+            { yearSemesters && yearSemesters.map((ys, index) => {
+                return <section key={index} onClick={() => onYearSemesterClick(ys)}>
                     <h2>{ys.year} - {ys.semester}</h2>
                 </section>
             })}
@@ -99,7 +98,7 @@ const YearSemester = () => {
             <div className='wrapper'>
                 <div className='header'>
                     <h1>Year Semester</h1>
-                    <a href='javascript:;' className='btn-yellow' onClick={() => setActiveAddModal(true)}>Add Folder</a>
+                    <a href='#!' className='btn-yellow' onClick={() => setActiveAddModal(true)}>Add Folder</a>
                 </div>
                 {yearSemesters && 
                     <div className='boxes'>
@@ -121,7 +120,7 @@ const YearSemester = () => {
                             type='text' 
                             value={semesterInput}
                             onChange={(e) => setSemesterInput(e.target.value)}/>
-                        <a onClick={() => onSave()} href='javascript:;' className='btn-yellow'>Save</a>
+                        <a onClick={() => onSave()} href='#!' className='btn-yellow'>Save</a>
 
                 </CustomModal>
             }

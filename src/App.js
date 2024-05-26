@@ -24,12 +24,10 @@ import Dashboard from './Admin/Dashboard';
 import Profile from './Profile';
 import YearSemester from './Admin/YearSemester';
 import './App.css';
-import Cookies from 'js-cookie';
 
 function App() {
 	const currentPath = window.location.pathname;
-	const auth = Cookies.get('auth');
-	
+	const auth = localStorage.getItem('auth');
 
 	// Check if the current path is "/signup" or "/login"
 	const isSignupOrLogin = currentPath === '/signup' || currentPath === '/login' || currentPath === '/' || currentPath === '';
