@@ -39,6 +39,11 @@ public class Requirement {
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @ManyToOne()
+    @JsonIgnore
+    @JoinColumn(name = "year_semester_id")
+    private YearSemester yearSemester;
+
     // Constructors, getters, and setters (omitted for brevity)
 
     // Default constructor
@@ -46,20 +51,22 @@ public class Requirement {
     }
 
     // Parameterized constructor
-    public Requirement(String title, Timestamp created_at, Department department, Course course, String term) {
+    public Requirement(String title, Timestamp created_at, Department department, Course course, String term, YearSemester yearSemester) {
         this.title = title;
         this.created_at = created_at;
         this.department = department;
         this.course = course;
         this.term = term;
+        this.yearSemester = yearSemester;
         this.status = "Active";
     }
 
-    public Requirement(String title, Department department, Course course, String term) {
+    public Requirement(String title, Department department, Course course, String term, YearSemester yearSemester) {
         this.title = title;
         this.department = department;
         this.course = course;
         this.term = term;
+        this.yearSemester = yearSemester;
         this.status = "Active";
     }
 
@@ -132,5 +139,13 @@ public class Requirement {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public YearSemester getYearSemester() {
+        return yearSemester;
+    }
+
+    public void setYearSemester(YearSemester yearSemester) {
+        this.yearSemester = yearSemester;
     }
 }

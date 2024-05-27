@@ -10,19 +10,22 @@ export default function Submission() {
     const [requirementTitle, setRequirementTitle] = useState(null)
     const [requirementTerm, setRequirementTerm] = useState("Prelim")
     const [courses, setCourses] = useState(null)
-    const [selectedCourse, setSelectedCourse] = useState(0)
+    const [selectedCourse, setSelectedCourse] = useState(null)
     const [nloIsSelected, setNloIsSelected] = useState(false)
     const [filteredCourses, setFilteredCourses] = useState(null)
+    const [yearSemesters, setYearSemesters] = useState(null)
+    const [selectedYearSemester, setSelectedYearSemester] = useState(null)
 
-    const auth = JSON.parse(Cookies.get('auth'));
+    const auth = JSON.parse(localStorage.getItem('auth'));
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
+    const ys = JSON.parse(Cookies.get('ys'));
 
     const fetchCourses = async () => {
         
         const departmentId = searchParams.get('department');
 
-        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${departmentId}`, {
+        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${departmentId}&ysId=${ys.id}`, {
             method: 'GET',
         })
 
@@ -30,6 +33,8 @@ export default function Submission() {
             try {
                 const result = await response.json();
                 setCourses(result)
+                if(result.length > 0)
+                    setSelectedCourse(result[0])
                 console.log("courses: ",result)
                 return result
             } catch (error) {
@@ -56,7 +61,7 @@ export default function Submission() {
         const departmentId = searchParams.get('department');
 
         let url = (courseId && !isNlo)
-            ? `http://localhost:8080/api/requirements/admin/department/${departmentId}/course/${courseId}?userid=${auth.adminid}`
+            ? `http://localhost:8080/api/requirements/admin/department/${departmentId}/course/${courseId}?userid=${auth.adminid}&ysId=${ys.id}`
             : `http://localhost:8080/api/requirements/admin/department/nlo?adminId=${auth.adminid}`
         const response = await fetch(url, {
             method: 'GET',
@@ -67,6 +72,34 @@ export default function Submission() {
                 const result = await response.json();
                 setRequirements(result)
                 console.log("resquirements: ",result)
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Response failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+    }
+
+    const fetchYearSemesters = async () => {
+        const response = await fetch(`http://localhost:8080/yearSemesters`, {
+            method: 'GET',
+        })
+
+        if (response.ok) {
+            try {
+                const result = await response.json();
+                setYearSemesters(result)
+                console.log("year semesters: ",result)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
                 // Handle unexpected JSON parsing error
@@ -129,7 +162,7 @@ export default function Submission() {
                     <figure className='background'><img src="/images/folder_modal.png" /></figure>
                     <div className='add-requirement-modal'>
                         <div className='header'>
-                            <h4>{courses[selectedCourse].name} <a onClick={() => setIsAddModal(false)} href='javascript:;'><img src="/icons/close.png" /></a></h4>
+                            <h4>{selectedCourse.name} <a onClick={() => setIsAddModal(false)} href='#!'><img src="/icons/close.png" /></a></h4>
                             <h2>Create Requirement</h2>
                         </div>
                         <div className='title-con'><label>Title: </label><input type='text' id='add-modal-title' onChange={(e) => setRequirementTitle(e.target.value)} /></div>
@@ -141,6 +174,16 @@ export default function Submission() {
                                 <label htmlFor="term3" className={requirementTerm == 'Pre-Final' ? "active-term" : ""}><input id='term3' type='radio' name="term" value="Pre-Final" onChange={handleTermChange} />Pre-Final</label>
                                 <label htmlFor="term4" className={requirementTerm == 'Final' ? "active-term" : ""}><input id='term4' type='radio' name="term" value="Final" onChange={handleTermChange} />Final</label>
                             </div>
+                            {/* <div className='sidebar'>
+                                <h4>Year & Semester</h4>
+                                <select value={selectedYearSemester} onChange={(e) => setSelectedYearSemester(e.target.value)}>
+                                    {yearSemesters && yearSemesters.map((item) => (
+                                    <option key={item.id} value={item.id}>
+                                        {item.year} - {item.semester}
+                                    </option>
+                                    ))}
+                                </select>
+                            </div> */}
                             <a href="#!" className='confirm-btn' onClick={submitRequirement}>Confirm</a>
                         </div>
                     </div>
@@ -160,9 +203,9 @@ export default function Submission() {
                 <input placeholder='Search' onChange={handleSearch} />
                 {courses && <ul>
                     {(filteredCourses ? filteredCourses : courses ? courses : []).map((item, index) => (
-                        <li className={(selectedCourse == index && !nloIsSelected) ? "active" : ""} 
+                        <li className={(selectedCourse.id == item.id && !nloIsSelected) ? "active" : ""} 
                             onClick={() => {
-                                    setSelectedCourse(index);
+                                    setSelectedCourse(item);
                                     setNloIsSelected(false)
                                     fetchRequirements(courses[index].id, false);
                                 }
@@ -185,8 +228,9 @@ export default function Submission() {
         formData.append('requirementTitle', requirementTitle)
         formData.append('requirementTerm', requirementTerm)
         formData.append('departmentId', departmentId)
+        formData.append('ysId', ys.id)
         if(selectedCourse != null)
-            formData.append('courseId', courses[selectedCourse].id)
+            formData.append('courseId', selectedCourse.id)
 
         const response = await fetch("http://localhost:8080/api/requirements", {
             method: 'POST',
@@ -201,7 +245,8 @@ export default function Submission() {
     useEffect(() => {
         fetchCourses().then((course) => {
             console.log("courses useeffect: ",course)
-            fetchRequirements(course[0].id)
+            fetchRequirements(course[0].id, false)
+            fetchYearSemesters();
         })
     }, []);
   
@@ -214,7 +259,7 @@ export default function Submission() {
                 <h1 className='page-title'><img src="/icons/documents.png" />Requirements</h1>
                 { (auth.adminType != "NLO") &&
                     <div className='action-nav'>
-                        <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}><i class="fa-solid fa-plus"></i> Add Requirement</a>
+                        <a href="#!" className='add-requirement' onClick={() => setIsAddModal(true)}><i className="fa-solid fa-plus"></i> Add Requirement</a>
                     </div>
                 }
                 { auth.adminType != "NLO" &&

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './styles.css';
-import Cookies from 'js-cookie';
 import DataTable from '../../common/DataTable';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -9,7 +8,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 
 const StudentDocuments = () => {
 
-    const auth = JSON.parse(Cookies.get('auth'));
+    const auth = JSON.parse(localStorage.getItem('auth'));
     const [documents, setDocuments] = useState(null)
     const [courses, setCourses] = useState(null)
     const [selectedCourse, setSelectedCourse] = useState()
@@ -71,7 +70,7 @@ const StudentDocuments = () => {
                 header={['File name', 'Status']} 
                 data={(documents && documents.length > 0) && documents
                     .map((item, index) => ([
-                        <a href="#!" onClick={() => {setCheck(true);setCheckInfo(item)}}>{item.fileName}</a>, 
+                        <a key={index} href="#!" onClick={() => {setCheck(true);setCheckInfo(item)}}>{item.fileName}</a>, 
                         item.status
                     ]))
                 } 
@@ -128,7 +127,7 @@ const StudentDocuments = () => {
                         }
                     </section>
                     <section>
-                        <Link to={'/profile?userid='+searchParams.get('userid')} href="javascript:;">View Profile</Link>
+                        <Link to={'/profile?userid='+searchParams.get('userid')} href="#!">View Profile</Link>
                     </section>
                 </div>
                 {showDocuments()}

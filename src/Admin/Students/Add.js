@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './styles.css';
-import Cookies from 'js-cookie';
 import DataTable from '../../common/DataTable';
 import CustomModal from '../../common/Modal'
 
 const Students = () => {
 
-    const auth = JSON.parse(Cookies.get('auth'));
     const [program, setProgram] = useState("")
     const [lastName, setLastName] = useState("")
     const [firstName, setFirstName] = useState("")
@@ -107,7 +105,7 @@ const Students = () => {
                         item.course.name, 
                         (item.lastName + ", " + item.firstName), 
                         (!item.verified 
-                            ? (<a href='#!' onClick={() => handleAddStudent(index)}>Add Student</a>) 
+                            ? (<a key={index} href='#!' onClick={() => handleAddStudent(index)}>Add Student</a>) 
                             : ('-'))
                     ]
                 ))} 

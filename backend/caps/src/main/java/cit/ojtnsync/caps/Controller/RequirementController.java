@@ -9,15 +9,18 @@ import cit.ojtnsync.caps.Entity.Department;
 import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
 import cit.ojtnsync.caps.Entity.UserEntity;
+import cit.ojtnsync.caps.Entity.YearSemester;
 import cit.ojtnsync.caps.Model.RequirementWithCourseDTO;
 import cit.ojtnsync.caps.Model.UserWithCourseDTO;
 import cit.ojtnsync.caps.Service.AdminService;
 import cit.ojtnsync.caps.Service.CourseService;
 import cit.ojtnsync.caps.Service.DepartmentService;
 import cit.ojtnsync.caps.Service.RequirementService;
+import cit.ojtnsync.caps.Service.YearSemesterService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -28,12 +31,14 @@ public class RequirementController {
     private final DepartmentService departmentService;
     private final CourseService courseService;
     private final AdminService adminService;
+    private final YearSemesterService yearSemesterService;
 
-    public RequirementController(RequirementService requirementService, DepartmentService departmentService, CourseService courseService, AdminService adminService) {
+    public RequirementController(RequirementService requirementService, DepartmentService departmentService, CourseService courseService, AdminService adminService, YearSemesterService yearSemesterService) {
         this.requirementService = requirementService;
         this.departmentService = departmentService;
         this.courseService = courseService;
         this.adminService = adminService;
+        this.yearSemesterService = yearSemesterService;
     }
 
     @GetMapping
@@ -60,10 +65,12 @@ public class RequirementController {
             @RequestParam("requirementTitle") String requirementTitle,
             @RequestParam("requirementTerm") String requirementTerm,
             @RequestParam("departmentId") int departmentId,
+            @RequestParam("ysId") int ysId,
             @RequestParam(value = "courseId", required = false) Integer courseId) {
         Department department = departmentService.getDepartmentById(departmentId);
         Course course = courseId != null ? courseService.getCourseById(courseId) : null;
-        Requirement requirement = new Requirement(requirementTitle, department, course, requirementTerm);
+        YearSemester yearSemester = yearSemesterService.getYearSemesterById(ysId);
+        Requirement requirement = new Requirement(requirementTitle, department, course, requirementTerm, yearSemester);
         Requirement createdRequirement = requirementService.createRequirement(requirement);
         return ResponseEntity.ok(createdRequirement);
     }
@@ -85,7 +92,7 @@ public class RequirementController {
     
     // Mapping to get requirements by course
     @GetMapping("/department/{departmentId}/course/{courseId}")
-    public ResponseEntity<List<Requirement>> getRequirementsByCourse(long userid, @PathVariable int departmentId, @PathVariable int courseId) {
+    public ResponseEntity<List<Requirement>> getRequirementsByCourse(long userid, int ysId, @PathVariable int departmentId, @PathVariable int courseId) {
         Department department = departmentService.getDepartmentById(departmentId);
         List<Requirement> requirements = new ArrayList<>();
 
@@ -94,7 +101,11 @@ public class RequirementController {
         else
             requirements = requirementService.getRequirementsByCourse(courseId);
 
-        requirements = requirementService.filterActive(requirements);
+        requirements = requirementService
+            .filterActive(requirements)
+            .stream()
+            .filter(r -> r != null && r.getYearSemester() != null && r.getYearSemester().getId() == ysId)
+            .collect(Collectors.toList());
         
         // Filter documents for each requirement based on userid
         for (Requirement requirement : requirements) {
@@ -124,6 +135,26 @@ public class RequirementController {
         return ResponseEntity.ok(requirementWithCourseDTO);
     }
 
+    // Mapping to get all requirements by department
+    @GetMapping("/admin/department/{departmentId}/ys/{ysId}")
+    public ResponseEntity<List<RequirementWithCourseDTO>> getRequirementsByDepartmentAndYearSemester(@PathVariable int departmentId, @PathVariable int ysId) {
+        List<Requirement> requirements = requirementService.getRequirementsByDepartmentAndYearSemesterId(departmentId, ysId);
+        List<RequirementWithCourseDTO> requirementWithCourseDTO = new ArrayList<>();
+        for (Requirement req : requirements) {
+            requirementWithCourseDTO.add(new RequirementWithCourseDTO(
+                    req.getId(),
+                    req.getTitle(),
+                    req.getDocuments(),
+                    req.getTerm(),
+                    req.getStatus(),
+                    req.getDepartment().getId(),
+                    req.getCourse() != null ? req.getCourse().getId() : 0,
+                    req.getCourse() != null ? req.getCourse().getName() : null
+            ));
+        }
+        return ResponseEntity.ok(requirementWithCourseDTO);
+    }
+
     // Mapping to get all requirements by NLO
     @GetMapping("/admin/department/nlo")
     public ResponseEntity<List<Requirement>> getRequirementsByNlo(long adminId) {
@@ -136,9 +167,13 @@ public class RequirementController {
 
     // Mapping to get requirements by course for Admin
     @GetMapping("/admin/department/{departmentId}/course/{courseId}")
-    public ResponseEntity<List<Requirement>> getAdminRequirementsByCourse(long userid, @PathVariable int departmentId, @PathVariable int courseId) {
+    public ResponseEntity<List<Requirement>> getAdminRequirementsByCourse(long userid, int ysId, @PathVariable int departmentId, @PathVariable int courseId) {
         List<Requirement> requirements = requirementService.getRequirementsByCourse(courseId);
-        requirements = requirementService.filterActive(requirements);
+        requirements = requirementService
+            .filterActive(requirements)
+            .stream()
+            .filter(r -> r != null && r.getYearSemester() != null && r.getYearSemester().getId() == ysId)
+            .collect(Collectors.toList());
         return ResponseEntity.ok(requirements);
     }
 }

@@ -9,7 +9,7 @@ const HomePage = () => {
     
       <div id='homepage'>
         <div className='wrapper'>
-          <div class="homepage-header">
+          <div className="homepage-header">
             <h1>Dashboard</h1>
             <p>Welcome to OJTnSync (OJT Documentation)</p>
           </div>

@@ -12,10 +12,11 @@ export default function Dashboard() {
     const [courses, setCourses] = useState(null)
     const [requirements, setRequirements] = useState(null)
 
-	const auth = Cookies.get('auth');
+	const auth = localStorage.getItem('auth');
+    const ys = JSON.parse(Cookies.get('ys'));
 
     const fetchStudents = async () => {
-        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${JSON.parse(auth).departmentId}`, {
+        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${JSON.parse(auth).departmentId}&ysId=${ys.id}`, {
             method: 'GET',
         })
 
@@ -43,7 +44,7 @@ export default function Dashboard() {
     }
 
     const fetchRequirements = async () => {
-        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${JSON.parse(auth).departmentId}`, {
+        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${JSON.parse(auth).departmentId}/ys/${ys.id}`, {
             method: 'GET',
         })
 
@@ -72,10 +73,9 @@ export default function Dashboard() {
 
     const showStudentCounts = () => {
         if(courses && courses.length > 0) {
-            console.log("courses: ",courses)
             return <>
-                { courses.map(course => {
-                    return <section className='dashboard-section'>
+                { courses.map((course, index) => {
+                    return <section key={index} className='dashboard-section'>
                         <span>{course.name}</span>
                         <h2>{course.students.length}</h2>
                     </section>
@@ -85,7 +85,6 @@ export default function Dashboard() {
     }
 
     const showDocumentStatusChart = () => {
-        console.log("test req: ",requirements)
         const dataCharts = []
         const statusPerCourse = []
         const colors = [
@@ -105,10 +104,19 @@ export default function Dashboard() {
             const status = {
                 pending: 0,
                 approved: 0,
-                declined: 0
+            declined: 0
             }
             requirements.forEach(req => {
-                if(course.id == req.courseId)
+                if(req.documents && req.documents.length > 0) {
+                    if(course.id == req.courseId) {
+                        req.documents.forEach(doc => {
+                            if(doc.status) {
+                                status[doc.status.toLowerCase()]++
+                            }
+                        })
+                    }
+                }
+                if(course.id == req.courseId && req.documents?.[0]?.status)
                     status[req.documents?.[0]?.status.toLowerCase()] = status[req.documents?.[0]?.status.toLowerCase()] + 1
             })
             statusPerCourse.push({
@@ -129,10 +137,9 @@ export default function Dashboard() {
             };
             dataCharts.push({course: item.course, data: data})
         })
-        console.log("data charts: ",dataCharts)
         return <>
-            {dataCharts.map(item => {
-                return <section className='dashboard-section'>
+            {dataCharts.map((item,index) => {
+                return <section key={index} className='dashboard-section'>
                     <span>{item.course}</span>
                     <Pie data={item.data} />
                 </section>

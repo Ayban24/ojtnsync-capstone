@@ -6,12 +6,13 @@ import DataTable from '../../common/DataTable';
 
 const Students = () => {
 
-    const auth = JSON.parse(Cookies.get('auth'));
+    const auth = JSON.parse(localStorage.getItem('auth'));
+    const ys = JSON.parse(Cookies.get('ys'));
     const [courses, setCourses] = useState(null)
     const [selectedCourse, setSelectedCourse] = useState(0)
 
     const fetchStudents = async () => {
-        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${auth.departmentId}`, {
+        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${auth.departmentId}&ysId=${ys.id}`, {
             method: 'GET',
         })
 
@@ -63,7 +64,7 @@ const Students = () => {
                         item.email, 
                         getApprovedDocuments(courses[selectedCourse], item), 
                         // <Link to={`/admin/student/documents?userid=${item.userid}&course=${courses[selectedCourse].id}`}>View</Link>
-                        <Link to={`/admin/requirements/view?userid=${item.userid}`}>View</Link>
+                        <Link key={index} to={`/admin/requirements/view?userid=${item.userid}`}>View</Link>
                     ]))
                 } 
             />

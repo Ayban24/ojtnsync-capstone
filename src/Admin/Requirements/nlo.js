@@ -13,7 +13,7 @@ export default function Submission() {
     const [filteredCourses, setFilteredCourses] = useState(null)
     const [activeEditRecords, setActiveEditRecords] = useState(false)
 
-    const auth = JSON.parse(Cookies.get('auth'));
+    const auth = JSON.parse(localStorage.getItem('auth'));
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
 
@@ -180,7 +180,7 @@ export default function Submission() {
         })
 
         const requirementList = Object.entries(nloRequirements).map(([key, value]) => {
-            return <th style={{color:value[2]}}>{value[0]}</th>
+            return <th key={key} style={{color:value[2]}}>{value[0]}</th>
         })
 
         return (
@@ -220,7 +220,7 @@ export default function Submission() {
                                     item.details.firstName, 
                                     item.details.lastName, 
                                     ...Object.entries(item?.documents).map(([key, value]) => {
-                                        return <td><i className={`status status-${value[1]}`}></i></td>
+                                        return <td key={key}><i className={`status status-${value[1]}`}></i></td>
                                     }),
                                     Object.entries(item?.documents).filter((value) => {
                                         return (value?.[1]?.[1] != "approved")

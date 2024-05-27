@@ -9,6 +9,7 @@ import SplashScreen from './SplashScreen'; // Import the SplashScreen component
 import Templates from './Templates';
 import Navbar from './NavBar/Navbar';
 import Submission from './Submission';
+import NloSubmission from './Submission/nlo'
 import AdminHomepage from './Admin/Homepage';
 import AdminSubmission from './Admin/Submission';
 import Validate from './Admin/Validate'
@@ -21,13 +22,12 @@ import DeleteStudent from './Admin/Students/Delete';
 import StudentDocuments from './Admin/Students/Documents';
 import Dashboard from './Admin/Dashboard';
 import Profile from './Profile';
+import YearSemester from './Admin/YearSemester';
 import './App.css';
-import Cookies from 'js-cookie';
 
 function App() {
 	const currentPath = window.location.pathname;
-	const auth = Cookies.get('auth');
-	
+	const auth = localStorage.getItem('auth');
 
 	// Check if the current path is "/signup" or "/login"
 	const isSignupOrLogin = currentPath === '/signup' || currentPath === '/login' || currentPath === '/' || currentPath === '';
@@ -35,7 +35,7 @@ function App() {
 	// Conditionally render the Nav component
 	const renderNav = () => {
 		if (!isSignupOrLogin && auth && currentPath != '/') {
-		return <Navbar />;
+			return <Navbar />;
 		}
 		return null;
 	};
@@ -56,6 +56,7 @@ function App() {
 						<Route path="/profile" element={<Profile />} />
 						<Route path="/templates" element={<Templates/>} />
 						<Route path="/submission" element={<Submission/>} />
+						<Route path='/submission/nlo' element={<NloSubmission/>} />
 						{/* <Route path="/admin/homepage" element={<AdminHomepage />} /> */}
 						<Route path="/admin/homepage" element={<Dashboard />} />
 						<Route path="/admin/submission" element={<AdminSubmission />} />
@@ -74,6 +75,7 @@ function App() {
 						<Route path="/admin/students/add" element={<AddStudent />} />
 						<Route path="/admin/students/delete" element={<DeleteStudent />} />
 						<Route path="/admin/student/documents" element={<StudentDocuments />} />
+						<Route path="/admin/yearSemester" element={<YearSemester />} />
 					</>
 					)
 					}

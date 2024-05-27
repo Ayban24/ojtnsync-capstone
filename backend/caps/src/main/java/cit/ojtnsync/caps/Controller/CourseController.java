@@ -6,10 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import cit.ojtnsync.caps.Entity.Course;
 import cit.ojtnsync.caps.Entity.Department;
+import cit.ojtnsync.caps.Entity.Requirement;
+import cit.ojtnsync.caps.Entity.UserEntity;
 import cit.ojtnsync.caps.Service.CourseService;
 import cit.ojtnsync.caps.Service.DepartmentService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/courses")
@@ -69,7 +72,7 @@ public class CourseController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<Course>> getCoursesByDepartmentId(@RequestParam(name = "departmentId") int departmentId) {
+    public ResponseEntity<List<Course>> getCoursesByDepartmentId(@RequestParam(name = "departmentId") int departmentId, @RequestParam(name = "ysId") int ysId) {
         Department department = departmentService.getDepartmentById(departmentId);
         List<Course> courses;
         if(department.getName().equalsIgnoreCase("nlo"))
@@ -78,7 +81,17 @@ public class CourseController {
             courses = courseService.getCoursesByDepartmentId(departmentId);
         
         if (!courses.isEmpty()) {
-            return ResponseEntity.ok(courses);
+            List<Course> filteredCourses = courses.stream()
+                .map(course -> {
+                    List<UserEntity> students = course.getStudents().stream()
+                    .filter(student -> student.getYearSemester().getId() == ysId)
+                    .collect(Collectors.toList());
+                    course.setStudents(students);
+                    return course;
+                })
+                .collect(Collectors.toList());
+
+            return ResponseEntity.ok(filteredCourses);
         } else {
             return ResponseEntity.notFound().build();
         }

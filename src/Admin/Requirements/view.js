@@ -15,9 +15,10 @@ export default function Submission() {
     const [check, setCheck] = useState(false)
     const [checkInfo, setCheckInfo] = useState(null)
 
-    const auth = Cookies.get('auth');
+    const auth = localStorage.getItem('auth');
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
+    const ys = JSON.parse(Cookies.get('ys'));
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
     const fetchUser = async () => {
@@ -86,7 +87,7 @@ export default function Submission() {
     }
 
     const fetchRequirements = async (student, departmentId, isNlo) => {
-        const response = await fetch(`http://localhost:8080/api/requirements/department/${departmentId}/course/${student.course.id}?userid=${student.userid}`, {
+        const response = await fetch(`http://localhost:8080/api/requirements/department/${departmentId}/course/${student.course.id}?userid=${student.userid}&ysId=${ys.id}`, {
             method: 'GET',
         })
 
@@ -142,7 +143,7 @@ export default function Submission() {
 
         const requirementDetails = studentRequirements?.filter(item => item?.documents?.[0]).map(item2 => {
             return [
-                <a href="javascript:;" onClick={() => {setCheck(true);setCheckInfo(item2.documents[0])}}>{item2.documents[0].fileName}</a>,
+                <a href="#!" onClick={() => {setCheck(true);setCheckInfo(item2.documents[0])}}>{item2.documents[0].fileName}</a>,
                 item2.title,
                 item2.documents[0].status
             ]
@@ -164,7 +165,7 @@ export default function Submission() {
                         <div className='nlo-requirements-header'>
                             <h2>NLO RECORDS</h2>
                             {JSON.parse(auth).adminType && JSON.parse(auth).adminType.toLowerCase() == 'nlo' &&
-                                <a href='javascript:;' className='edit-btn btn-yellow' onClick={() => setActiveEditRecords(true)}>EDIT</a>
+                                <a href='#!' className='edit-btn btn-yellow' onClick={() => setActiveEditRecords(true)}>EDIT</a>
                             }
                         </div>
                         <ul>
@@ -185,7 +186,7 @@ export default function Submission() {
                                 <tr>
                                     {
                                         Object.entries(nloRequirements).map(([key, value]) => {
-                                            return <th style={{color:value[2]}}>{value[0]}</th>
+                                            return <th key={key} style={{color:value[2]}}>{value[0]}</th>
                                         })
                                     }
                                 </tr>
@@ -195,7 +196,7 @@ export default function Submission() {
                                     { nloRequirements && requirements &&
                                         Object.entries(nloRequirements).map(([key, value]) => {
                                             return <td>
-                                                <a href='javascript:;' className={`status status-${value[1]}`} onClick={() => {
+                                                <a key={key} href='#!' className={`status status-${value[1]}`} onClick={() => {
                                                     if(activeEditRecords) {
                                                         const req = requirements.find(item => item.title == key)
                                                         const newStatus = (value[1] == 'approved') ? 'Disapproved' : 'Approved'
@@ -249,7 +250,7 @@ export default function Submission() {
                             </tbody>
                         </table>
                     </div>
-                    <a className='edit-records-accept-btn btn-yellow' href='javascript:;' onClick={() => {
+                    <a className='edit-records-accept-btn btn-yellow' href='#!' onClick={() => {
                         updateRemarks()
                         setActiveEditRecords(false)
                     }}>Accept</a>
@@ -293,7 +294,7 @@ export default function Submission() {
             <CustomModal show={true} onHide={() => setActiveEditRecords(false)}>
                 <div className='edit-records-modal-header'>
                     <h2>Edit Records</h2>
-                    <a href='javascript:;' onClick={() => setActiveEditRecords(false)}><img src="/icons/close.png" /></a>
+                    <a href='#!' onClick={() => setActiveEditRecords(false)}><img src="/icons/close.png" /></a>
                 </div>
                 {showNloRequirements()}
             </CustomModal>

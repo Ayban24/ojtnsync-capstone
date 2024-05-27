@@ -35,9 +35,9 @@ const handleLogin = async () => {
       admin.adminType = data.adminType
 
       setLoggedInUser(admin);
-      Cookies.set('auth', JSON.stringify(admin));
+	  localStorage.setItem('auth', JSON.stringify(admin));
       setError(null);
-      window.location.replace('/admin/homepage');
+      window.location.replace('/admin/yearSemester');
       
     } else {
       setLoggedInUser(null);

@@ -10,7 +10,7 @@ export default function Templates() {
     const [file,setFile] = useState(null)
     const [title, setTitle] = useState(null)
     const [showModal, setShowModal] = useState(false)
-    const auth = JSON.parse(Cookies.get('auth'));
+    const auth = JSON.parse(localStorage.getItem('auth'));
 
     const fetchTemplates = async () => {
         const response = await fetch('http://localhost:8080/templates/all', {

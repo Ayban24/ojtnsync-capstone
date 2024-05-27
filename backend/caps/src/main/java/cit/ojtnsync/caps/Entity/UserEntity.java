@@ -37,12 +37,18 @@ public class UserEntity {
     
     private boolean isVerified;
     private String remarks;
+
+    @ManyToOne()
+    @JsonIgnore
+    @JoinColumn(name = "year_semester_id")
+    private YearSemester yearSemester;
+
     private String status = "active";
 
     public UserEntity() {
     }
 
-    public UserEntity(Long userid, String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, Course course, String email, String phone, boolean isVerified, String remarks, String status) {
+    public UserEntity(Long userid, String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, Course course, String email, String phone, boolean isVerified, String remarks, YearSemester yearSemester, String status) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
@@ -57,10 +63,11 @@ public class UserEntity {
         this.phone = phone;
         this.isVerified = isVerified;
         this.remarks = remarks;
+        this.yearSemester = yearSemester;
         this.status = status;
     }
 
-    public UserEntity(String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, Course course, String email, String phone, String password, boolean isVerified) {
+    public UserEntity(String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, Course course, String email, String phone, String password, boolean isVerified, YearSemester yearSemester) {
         this.studentID = studentID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -74,6 +81,7 @@ public class UserEntity {
         this.phone = phone;
         this.password = password;
         this.isVerified = isVerified;
+        this.yearSemester = yearSemester;
     }
 
     public Long getUserid() {
@@ -190,6 +198,14 @@ public class UserEntity {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public YearSemester getYearSemester() {
+        return yearSemester;
+    }
+
+    public void setYearSemester(YearSemester yearSemester) {
+        this.yearSemester = yearSemester;
     }
 
     public String getStatus() {

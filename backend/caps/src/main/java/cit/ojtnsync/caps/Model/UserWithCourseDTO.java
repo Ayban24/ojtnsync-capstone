@@ -18,9 +18,10 @@ public class UserWithCourseDTO {
     private String email;
     private Course course;
     private String remarks;
+    private int yearSemesterId;
     private boolean isVerified;
 
-    public UserWithCourseDTO(Long userid, String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, String phone, String email, Course course, String remarks, boolean isVerified) {
+    public UserWithCourseDTO(Long userid, String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, String phone, String email, Course course, String remarks, int yearSemesterId, boolean isVerified) {
         this.userid = userid;
         this.studentID = studentID;
         this.firstName = firstName;
@@ -34,6 +35,7 @@ public class UserWithCourseDTO {
         this.email = email;
         this.course = course;
         this.remarks = remarks;
+        this.yearSemesterId = yearSemesterId;
         this.isVerified = isVerified;
     }
 
@@ -139,6 +141,14 @@ public class UserWithCourseDTO {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public int getYearSemesterId() {
+        return yearSemesterId;
+    }
+
+    public void setYearSemesterId(int yearSemesterId) {
+        this.yearSemesterId = yearSemesterId;
     }
 
     public boolean isVerified() {

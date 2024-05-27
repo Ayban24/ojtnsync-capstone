@@ -38,6 +38,7 @@ body{
     position: relative;
     width: 100px;
     height: 61px;
+    pointer-events: none;
 }
 
 .Navbar > .nav-logo img {

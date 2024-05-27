@@ -6,7 +6,8 @@ import Cookies from 'js-cookie';
 export default function ActionAreaCard() {
 
 	const [courses, setCourses] = useState(null);
-	const auth = Cookies.get('auth');
+	const auth = localStorage.getItem('auth');
+    const ys = JSON.parse(Cookies.get('ys'));
 
 	const fetchCourses = async () => {
 		let response = null

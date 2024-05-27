@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './studentform.css';
 import { Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
 
 export default function ActionAreaCard() {
 
 	const [departments, setDepartments] = useState(null);
 	const [requirements, setRequirements] = useState(null)
 	const [isUpdatedCompany, setIsUpdatedCompany] = useState(false)
-	const auth = Cookies.get('auth');
+	const auth = localStorage.getItem('auth');
 
 	const fetchDepartments = async () => {
 		let response = null
@@ -111,7 +110,7 @@ export default function ActionAreaCard() {
         return (
 				departments && <div className='cards'>
 					{departments.map((item, index) => (
-						<div className="card">
+						<div className="card" key={index}>
 							<figure>
 								<img src={item.name.toLowerCase() == "nlo" ? "/images/nlo_requirements.jpg" : "/images/course_requirements.jpg"} />
 								<h2>{item.name}</h2>
