@@ -118,7 +118,7 @@ export default function ActionAreaCard() {
 							<h4>{item.name} Requirements</h4>
 							<div className='progress-bar-con'><div className='progress-bar' style={{width: `${getCompleted(index)}`}}></div></div>
 							<p>{getCompleted(index)} Completed</p>
-							<Link to={"/submission?department="+item.id}></Link>
+							{/* <Link to={"/submission?department="+item.id}></Link> */}
 						</div>
 					))}
 				</div>

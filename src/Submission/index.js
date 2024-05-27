@@ -411,9 +411,9 @@ export default function Submission() {
                     <h1><img src='/icons/documents.png' />Requirements</h1>
                     
                 </div>
-                <div className='requirements-nav'>
+                {/* <div className='requirements-nav'>
                     {showDepartments()}
-                </div>
+                </div> */}
                 <div className='requirements-content'>
                     {department && department.name.toLowerCase() != 'nlo' 
                         ? 
