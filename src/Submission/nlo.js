@@ -80,7 +80,7 @@ export default function Submission() {
                 const result = await response.json();
                 setRequirements(result)
                 if(result && result.length > 0) {
-                    setSelectedRequirement(result[0])
+                    console.log("test: ",result[0])
                 }
                 result.forEach(item => {
                     switch(item.title) {
@@ -90,6 +90,7 @@ export default function Submission() {
                             }
                             break;
                         case 'OSL: Official Study Load':
+                            setSelectedRequirement(item)
                             if(item?.documents[0]?.step) {
                                 setOslDoc(item.documents[0])
                             }
