@@ -33,7 +33,7 @@ const Navbar = () => {
                             <Link to={`/admin/requirements?department=${JSON.parse(auth).departmentId}`} className={isPathActive(`/admin/requirements`) ? 'active' : ''}>{JSON.parse(auth).adminType && JSON.parse(auth).adminType == 'faculty' ? 'Requirements' : 'Records'}</Link>
                         }
                         {JSON.parse(auth).userid && 
-                            <Link to={`/submission?department=${JSON.parse(auth).course.department.id}`} className={isPathActive(`/submission`) ? 'active' : ''}>Requirements</Link>
+                            <Link to={`/submission?department=${JSON.parse(auth).course.department.id}`} className={isPathActive(`/submission`) ? 'active' : ''}>{JSON.parse(auth).course.department.name} Requirements</Link>
                         }
                         {JSON.parse(auth).userid && 
                             <Link to={`/submission/nlo?department=${JSON.parse(auth).course.department.id}`} className={isPathActive(`/submission/nlo`) ? 'active' : ''}>NLO Requirements</Link>
