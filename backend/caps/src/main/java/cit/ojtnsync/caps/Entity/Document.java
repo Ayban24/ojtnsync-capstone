@@ -24,6 +24,9 @@ public class Document {
     @Column(nullable = true)
     private String status;
 
+    @Column(nullable = true)
+    private int step;
+
     private Timestamp createdAt;
 
     @ManyToOne()
@@ -124,5 +127,13 @@ public class Document {
 
     public void setSubmittedBy(UserEntity submittedBy) {
         this.submittedBy = submittedBy;
+    }
+
+    public int getStep() {
+        return this.step;
+    }
+
+    public void setStep(int step) {
+        this.step = step;
     }
 }

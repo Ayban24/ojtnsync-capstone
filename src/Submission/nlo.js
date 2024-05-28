@@ -3,6 +3,12 @@ import './styles.css';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
 import EndorsementLetter from './processing/EndorsementLetter';
+import StudyLoad from './processing/StudyLoad';
+import DeedOfUndertaking from './processing/DeedOfUndertaking';
+import ConfirmationLetter from './processing/ConfirmationLetter';
+import Waiver from './processing/Waiver';
+import CertificateOfCompletion from './processing/CertificateOfCompletion';
+import CustomModal from '../common/Modal'
 
 export default function Submission() {
     const [isUploadModalOpen, setUploadModalOpen] = useState(false);
@@ -13,6 +19,13 @@ export default function Submission() {
     const [isReUpload, setIsReUpload] = useState(false)
     const [department, setDepartment] = useState(null)
     const [departments, setDepartments] = useState(null);
+    const [elDoc, setElDoc] = useState(null);
+    const [oslDoc, setOslDoc] = useState(null);
+    const [douDoc, setDouDoc] = useState(null);
+    const [clDoc, setClDoc] = useState(null);
+    const [wDoc, setWDoc] = useState(null);
+    const [cocDoc, setCocDoc] = useState(null);
+    const [showDisableModal, setShowDisableModal] = useState(false);
   
     const openUploadModal = () => setUploadModalOpen(true);
     const closeUploadModal = () => {setUploadModalOpen(false);setIsReUpload(false)};
@@ -66,8 +79,43 @@ export default function Submission() {
             try {
                 const result = await response.json();
                 setRequirements(result)
-                if(result && result.length > 0)
+                if(result && result.length > 0) {
                     setSelectedRequirement(result[0])
+                }
+                result.forEach(item => {
+                    switch(item.title) {
+                        case 'EL: Endorsement Letter':
+                            if(item?.documents[0]?.step) {
+                                setElDoc(item.documents[0])
+                            }
+                            break;
+                        case 'OSL: Official Study Load':
+                            if(item?.documents[0]?.step) {
+                                setOslDoc(item.documents[0])
+                            }
+                            break;
+                        case 'DOU: Deed of Undertaking':
+                            if(item?.documents[0]?.step) {
+                                setDouDoc(item.documents[0])
+                            }
+                            break;
+                        case 'CL: Confirmation Letter':
+                            if(item?.documents[0]?.step) {
+                                setClDoc(item.documents[0])
+                            }
+                            break;
+                        case 'W: Waiver':
+                            if(item?.documents[0]?.step) {
+                                setWDoc(item.documents[0])
+                            }
+                            break;
+                        case 'COC: Certificate of Completion':
+                            if(item?.documents[0]?.step) {
+                                setCocDoc(item.documents[0])
+                            }
+                            break;
+                    }
+                })
                 console.log("nlo requirements: ",result)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
@@ -119,24 +167,27 @@ export default function Submission() {
     const showNloRequirements = () => {
 
         const  nloRequirements = {
-            'OC: Orientation Certificate'       : ['Orientation Certificate',null,'#677800'],
-            'CL: Confirmation Letter'           : ['Confirmation Letter',null,'#E900FE'],
-            'MOA: Memorandum of Agreement'      : ['Memorandum of Agreement',null,'#000000'],
-            'DOU: Deed of Undertaking'          : ['Deed of Undertaking',null,'#FF0808'],
-            'EL: Endorsement Letter'            : ['Endorsement Letter',null,'#F19F00'],
-            'W: Waiver'                         : ['Waiver',null,'#047016'],
-            'LOU: Letter of Undertaking'        : ['Letter of Undertaking',null,'#000AFF'],
-            'OSL: Official Study Load'          : ['Official Study Load',null,'#FF006B'],
-            'COC: Certificate of Completion'    : ['Certificate of Completion',null,'#0DB09C'],
+            'OC: Orientation Certificate'       : ['Orientation Certificate',null,'#677800',7],
+            'CL: Confirmation Letter'           : ['Confirmation Letter',null,'#E900FE',4],
+            'MOA: Memorandum of Agreement'      : ['Memorandum of Agreement',null,'#000000',8],
+            'DOU: Deed of Undertaking'          : ['Deed of Undertaking',null,'#FF0808',3],
+            'EL: Endorsement Letter'            : ['Endorsement Letter',null,'#F19F00',2],
+            'W: Waiver'                         : ['Waiver',null,'#047016',5],
+            'LOU: Letter of Undertaking'        : ['Letter of Undertaking',null,'#000AFF',9],
+            'OSL: Official Study Load'          : ['Official Study Load',null,'#FF006B',1],
+            'COC: Certificate of Completion'    : ['Certificate of Completion',null,'#0DB09C',6],
         }
         
         if(requirements) {
             // Sets the status for each requirements
             requirements.forEach(item => {
-                if(nloRequirements.hasOwnProperty(item.title))
+                if(nloRequirements.hasOwnProperty(item.title)) {
                     nloRequirements[item.title][1] = item?.documents?.[0]?.status.toLowerCase()
+                }
             });
         }
+
+        const couApproved = (douDoc && douDoc.status.toLowerCase() === 'approved');
         
         return (
             requirements && 
@@ -145,24 +196,18 @@ export default function Submission() {
                     <ul>
                         { requirements && requirements.length > 0 &&
                             requirements
-                            .filter(req => !['MOA: Memorandum of Agreement','OC: Orientation Certificate'].includes(req.title))
+                            .filter(req => !['MOA: Memorandum of Agreement','OC: Orientation Certificate', 'LOU: Letter of Undertaking'].includes(req.title))
+                            .sort((a, b) => nloRequirements[a.title][3] - nloRequirements[b.title][3])
                             .map((req, index) => {
                                 return <li 
                                         key={req.id} 
-                                        className={(selectedRequirement.id == req.id) ? 'active' : ''}
+                                        className={`${(selectedRequirement.id == req.id) ? 'active' : ''}`}
                                         onClick={() => {
-                                            setSelectedRequirement(req)
-                                            if(!['EL: Endorsement Letter'].includes(req.title)) {
-                                                let hasSubmitted = false
-                                                req.documents.forEach(doc => {
-                                                    if(doc.submittedBy.userid == JSON.parse(auth).userid){
-                                                        openStatusModal()
-                                                        hasSubmitted = true
-                                                    }
-                                                })
-                                                if(!hasSubmitted)
-                                                    openUploadModal()
-                                            }
+                                            if(!['CL: Confirmation Letter', 'W: Waiver', 'COC: Certificate of Completion'].includes(req.title) 
+                                                || (['CL: Confirmation Letter', 'W: Waiver', 'COC: Certificate of Completion'].includes(req.title) && couApproved))
+                                                setSelectedRequirement(req)
+                                            else
+                                                setShowDisableModal(true)
                                         }}>
                                             {nloRequirements[req.title][0]}
                                     </li>
@@ -235,18 +280,11 @@ export default function Submission() {
         try {
             const formData = new FormData();
             let uploadUrl = "http://localhost:8080/file/upload"
-            if(!isReUpload) {
-                formData.append('file', file, 'myfile.pdf');
-                formData.append('userId',JSON.parse(auth).userid);
-                formData.append('requirementId', selectedRequirement.id);
-                formData.append('isReUpload',isReUpload)
-            }
-            else {
-                formData.append('file', file, 'myfile.pdf');
-                formData.append('documentId', selectedRequirement.documents[0].id)
-                formData.append('userId',JSON.parse(auth).userid);
-                uploadUrl = "http://localhost:8080/file/reupload"
-            }
+            formData.append('file', file, 'myfile.pdf');
+            formData.append('userId',JSON.parse(auth).userid);
+            formData.append('requirementId', selectedRequirement.id);
+            formData.append('step',2)
+            formData.append('isReUpload',isReUpload)
     
             const response = await fetch(uploadUrl, {
                 method: 'POST',
@@ -258,7 +296,6 @@ export default function Submission() {
                     const result = await response.json();
                     console.log("response: ",result.document)
                     setDocument(null)
-                    window.location.reload()
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
                     // Handle unexpected JSON parsing error
@@ -364,16 +401,28 @@ export default function Submission() {
     return (
         <div id='nlo-requirements'>
             <div className='wrapper'>
-                <div className='requirements-header'>
-                    <h1><img src='/icons/documents.png' />NLO Requirements</h1>
-                </div>
 
                 <div className='nlo-requirements-content'>
                     {department && showNloRequirements()}
                 </div>
 
                 { selectedRequirement && selectedRequirement.title == "EL: Endorsement Letter" &&
-                    <EndorsementLetter onGenerate={endorsementLetterHandler}/>
+                    <><EndorsementLetter onGenerate={endorsementLetterHandler} document={elDoc} onDocChange={(doc) => {setElDoc(doc)}}/></>
+                }
+                { selectedRequirement && selectedRequirement.title == "OSL: Official Study Load" &&
+                    <><StudyLoad requirement={selectedRequirement} defaultDocument={oslDoc} onDocChange={(doc) => setOslDoc(doc)}/></>
+                }
+                { selectedRequirement && selectedRequirement.title == "DOU: Deed of Undertaking" &&
+                    <><DeedOfUndertaking requirement={selectedRequirement} defaultDocument={douDoc} onDocChange={(doc) => setDouDoc(doc)}/></>
+                }
+                { selectedRequirement && selectedRequirement.title == "CL: Confirmation Letter" &&
+                    <><ConfirmationLetter requirement={selectedRequirement} defaultDocument={clDoc} onDocChange={(doc) => setClDoc(doc)}/></>
+                }
+                { selectedRequirement && selectedRequirement.title == "W: Waiver" &&
+                    <><Waiver requirement={selectedRequirement} defaultDocument={wDoc} onDocChange={(doc) => setWDoc(doc)}/></>
+                }
+                { selectedRequirement && selectedRequirement.title == "COC: Certificate of Completion" &&
+                    <><CertificateOfCompletion requirement={selectedRequirement} defaultDocument={cocDoc} onDocChange={(doc) => setCocDoc(doc)}/></>
                 }
             </div>
             
@@ -384,6 +433,12 @@ export default function Submission() {
 
             {(isStatusModalOpen && JSON.parse(auth).verified) && (
                 <StatusModal closeModal={closeStatusModal} />
+            )}
+
+            {(showDisableModal && JSON.parse(auth).verified) && (
+                <CustomModal show={showDisableModal} onHide={(val) => {setShowDisableModal(val)}}>
+                    <p>You need to finish the "Deed of Undertaking" process to proceed</p>
+                </CustomModal>
             )}
             {/* end modals */}
         </div>

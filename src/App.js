@@ -30,7 +30,7 @@ function App() {
 	const auth = localStorage.getItem('auth');
 
 	// Check if the current path is "/signup" or "/login"
-	const isSignupOrLogin = currentPath === '/signup' || currentPath === '/login' || currentPath === '/' || currentPath === '';
+	const isSignupOrLogin = currentPath === '/signup' || currentPath === '/login' || currentPath === '/' || currentPath === '' || currentPath === '/admin';
 
 	// Conditionally render the Nav component
 	const renderNav = () => {
@@ -45,9 +45,9 @@ function App() {
 			<Router>
 				{renderNav()}
 				<Routes>
-					<Route path="/" element={<SplashScreen />} /> 
+					<Route path="/" element={<Login />} /> 
 					<Route path="/login" element={<Login />} />
-					<Route path= "/adminloginform" element={<AdminLoginForm/>} />
+					<Route path= "/admin" element={<AdminLoginForm/>} />
 					<Route path="/signup" element={<Signup />} />
 					<Route path= "/adminsignupform" element={<AdminSignupForm/>} />
 					{ auth &&(

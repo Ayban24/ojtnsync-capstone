@@ -72,7 +72,8 @@ public class FileController {
     public ResponseEntity<UploadResponse> handleFileUpload(
             @RequestParam("file") MultipartFile file,
             @RequestParam("userId") Long userId,
-            @RequestParam("requirementId") int requirementId) {
+            @RequestParam("requirementId") int requirementId,
+            @RequestParam(value = "step", required = false, defaultValue = "0") int step) {
 
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(new UploadResponse("Please select a file to upload", null));
@@ -88,6 +89,7 @@ public class FileController {
 
             // Save information about the uploaded file into a Document entity
             Document document = new Document(null, fileName, fileExt, null, "Pending", requirement, submittedBy, new Timestamp(System.currentTimeMillis()));
+            document.setStep(step);
             document = documentRepository.save(document);
 
             String hashedFileName = "";
