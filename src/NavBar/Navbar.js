@@ -44,6 +44,12 @@ const Navbar = () => {
                                 
                             </>
                         }
+                        {JSON.parse(auth).adminid && 
+                            <>
+                                <Link to={`/admin/requirements/nlo`} className={isPathActive(`/admin/requirements/nlo`) ? 'active' : ''}>NLO Requirements</Link>
+                                
+                            </>
+                        }
                         {/* {!(JSON.parse(auth).adminType && JSON.parse(auth).adminType == 'nlo') && 
                             <Link to="/templates" className={isPathActive(`/templates`) ? 'active' : ''}>Templates</Link>
                         } */}

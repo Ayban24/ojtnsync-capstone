@@ -83,38 +83,42 @@ export default function Submission() {
                     console.log("test: ",result[0])
                 }
                 result.forEach(item => {
-                    switch(item.title) {
-                        case 'EL: Endorsement Letter':
-                            if(item?.documents[0]?.step) {
-                                setElDoc(item.documents[0])
-                            }
-                            break;
-                        case 'OSL: Official Study Load':
-                            setSelectedRequirement(item)
-                            if(item?.documents[0]?.step) {
-                                setOslDoc(item.documents[0])
-                            }
-                            break;
-                        case 'DOU: Deed of Undertaking':
-                            if(item?.documents[0]?.step) {
-                                setDouDoc(item.documents[0])
-                            }
-                            break;
-                        case 'CL: Confirmation Letter':
-                            if(item?.documents[0]?.step) {
-                                setClDoc(item.documents[0])
-                            }
-                            break;
-                        case 'W: Waiver':
-                            if(item?.documents[0]?.step) {
-                                setWDoc(item.documents[0])
-                            }
-                            break;
-                        case 'COC: Certificate of Completion':
-                            if(item?.documents[0]?.step) {
-                                setCocDoc(item.documents[0])
-                            }
-                            break;
+                    const doc = item.documents.find(doc => doc.submittedBy.userid == JSON.parse(auth).userid)
+                    if(item.title === 'OSL: Official Study Load')
+                        setSelectedRequirement(item)
+                    if(doc) {
+                        switch(item.title) {
+                            case 'EL: Endorsement Letter':
+                                if(doc.step) {
+                                    setElDoc(doc)
+                                }
+                                break;
+                            case 'OSL: Official Study Load':
+                                if(doc.step) {
+                                    setOslDoc(doc)
+                                }
+                                break;
+                            case 'DOU: Deed of Undertaking':
+                                if(doc.step) {
+                                    setDouDoc(doc)
+                                }
+                                break;
+                            case 'CL: Confirmation Letter':
+                                if(doc.step) {
+                                    setClDoc(doc)
+                                }
+                                break;
+                            case 'W: Waiver':
+                                if(doc.step) {
+                                    setWDoc(doc)
+                                }
+                                break;
+                            case 'COC: Certificate of Completion':
+                                if(doc.step) {
+                                    setCocDoc(doc)
+                                }
+                                break;
+                        }
                     }
                 })
                 console.log("nlo requirements: ",result)

@@ -160,101 +160,103 @@ export default function Submission() {
                     />
                 </div>
 
-                <div className='nlo-requirements-con requirement-section'>
-                    <div className='nlo-requirements'>
-                        <div className='nlo-requirements-header'>
-                            <h2>NLO RECORDS</h2>
-                            {JSON.parse(auth).adminType && JSON.parse(auth).adminType.toLowerCase() == 'nlo' &&
-                                <a href='#!' className='edit-btn btn-yellow' onClick={() => setActiveEditRecords(true)}>EDIT</a>
-                            }
+                { JSON.parse(auth).adminType && JSON.parse(auth).adminType.toLowerCase() == 'nlo' &&
+                    <div className='nlo-requirements-con requirement-section'>
+                        <div className='nlo-requirements'>
+                            <div className='nlo-requirements-header'>
+                                <h2>NLO RECORDS</h2>
+                                {JSON.parse(auth).adminType && JSON.parse(auth).adminType.toLowerCase() == 'nlo' &&
+                                    <a href='#!' className='edit-btn btn-yellow' onClick={() => setActiveEditRecords(true)}>EDIT</a>
+                                }
+                            </div>
+                            <ul>
+                                {requirements
+                                .filter(req => nloRequirements[req.title] && nloRequirements[req.title].length > 0)
+                                .map((item, index) => (
+                                    <li key={index}>
+                                        <a style={{color: nloRequirements[item.title] ? nloRequirements[item.title][2] : '#000'}}>{item.title}</a>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-                        <ul>
-                            {requirements
-                            .filter(req => nloRequirements[req.title] && nloRequirements[req.title].length > 0)
-                            .map((item, index) => (
-                                <li key={index}>
-                                    <a style={{color: nloRequirements[item.title] ? nloRequirements[item.title][2] : '#000'}}>{item.title}</a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
 
-                    <div className='tbl-requirements-status-con'>
+                        <div className='tbl-requirements-status-con'>
 
-                        <table className='tbl-requirements-status tbl-requirements-status1'>
-                            <thead>
-                                <tr>
-                                    {
-                                        Object.entries(nloRequirements).map(([key, value]) => {
-                                            return <th key={key} style={{color:value[2]}}>{value[0]}</th>
-                                        })
-                                    }
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    { nloRequirements && requirements &&
-                                        Object.entries(nloRequirements).map(([key, value]) => {
-                                            return <td>
-                                                <a key={key} href='#!' className={`status status-${value[1]}`} onClick={() => {
-                                                    if(activeEditRecords) {
-                                                        const req = requirements.find(item => item.title == key)
-                                                        const newStatus = (value[1] == 'approved') ? 'Disapproved' : 'Approved'
-                                                        toggleNloRecords(req.id, newStatus, value[3])
-                                                    }
-                                                }}></a>
-                                            </td>
-                                        })
-                                    }
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <table className='tbl-requirements-status'>
-                            <thead>
-                                <tr>
-                                    <th>Lacking File/Files</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
+                            <table className='tbl-requirements-status tbl-requirements-status1'>
+                                <thead>
+                                    <tr>
                                         {
-                                            nloRequirements && 
-                                            Object.entries(nloRequirements).filter((value) => {
-                                                return (value?.[1]?.[1] != "approved")
+                                            Object.entries(nloRequirements).map(([key, value]) => {
+                                                return <th key={key} style={{color:value[2]}}>{value[0]}</th>
                                             })
-                                            .map(val => val[1]?.[0])
-                                            .join(", ")
                                         }
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        { nloRequirements && requirements &&
+                                            Object.entries(nloRequirements).map(([key, value]) => {
+                                                return <td>
+                                                    <a key={key} href='#!' className={`status status-${value[1]}`} onClick={() => {
+                                                        if(activeEditRecords) {
+                                                            const req = requirements.find(item => item.title == key)
+                                                            const newStatus = (value[1] == 'approved') ? 'Disapproved' : 'Approved'
+                                                            toggleNloRecords(req.id, newStatus, value[3])
+                                                        }
+                                                    }}></a>
+                                                </td>
+                                            })
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                        <table className='tbl-requirements-status'>
-                            <thead>
-                                <tr><th>Remarks</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <input 
-                                            type='text' 
-                                            onChange={(e) => setRemarks(e.target.value)} 
-                                            value={remarks} 
-                                            className='tbl-requirements-status-remarks'
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <table className='tbl-requirements-status'>
+                                <thead>
+                                    <tr>
+                                        <th>Lacking File/Files</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            {
+                                                nloRequirements && 
+                                                Object.entries(nloRequirements).filter((value) => {
+                                                    return (value?.[1]?.[1] != "approved")
+                                                })
+                                                .map(val => val[1]?.[0])
+                                                .join(", ")
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table className='tbl-requirements-status'>
+                                <thead>
+                                    <tr><th>Remarks</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <input 
+                                                type='text' 
+                                                onChange={(e) => setRemarks(e.target.value)} 
+                                                value={remarks} 
+                                                className='tbl-requirements-status-remarks'
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <a className='edit-records-accept-btn btn-yellow' href='#!' onClick={() => {
+                            updateRemarks()
+                            setActiveEditRecords(false)
+                        }}>Accept</a>
                     </div>
-                    <a className='edit-records-accept-btn btn-yellow' href='#!' onClick={() => {
-                        updateRemarks()
-                        setActiveEditRecords(false)
-                    }}>Accept</a>
-                </div>
+                }
             </>
         );
     }

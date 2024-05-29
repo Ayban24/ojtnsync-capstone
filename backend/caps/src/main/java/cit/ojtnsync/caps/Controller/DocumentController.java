@@ -3,6 +3,7 @@ package cit.ojtnsync.caps.Controller;
 import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
 import cit.ojtnsync.caps.Entity.UserEntity;
+import cit.ojtnsync.caps.Model.DocumentWithCourseDTO;
 import cit.ojtnsync.caps.Service.DocumentService;
 import cit.ojtnsync.caps.Service.RequirementService;
 import cit.ojtnsync.caps.Service.UserService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -51,7 +53,8 @@ public class DocumentController {
     public ResponseEntity<Document> updateDocumentStatus(
             @PathVariable int id,
             @RequestParam("comment") String comment,
-            @RequestParam("status") String status) {
+            @RequestParam("status") String status,
+            @RequestParam(name = "step", required = false) Integer step) {
         Document existingDocument = documentService.getDocumentById(id);
         if (existingDocument == null) {
             return ResponseEntity.notFound().build();
@@ -60,6 +63,12 @@ public class DocumentController {
         // Update the fields of the existing document with the fields of the updated document
         existingDocument.setComment(comment);
         existingDocument.setStatus(status);
+        if(status.toLowerCase().compareTo("declined") == 0) {
+            existingDocument.setStep(0);
+        }
+        else if(step != null) {
+            existingDocument.setStep(step);
+        }
 
         // Save the updated document
         Document savedDocument = documentService.saveDocument(existingDocument);
@@ -107,6 +116,15 @@ public class DocumentController {
         documentService.saveDocument(document);
 
         return ResponseEntity.ok(document);
+    }
+
+    @GetMapping("/requirement/{requirementId}")
+    public List<DocumentWithCourseDTO> getDocumentsByRequirementId(@PathVariable int requirementId) {
+        List<Document> documents = documentService.getDocumentsByRequirementId(requirementId);
+        List<DocumentWithCourseDTO> documentWithCourseDTOs = documents.stream()
+            .map(DocumentWithCourseDTO::new)
+            .collect(Collectors.toList());
+        return documentWithCourseDTOs;
     }
 
 }

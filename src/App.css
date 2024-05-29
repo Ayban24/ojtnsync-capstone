@@ -130,6 +130,12 @@
   background: #801C1C;
 }
 
+.nlo-records .datatable td, .nlo-records .datatable th {
+  padding: 10px 5px;
+  }
+  .nlo-records .datatable td .status {
+    margin: 0;
+  }
 
 @keyframes App-logo-spin {
   from {

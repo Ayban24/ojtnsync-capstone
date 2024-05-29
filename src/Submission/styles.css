@@ -288,3 +288,12 @@ text-align: center;
 .status.status-approved {
   background: #60AA5E;
 }
+
+.submission-status-btn-con {
+  display: flex;
+  justify-content: center;
+  column-gap: 15px;
+}
+.submission-status-btn-con button {
+  margin: 25px 0 0;
+}

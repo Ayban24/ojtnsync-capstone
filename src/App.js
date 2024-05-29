@@ -12,9 +12,10 @@ import Submission from './Submission';
 import NloSubmission from './Submission/nlo'
 import AdminHomepage from './Admin/Homepage';
 import AdminSubmission from './Admin/Submission';
+import AdminNloRequirements from './Admin/Requirements/nlo'
 import Validate from './Admin/Validate'
 import Requirements from './Admin/Requirements'
-import NLORequirements from './Admin/Requirements/nlo'
+import NLORequirements from './Admin/Requirements/nlo-records'
 import ViewNLORequirements from './Admin/Requirements/view'
 import Students from './Admin/Students';
 import AddStudent from './Admin/Students/Add';
@@ -76,6 +77,7 @@ function App() {
 						<Route path="/admin/students/delete" element={<DeleteStudent />} />
 						<Route path="/admin/student/documents" element={<StudentDocuments />} />
 						<Route path="/admin/yearSemester" element={<YearSemester />} />
+						<Route path="/admin/requirements/nlo" element={<AdminNloRequirements />} />
 					</>
 					)
 					}

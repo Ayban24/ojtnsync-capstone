@@ -3,6 +3,7 @@ package cit.ojtnsync.caps.Model;
 import java.util.Date;
 
 import cit.ojtnsync.caps.Entity.Course;
+import cit.ojtnsync.caps.Entity.UserEntity;
 
 public class UserWithCourseDTO {
     private Long userid;
@@ -37,6 +38,24 @@ public class UserWithCourseDTO {
         this.remarks = remarks;
         this.yearSemesterId = yearSemesterId;
         this.isVerified = isVerified;
+    }
+
+    public UserWithCourseDTO(UserEntity userEntity) {
+        this.userid = userEntity.getUserid();
+        this.studentID = userEntity.getStudentID();
+        this.firstName = userEntity.getFirstName();
+        this.lastName = userEntity.getLastName();
+        this.companyName = userEntity.getCompanyName();
+        this.companyAddress = userEntity.getCompanyAddress();
+        this.contactPerson = userEntity.getContactPerson();
+        this.designation = userEntity.getDesignation();
+        this.dateStarted = userEntity.getDateStarted();
+        this.phone = userEntity.getPhone();
+        this.email = userEntity.getEmail();
+        this.course = userEntity.getCourse();
+        this.remarks = userEntity.getRemarks();
+        this.yearSemesterId = userEntity.getYearSemester().getId();
+        this.isVerified = userEntity.isVerified();
     }
 
     public Long getUserid() {
@@ -158,4 +177,5 @@ public class UserWithCourseDTO {
     public void setVerified(boolean verified) {
         isVerified = verified;
     }
+    
 }

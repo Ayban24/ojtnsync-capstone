@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cit.ojtnsync.caps.Entity.Document;
+import cit.ojtnsync.caps.Entity.Requirement;
 
 public class RequirementWithCourseDTO {
 
@@ -30,6 +31,17 @@ public class RequirementWithCourseDTO {
         this.departmentId = departmentId;
         this.courseId = courseId;
         this.courseName = courseName;
+    }
+
+    public RequirementWithCourseDTO(Requirement requirement) {
+        this.id = requirement.getId();
+        this.title = requirement.getTitle();
+        this.documents = requirement.getDocuments();
+        this.term = requirement.getTerm();
+        this.status = requirement.getStatus();
+        this.departmentId = requirement.getDepartment().getId();
+        this.courseId = requirement.getCourse().getId();
+        this.courseName = requirement.getCourse().getName();
     }
 
     // Getters and setters

@@ -11,5 +11,6 @@ import cit.ojtnsync.caps.Entity.UserEntity;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Integer> {
     List<Document> findBySubmittedBy(UserEntity submittedBy);
+    List<Document> findByRequirementId(int requirementId);
 }
 

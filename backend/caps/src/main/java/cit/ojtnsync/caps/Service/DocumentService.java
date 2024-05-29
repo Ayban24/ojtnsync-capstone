@@ -41,4 +41,8 @@ public class DocumentService {
     public List<Document> getDocumentsBySubmittedBy(UserEntity submittedBy) {
         return documentRepository.findBySubmittedBy(submittedBy);
     }
+
+    public List<Document> getDocumentsByRequirementId(int requirementId) {
+        return documentRepository.findByRequirementId(requirementId);
+    }
 }

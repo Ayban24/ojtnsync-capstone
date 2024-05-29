@@ -170,6 +170,61 @@ public class FileController {
         }
     }
 
+    @PostMapping("/admin/reupload")
+    public ResponseEntity<UploadResponse> handleAdminFileReupload(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("documentId") int documentId,
+            @RequestParam("userId") Long userId) {
+
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(new UploadResponse("Please select a file to upload", null));
+        }
+
+        try {
+            UserEntity submittedBy = userRepository.findByUserid(userId);
+            Document existingDocument = documentRepository.findById(documentId).orElse(null);
+
+            if (existingDocument == null) {
+                return ResponseEntity.badRequest().body(new UploadResponse("Document not found", null));
+            }
+
+            // Delete the old static file
+            String oldFilePath = uploadDirectory + File.separator + existingDocument.getHashedFileName() + "." + existingDocument.getExtName();
+            Files.deleteIfExists(Paths.get(oldFilePath));
+
+            // Update information about the existing document
+            String fileName = file.getOriginalFilename();
+            String fileExt = getFileExtension(fileName);
+
+            existingDocument.setFileName(fileName);
+            existingDocument.setExtName(fileExt);
+            existingDocument.setSubmittedBy(submittedBy);
+            existingDocument.setStatus("Approved");
+            existingDocument.setStep(existingDocument.getStep()+1);
+
+            String hashedFileName = "";
+            try {
+                // Ensures that the hashed filename is a unique filename to prevent the same file name saving
+                hashedFileName = hashFilename(fileName + existingDocument.getId());
+                existingDocument.setHashedFileName(hashedFileName);
+                documentRepository.save(existingDocument);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+            String filePath = uploadDirectory + File.separator + hashedFileName + "." + fileExt;
+
+            // Save the updated file to the specified directory
+            file.transferTo((new File(filePath)).toPath());
+
+            UploadResponse response = new UploadResponse("File reuploaded successfully", existingDocument);
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new UploadResponse("File reupload failed", null));
+        }
+    }
+
 
     @GetMapping("/download/{documentId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable int documentId) {
