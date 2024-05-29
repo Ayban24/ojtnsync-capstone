@@ -84,6 +84,53 @@
   background: #801C1C;
 }
 
+.steps {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.steps ul li {
+  background: red;
+}
+
+.steps ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.steps ul li {
+  clip-path: polygon(0 0, 70% 0, 100% 50%, 70% 100%, 0 100%, 33% 50%);
+  padding: 10px 61px;
+  min-height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  flex-direction: column;
+  min-width: 130px;
+}
+
+.steps ul li:not(:first-child) {
+  margin-left: -31px;
+}
+
+.steps ul li {
+  background: #8C8A8A;
+  clip-path: polygon(0 0, 76% 0, 100% 50%, 76% 100%, 0 100%, 24% 50%);
+}
+
+.steps ul li span {
+  display: block;
+}
+
+.steps ul li.active {
+  background: #801C1C;
+}
+
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

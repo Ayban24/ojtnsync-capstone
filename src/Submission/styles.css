@@ -239,6 +239,11 @@
     cursor: pointer;
   }
 
+#nlo-requirements .wrapper {
+  margin-left: 270px;
+  margin-right: 100px;
+}
+
 .nlo-requirements ul {
   list-style: none;
   padding: 0;
