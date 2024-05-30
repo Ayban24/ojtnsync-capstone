@@ -4,6 +4,7 @@ import cit.ojtnsync.caps.Entity.Document;
 import cit.ojtnsync.caps.Entity.Requirement;
 import cit.ojtnsync.caps.Entity.UserEntity;
 import cit.ojtnsync.caps.Model.DocumentWithCourseDTO;
+import cit.ojtnsync.caps.Model.RequirementWithCourseDTO;
 import cit.ojtnsync.caps.Service.DocumentService;
 import cit.ojtnsync.caps.Service.RequirementService;
 import cit.ojtnsync.caps.Service.UserService;
@@ -12,6 +13,7 @@ import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,7 +78,7 @@ public class DocumentController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Document>> getDocumentsByUserId(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<DocumentWithCourseDTO>> getDocumentsByUserId(@PathVariable("userId") Long userId) {
         // Fetch the user from the database
         UserEntity user = userService.findById(userId);
         
@@ -86,9 +88,13 @@ public class DocumentController {
 
         // Retrieve documents submitted by the user
         List<Document> documents = documentService.getDocumentsBySubmittedBy(user);
+        List<DocumentWithCourseDTO> documentWithCourseDTOs = new ArrayList<>(); 
+        for (Document doc : documents) {
+            documentWithCourseDTOs.add(new DocumentWithCourseDTO(doc));
+        }
 
         if (!documents.isEmpty()) {
-            return ResponseEntity.ok(documents);
+            return ResponseEntity.ok(documentWithCourseDTOs);
         } else {
             return ResponseEntity.notFound().build();
         }

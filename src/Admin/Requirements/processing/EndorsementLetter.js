@@ -38,15 +38,17 @@ export default function EndorsementLetter({requirementId}) {
             <button className='back-btn' onClick={() => setCheck(false)}>&lsaquo;</button>
             <div className='document-info'>
                 <div className='header'>
-                    <h4>{selectedDocument.submittedBy.firstName} {selectedDocument.submittedBy.lastName}</h4>
+                    <a href={`http://localhost:8080/file/download/${selectedDocument.id}`} style={{background:"unset"}}>Download</a>
                     <div className='actions'>
+                        <button onClick={() => {openUploadModal()}}>Re-Upload</button>
                         <button onClick={() => {setDocumentStatus("Declined");setCommentModal(true)}}>Decline</button>
-                        <button onClick={() => {setDocumentStatus("Approved");setCommentModal(true)}}>Approve</button>
+                        <button onClick={() => {setDocumentStatus("Approved");setCommentModal(true)}}>Submit to NLO</button>
                     </div>
                 </div>
                 {selectedDocument.extName == "pdf" 
                     ?   <Document file={`http://localhost:8080/file/download/${selectedDocument.id}`} >
                             <Page pageNumber={1} />
+                            <Page pageNumber={2} />
                         </Document>
                     :   <figure><img src={`http://localhost:8080/file/download/${selectedDocument.id}`} /></figure>
                 }
@@ -138,6 +140,8 @@ export default function EndorsementLetter({requirementId}) {
             formData.append('file', document);
             formData.append('documentId', selectedDocument.id)
             formData.append('userId',selectedDocument.submittedBy.userid);
+            formData.append('status', 'Pending')
+            formData.append('step', selectedDocument.step)
             const uploadUrl = "http://localhost:8080/file/admin/reupload"
     
             const response = await fetch(uploadUrl, {

@@ -41,6 +41,18 @@ const YearSemester = () => {
         }
     }
 
+    const numberToOrdinal = (number) => {
+        const ordinals = ["", "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth"];
+      
+        const num = parseInt(number, 10);
+
+        if (num > 0 && num < ordinals.length) {
+          return ordinals[num];
+        } else {
+          return number;
+        }
+    };
+
     const onSave = async () => {
         const formData = new FormData();
 		formData.append('year', yearInput);
@@ -78,7 +90,8 @@ const YearSemester = () => {
         return <>
             { yearSemesters && yearSemesters.map((ys, index) => {
                 return <section key={index} onClick={() => onYearSemesterClick(ys)}>
-                    <h2>{ys.year} - {ys.semester}</h2>
+                    <p>{numberToOrdinal(ys.semester)} Semester</p>
+                    <h4>S.Y. {ys.year}</h4>
                 </section>
             })}
         </>
@@ -108,19 +121,33 @@ const YearSemester = () => {
             </div>
             { activeAddModal &&
                 <CustomModal show={true} onHide={() => {setActiveAddModal(false)}}>
-                        <h2>Add Modal</h2>
-
-                        <input 
-                            name='year' 
-                            type='text' 
-                            value={yearInput}
-                            onChange={(e) => setYearInput(e.target.value)}/>
-                        <input 
-                            name='semester' 
-                            type='text' 
-                            value={semesterInput}
-                            onChange={(e) => setSemesterInput(e.target.value)}/>
-                        <a onClick={() => onSave()} href='#!' className='btn-yellow'>Save</a>
+                        <div className='ojt-folder-modal'>
+                            <h2>Creating OJT Folder</h2>
+    
+                            <div className='ojt-folder-input-con'>
+                                <div className='ojt-folder-input'>
+                                    <label>Semester: </label>
+                                    <input 
+                                        name='semester' 
+                                        type='number' 
+                                        id='modal-semester'
+                                        value={semesterInput}
+                                        onChange={(e) => setSemesterInput(e.target.value)}/>
+                                </div>
+        
+                                <div className='ojt-folder-input'>
+                                    <label>School Year: </label>
+                                    <input 
+                                        name='year' 
+                                        type='text' 
+                                        id='modal-year'
+                                        value={yearInput}
+                                        onChange={(e) => setYearInput(e.target.value)}/>
+                                </div>
+                            </div>
+                            
+                            <a onClick={() => onSave()} href='#!' className='btn-yellow'>Save</a>
+                        </div>
 
                 </CustomModal>
             }

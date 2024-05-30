@@ -138,6 +138,8 @@ export default function StudyLoad({requirementId}) {
             formData.append('file', document);
             formData.append('documentId', selectedDocument.id)
             formData.append('userId',selectedDocument.submittedBy.userid);
+            formData.append('status', 'Pending')
+            formData.append('step', selectedDocument.step)
             const uploadUrl = "http://localhost:8080/file/admin/reupload"
     
             const response = await fetch(uploadUrl, {

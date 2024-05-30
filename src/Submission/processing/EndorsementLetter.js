@@ -10,6 +10,7 @@ export default function EndorsementLetter({onGenerate, document, onDocChange}) {
     const auth = JSON.parse(localStorage.getItem('auth'));
     const [degree, setDegree] = useState('');
     const [salutation, setSalutation] = useState('Mr.');
+    const [salutation2, setSalutation2] = useState('Mr.');
     const [firstName, setFirstName] = useState('');
     const [middleInitial, setMiddleInitial] = useState('');
     const [lastName, setLastName] = useState('');
@@ -20,6 +21,10 @@ export default function EndorsementLetter({onGenerate, document, onDocChange}) {
     const [contactNumber, setContactNumber] = useState('');
     const [step, setStep] = useState(1)
     const [checkInfo, setCheckInfo] = useState (null)
+
+    const [subjectCode, setSubjectCode] = useState (null)
+    const [ojtHours, setOjtHours] = useState (null)
+    const [ojtTrainingEnv, setOjtTrainingEnv] = useState (null)
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
     const handleSubmit = (event) => {
@@ -66,99 +71,192 @@ export default function EndorsementLetter({onGenerate, document, onDocChange}) {
     const step1 = () => {
         return <>
             <form onSubmit={handleSubmit}>
-                <h4>1. Degree Program (ex. BS in Information Technology)</h4>
-                <input
-                    placeholder='Enter your answer'
-                    value={degree}
-                    onChange={(e) => setDegree(e.target.value)}
-                />
-
+                <h1>ENDORSEMENT LETTER REQUEST</h1>
+                <ol>
+                    <li>
+                        <h4>Degree Program (ex. BS in Information Technology)</h4>
+                        <input
+                            placeholder='Enter your answer'
+                            value={degree}
+                            onChange={(e) => setDegree(e.target.value)}
+                        />
+                    </li>
+                    <li>
+                        <h4>Subject Code (ex. IT412)</h4>
+                        <input
+                            placeholder='Enter your answer'
+                            value={subjectCode}
+                            onChange={(e) => setSubjectCode(e.target.value)}
+                        />
+                    </li>
+                    <li>
+                        <h4>OJT Hours to Render </h4>
+                        <input
+                            placeholder='Enter your answer'
+                            value={ojtHours}
+                            onChange={(e) => setOjtHours(e.target.value)}
+                        />
+                    </li>
+                    <li>
+                        <h4>OJT Training Environment</h4>
+                        <label htmlFor="salutation-mr">
+                        Virtual
+                        <input
+                            type='radio'
+                            value="Virtual"
+                            name='ojtTrainingEnv'
+                            id='ojtTrainingEnv1'
+                            checked={ojtTrainingEnv === 'Virtual'}
+                            onChange={(e) => setOjtTrainingEnv(e.target.value)}
+                        />
+                        </label>
+                        <label htmlFor="salutation-mrs">
+                        Face to Face
+                        <input
+                            type='radio'
+                            value="Face to Face"
+                            name='ojtTrainingEnv'
+                            id='ojtTrainingEnv2'
+                            checked={ojtTrainingEnv === 'Face to Face'}
+                            onChange={(e) => setOjtTrainingEnv(e.target.value)}
+                        />
+                        </label>
+                    </li>
+                </ol>
                 <div>
                     <h2>Student Details</h2>
 
-                    <h4>2. Salutation</h4>
-                    <label htmlFor="salutation-mr">
-                    Mr.
-                    <input
-                        type='radio'
-                        value="mr."
-                        name='salutation'
-                        id='salutation-mr'
-                        checked={salutation === 'Mr.'}
-                        onChange={(e) => setSalutation(e.target.value)}
-                    />
-                    </label>
-                    <label htmlFor="salutation-mrs">
-                    Mrs.
-                    <input
-                        type='radio'
-                        value="mrs."
-                        name='salutation'
-                        id='salutation-mrs'
-                        checked={salutation === 'Mrs.'}
-                        onChange={(e) => setSalutation(e.target.value)}
-                    />
-                    </label>
-
-                    <h4>3. First Name (ex. Patrick)</h4>
-                    <input
-                    placeholder='Enter your answer'
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    />
-
-                    <h4>4. Middle Initial (ex. L.)</h4>
-                    <input
-                    placeholder='Enter your answer'
-                    value={middleInitial}
-                    onChange={(e) => setMiddleInitial(e.target.value)}
-                    />
-
-                    <h4>5. Last Name (ex. Bacalso)</h4>
-                    <input
-                    placeholder='Enter your answer'
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    />
+                    <ol>
+                        <li>
+                            <h4>Salutation</h4>
+                            <label htmlFor="salutation-mr">
+                            Mr. 
+                            <input
+                                type='radio'
+                                value="Mr."
+                                name='salutation'
+                                id='salutation-mr'
+                                checked={salutation === 'Mr.'}
+                                onChange={(e) => setSalutation(e.target.value)}
+                            />
+                            </label>
+                            <label htmlFor="salutation-mrs">
+                            Mrs.
+                            <input
+                                type='radio'
+                                value="Mrs."
+                                name='salutation'
+                                id='salutation-mrs'
+                                checked={salutation === 'Mrs.'}
+                                onChange={(e) => setSalutation(e.target.value)}
+                            />
+                            </label>
+                        </li>
+    
+                        <li>
+                            <h4>First Name (ex. Patrick)</h4>
+                            <input
+                            placeholder='Enter your answer'
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            />
+                        </li>
+    
+                        <li>
+                            <h4>Middle Initial (ex. L.)</h4>
+                            <input
+                            placeholder='Enter your answer'
+                            value={middleInitial}
+                            onChange={(e) => setMiddleInitial(e.target.value)}
+                            />
+                        </li>
+    
+                        <li>
+                            <h4>Last Name (ex. Bacalso)</h4>
+                            <input
+                            placeholder='Enter your answer'
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            />
+                        </li>
+                    </ol>
                 </div>
 
                 <div>
                     <h2>Company Details</h2>
 
-                    <h4>6. Name of Contact Person (ex. Consuelo R. Migallos)</h4>
-                    <input
-                    placeholder='Enter your answer'
-                    value={contactPerson}
-                    onChange={(e) => setContactPerson(e.target.value)}
-                    />
+                    <ol>
+                        <li>
+                            <h4>Salutation</h4>
+                            <label htmlFor="salutation-mr">
+                            Mr.
+                            <input
+                                type='radio'
+                                value="Mr."
+                                name='salutation2'
+                                id='salutation2-mr'
+                                checked={salutation2 === 'Mr.'}
+                                onChange={(e) => setSalutation2(e.target.value)}
+                            />
+                            </label>
+                            <label htmlFor="salutation-mrs">
+                            Mrs.
+                            <input
+                                type='radio'
+                                value="Mrs."
+                                name='salutation2'
+                                id='salutation2-mrs'
+                                checked={salutation2 === 'Mrs.'}
+                                onChange={(e) => setSalutation2(e.target.value)}
+                            />
+                            </label>
+                        </li>
 
-                    <h4>7. Designation (ex. HR Director)</h4>
-                    <input
-                    placeholder='Enter your answer'
-                    value={designation}
-                    onChange={(e) => setDesignation(e.target.value)}
-                    />
-
-                    <h4>8. Company Name (ex. Cebu Institute of Technology - University)</h4>
-                    <input
-                    placeholder='Enter your answer'
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    />
-
-                    <h4>9. Company Address (ex. N. Bacalso Avenue Cebu City 6000 Philippines)</h4>
-                    <input
-                    placeholder='Enter your answer'
-                    value={companyAddress}
-                    onChange={(e) => setCompanyAddress(e.target.value)}
-                    />
-
-                    <h4>10. Contact Number (ex 032 - 411 2000 loc 110)</h4>
-                    <input
-                    placeholder='Enter your answer'
-                    value={contactNumber}
-                    onChange={(e) => setContactNumber(e.target.value)}
-                    />
+                        <li>
+                            <h4>Name of Contact Person (ex. Consuelo R. Migallos)</h4>
+                            <input
+                            placeholder='Enter your answer'
+                            value={contactPerson}
+                            onChange={(e) => setContactPerson(e.target.value)}
+                            />
+                        </li>
+    
+                        <li>
+                            <h4>Designation (ex. HR Director)</h4>
+                            <input
+                            placeholder='Enter your answer'
+                            value={designation}
+                            onChange={(e) => setDesignation(e.target.value)}
+                            />
+                        </li>
+    
+                        <li>
+                            <h4>Company Name (ex. Cebu Institute of Technology - University)</h4>
+                            <input
+                            placeholder='Enter your answer'
+                            value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)}
+                            />
+                        </li>
+    
+                        <li>
+                            <h4>Company Address (ex. N. Bacalso Avenue Cebu City 6000 Philippines)</h4>
+                            <input
+                            placeholder='Enter your answer'
+                            value={companyAddress}
+                            onChange={(e) => setCompanyAddress(e.target.value)}
+                            />
+                        </li>
+    
+                        {/* <li>
+                            <h4>Contact Number (ex 032 - 411 2000 loc 110)</h4>
+                            <input
+                            placeholder='Enter your answer'
+                            value={contactNumber}
+                            onChange={(e) => setContactNumber(e.target.value)}
+                            />
+                        </li> */}
+                    </ol>
 
                     <p>Please review your answers before submitting</p>
                     <button type='submit' className='btn-yellow step-submit'>Submit</button>
@@ -215,11 +313,10 @@ export default function EndorsementLetter({onGenerate, document, onDocChange}) {
                 <Text>January 6, 2024</Text>
             </View>
             <View style={styles.paragraph}>
-                <Text>Mr. Yuan ller Ponce A. llad</Text>
-                <Text>HR/IT Systems Manager</Text>
-                <Text>Knowwles Training Institute</Text>
-                <Text>60 Paya lebar Road, #07-54 Paya Lebar Square</Text>
-                <Text>Singapore 409051</Text>
+                <Text>{salutation2} {contactPerson}</Text>
+                <Text>{designation}</Text>
+                <Text>{companyName}</Text>
+                <Text>{companyAddress}</Text>
             </View>
             <View style={styles.paragraph}>
                 <Text>Dear Mr. llad,</Text>
@@ -228,12 +325,8 @@ export default function EndorsementLetter({onGenerate, document, onDocChange}) {
                 <Text style={styles.paragraph}>
                     In connection with the prescribed curriculum for the {degree} program in
                     Cebu Institute of Technology-University, we would like to request your office to accommodate
-                    our student, {salutation} {firstName} {middleInitial}. {lastName} to undergo the required 500 hours (minimum) of On-the-
-                </Text>
-
-                <Text style={styles.paragraph}>
-                    Job Training for the subject/course IT412, which will be taken this Second Semester 3.Y. 2023-
-                    2024 on a Virtual training environment.
+                    our student, {salutation} {firstName} {middleInitial}. {lastName} to undergo the required {ojtHours} hours (minimum) of On-the-Job 
+                    Training for the subject/course {subjectCode}, which will be taken this {numberToOrdinal(auth.yearSemesterSemester)} Semester S.Y. {auth.yearSemesterYear} on a Virtual training environment.
                 </Text>
 
                 <Text style={styles.paragraph}>
@@ -287,6 +380,18 @@ export default function EndorsementLetter({onGenerate, document, onDocChange}) {
             </ul>
         </div>
     }
+
+    const numberToOrdinal = (number) => {
+        const ordinals = ["", "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth"];
+      
+        const num = parseInt(number, 10);
+
+        if (num > 0 && num < ordinals.length) {
+          return ordinals[num];
+        } else {
+          return number;
+        }
+    };
 
     useEffect(() => {
         if(document)
