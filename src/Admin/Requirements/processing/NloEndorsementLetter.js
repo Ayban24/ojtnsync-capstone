@@ -8,7 +8,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import DataTable from '../../../common/DataTable';
 import CustomModal from '../../../common/Modal'
 
-export default function StudyLoad({requirementId}) {
+export default function NloEndorsementLetter({requirementId}) {
 
     const [documents, setDocuments] = useState(null)
     const [document, setDocument] = useState(null)
@@ -189,7 +189,7 @@ export default function StudyLoad({requirementId}) {
             try {
                 let result = await response.json();
                 setSelectedFilter(filterStatus)
-                result = result.filter(res => (filterStatus === 'pending' && res.status.toLowerCase() === 'pending' && res.step === 2))
+                result = result.filter(res => ((filterStatus === 'pending' && res.status.toLowerCase() === 'pending' && res.step === 3) || (res.status.toLowerCase() === filterStatus && filterStatus === 'declined')))
                 setDocuments(result)
                 showTable()
                 console.log("documents: ",result)
@@ -292,6 +292,10 @@ export default function StudyLoad({requirementId}) {
                     {selectedFilter && 
                         <h1>{selectedFilter.charAt(0).toUpperCase() + selectedFilter.slice(1)} Request</h1>
                     }
+                    <div className='filter-status'>
+                        <a className={selectedFilter.toLowerCase() === 'pending' && 'active'} href='#!' onClick={() => fetchDocuments('pending')}>For Checking</a>
+                        <a className={selectedFilter.toLowerCase() === 'declined' && 'active'} href='#!' onClick={() => fetchDocuments('declined')}>Declined</a>
+                    </div>
                     {documents && showTable()}
 
                     

@@ -118,10 +118,11 @@ public class DocumentController {
         return ResponseEntity.ok(document);
     }
 
-    @GetMapping("/requirement/{requirementId}")
-    public List<DocumentWithCourseDTO> getDocumentsByRequirementId(@PathVariable int requirementId) {
+    @GetMapping("/requirement/{requirementId}/ys/{ysId}")
+    public List<DocumentWithCourseDTO> getDocumentsByRequirementId(@PathVariable int requirementId, @PathVariable int ysId) {
         List<Document> documents = documentService.getDocumentsByRequirementId(requirementId);
         List<DocumentWithCourseDTO> documentWithCourseDTOs = documents.stream()
+            .filter(item -> item != null && item.getSubmittedBy().getYearSemester() != null && item.getSubmittedBy().getYearSemester().getId() == ysId)
             .map(DocumentWithCourseDTO::new)
             .collect(Collectors.toList());
         return documentWithCourseDTOs;

@@ -40,6 +40,7 @@ public class DocumentWithCourseDTO {
         this.status = document.getStatus();
         this.courseId = document.getSubmittedBy().getCourse().getId();
         this.courseName = document.getSubmittedBy().getCourse().getName();
+        this.step = document.getStep();
     }
 
     // Getters and Setters (generated using your IDE)

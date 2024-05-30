@@ -2,32 +2,143 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+import DataTable from '../../../common/DataTable';
+import CustomModal from '../../../common/Modal'
 
-export default function Waiver({requirement, defaultDocument, onDocChange}) {
+export default function Waiver({requirementId}) {
+
+    const [documents, setDocuments] = useState(null)
+    const [document, setDocument] = useState(null)
+    const [isStatusModalOpen, setStatusModalOpen] = useState(false);
+    const [isUploadModalOpen, setUploadModalOpen] = useState(false);
+    const [selectedDocument, setSelectedDocument] = useState(null)
+    const [commentModal, setCommentModal] = useState(false)
+    const [comment, setComment] = useState(null)
+    const [check, setCheck] = useState(false)
+    const [documentStatus, setDocumentStatus] = useState("pending")
+    const [selectedFilter, setSelectedFilter] = useState('pending')
+
+    const openStatusModal = () => setStatusModalOpen(true);
+    const closeStatusModal = () => setStatusModalOpen(false);
+
+    const openUploadModal = () => setUploadModalOpen(true);
+    const closeUploadModal = () => {setUploadModalOpen(false)};
 
     const auth = JSON.parse(localStorage.getItem('auth'));
-    const [step, setStep] = useState(1)
-    const [document, setDocument] = useState(defaultDocument)
-    const [selectedRequirement, setSelectedRequirement] = useState(requirement)
-    const [isReUpload, setIsReUpload] = useState(false)
+    const ys = JSON.parse(Cookies.get('ys'));
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+
+
+    const showDocument = () => {
+        return (
+        <div className='document-con'>
+            <button className='back-btn' onClick={() => setCheck(false)}>&lsaquo;</button>
+            <div className='document-info'>
+                <div className='header'>
+                    <h4>{selectedDocument.submittedBy.firstName} {selectedDocument.submittedBy.lastName}</h4>
+                    <div className='actions'>
+                        <button onClick={() => {setDocumentStatus("Declined");setCommentModal(true)}}>Decline</button>
+                        <button onClick={() => {setDocumentStatus("Approved");setCommentModal(true)}}>Approve</button>
+                    </div>
+                </div>
+                {selectedDocument.extName == "pdf" 
+                    ?   <Document file={`http://localhost:8080/file/download/${selectedDocument.id}`} >
+                            <Page pageNumber={1} />
+                        </Document>
+                    :   <figure><img src={`http://localhost:8080/file/download/${selectedDocument.id}`} /></figure>
+                }
+            </div>
+        </div>
+        )
+    }
+
+    const StatusModal = ({ closeModal, children }) => {
+        return (
+          <div className="modal-container">
+            <img className='modal-bg' src='/images/folder.png' />
+            <div className='modal-back' onClick={closeModal}><span>&lsaquo;</span>{selectedDocument.fileName}</div>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <h2 className='status-title'>{}</h2>
+                <h3>Submission Status</h3>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Submission Status</td>
+                            <td>Submitted</td>
+                        </tr>
+                        <tr>
+                            <td>Approval Status</td>
+                            <td>{selectedDocument.status}</td>
+                        </tr>
+                        <tr>
+                            <td>File</td>
+                            <td><a href={`http://localhost:8080/file/download/${selectedDocument.id}`}>{selectedDocument.fileName}</a></td>
+                        </tr>
+                        <tr>
+                            <td>Comments</td>
+                            <td>{selectedDocument.comment}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div className='submission-status-btn-con' >
+                    {/* <button type='button' onClick={() => {
+                        setCommentModal(true)
+                    }}>Decline</button> */}
+    
+                    <button type='button' onClick={() => {
+                        closeStatusModal(); 
+                        openUploadModal();
+                    }}>Re-Upload</button>
+                </div>
+
+            </div>
+          </div>
+        );
+    };
+
+    const UploadModal = ({ closeModal, title }) => {
+        return (
+            <div className="modal-container">
+                <img className='modal-bg' src='/images/folder.png' />
+                <div className='modal-back' onClick={closeModal}><span>&lsaquo;</span>{selectedDocument.fileName}</div>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                    <h2>{title}</h2>
+                    <h4>Attach Files</h4>
+                    <div className='attached-container'>
+                        {document && (
+                            <div>
+                                <div className='file-info'>{document.name} <a className='delete-btn' onClick={() => {setDocument(null)}}>Delete</a></div>
+                                <a className='btn-submit' onClick={submitHandler}>Submit</a>
+                            </div>
+                        )}
+                        {!document && (
+                            <div className='file-container'>
+                                <a type='button' className='file-upload'><img src="/icons/upload.png" />Upload Document</a>
+                                <input
+                                type='file'
+                                id='file-upload'
+                                onChange={handleFileChange}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    };
 
     const submitHandler = async () => {
         try {
             const formData = new FormData();
-            let uploadUrl = "http://localhost:8080/file/upload"
-            formData.append('step',3)
-            if(!isReUpload) {
-                formData.append('file', document);
-                formData.append('userId',auth.userid);
-                formData.append('requirementId', selectedRequirement.id);
-                formData.append('isReUpload',isReUpload)
-            }
-            else {
-                formData.append('file', document);
-                formData.append('documentId', selectedRequirement.documents[0].id)
-                formData.append('userId',auth.userid);
-                uploadUrl = "http://localhost:8080/file/reupload"
-            }
+
+            formData.append('file', document);
+            formData.append('documentId', selectedDocument.id)
+            formData.append('userId',selectedDocument.submittedBy.userid);
+            const uploadUrl = "http://localhost:8080/file/admin/reupload"
     
             const response = await fetch(uploadUrl, {
                 method: 'POST',
@@ -38,9 +149,8 @@ export default function Waiver({requirement, defaultDocument, onDocChange}) {
                 try {
                     const result = await response.json();
                     console.log("response: ",result.document)
-                    setDocument(result.document)
-                    setStep(3)
-                    onDocChange(result.document)
+                    setDocument(null)
+                    window.location.reload()
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
                     // Handle unexpected JSON parsing error
@@ -70,95 +180,143 @@ export default function Waiver({requirement, defaultDocument, onDocChange}) {
         }
     };
 
-    const step1 = () => {
-        return <div className='download-file'>
-            <h2>Waiver</h2>
-            <ol>
-                <li>Download the file below.<br/><a href="/documents/Waiver.pdf">Waiver.pdf</a></li>
-                <li>Complete all the details in the file.</li>
-                <li>Have it notarized by a notary public</li>
-                <li>Once completed, upload it in the next page.</li>
-            </ol>
-            <a className='btn-yellow' onClick={() => setStep(2)}>Next</a>
-        </div>
+    const fetchDocuments = async (filterStatus = 'pending') => {
+        const response = await fetch(`http://localhost:8080/api/documents/requirement/${requirementId}/ys/${ys.id}`, {
+            method: 'GET',
+        })
+
+        if (response.ok) {
+            try {
+                let result = await response.json();
+                setSelectedFilter(filterStatus)
+                result = result.filter(res => (filterStatus === 'pending' && res.status.toLowerCase() === 'pending' && res.step === 3))
+                setDocuments(result)
+                showTable()
+                console.log("documents: ",result)
+                return result
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        } else {
+            console.error('Response failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
+        return null;
     }
 
-    const step2 = () => {
-        return <div className='upload-file'>
-            <h2>Upload Waiver</h2>
-            <p>1. Follow the filename “Lastname_Waiver.pdf”</p>
-            <div className='attached-container'>
-                {document && (
-                    <div>
-                        <div className='file-info'>{document.name} <a className='delete-btn' onClick={() => {setDocument(null)}}>Delete</a></div>
-                        <div style={{textAlign:'center'}}><a className='btn-yellow' onClick={submitHandler}>Submit</a></div>
-                    </div>
-                )}
-                {!document && (
-                    <div className='file-container'>
-                        <a type='button' className='file-upload'><img src="/icons/upload.png" />Upload Document</a>
-                        <input
-                        type='file'
-                        id='file-upload'
-                        onChange={handleFileChange}
-                        />
-                    </div>
-                )}
-            </div>
-        </div>
+    const showTable = () => {
+        return (
+        <DataTable 
+            showFilter={true}
+            header={[
+                'Date',
+                'Student ID',
+                'Name',
+                'Course',
+                '',
+            ]} 
+            data={
+                documents.map(doc => {
+                    return [
+                        formatDate(doc.createdAt), 
+                        doc.submittedBy.studentID, 
+                        doc.submittedBy.firstName+' '+doc.submittedBy.lastName, doc.courseName, 
+                        <a href="#!" onClick={() => {
+                            if(doc.status.toLowerCase() === 'declined')
+                                openStatusModal();
+                            else
+                                setCheck(true)
+                            setSelectedDocument(doc)
+                        }}>View</a>
+                    ]
+                })
+            }
+        />
+        )
     }
 
-    const step3 = () => {
-        return <div className='faculty-approval'>
-            <img src='/icons/work-in-progress.png' />
-            <p>Your Document is still on review.</p>
-            <p>Please wait for the faculty to make` your document</p>
-        </div>
+    const handleDocumentStatus = async (documentId = null) => {
+        const formData = new FormData();
+        formData.append('comment', comment)
+        formData.append('status', documentStatus)
+        formData.append('step', selectedDocument.step + 1)
+        const response = await fetch(`http://localhost:8080/api/documents/${documentId}`, {
+            method: 'PUT',
+            body: formData,
+        })
+        if(response && response.ok) {
+            console.log("Update success")
+            window.location.reload();
+        } else {
+            console.error('Upload failed:', response.status, response.statusText);
+            try {
+                const result = await response.json();
+                // Access specific properties from the result if needed
+                console.log('Error Message:', result.message);
+                // Handle failure, e.g., display an error message to the user
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                // Handle unexpected JSON parsing error
+            }
+        }
     }
 
-    const step4 = () => {
-        return <div className='study-load-status'>
-            <h2>Submission Status</h2>
-            <div className='field-con'><label>Approval Status</label><input type='text' value={document.status} disabled /></div>
-            <div className='field-con'><label>File</label><input type='text' value={document.fileName} disabled /></div>
-            <div className='field-con'><label>Comments</label><input type='text' value={document.comment} disabled /></div>
-        </div>
-    }
-
-    const showSteps = () => {
-        return <div className='steps'>
-            <ul>
-                <li className={step == 1 && 'active'}>Step 1 <span>Download File</span></li>
-                <li className={step == 2 && 'active'}>Step 2 <span>Upload File</span></li>
-                <li className={step == 3 && 'active'}>Step 3 <span>Faculty Approval</span></li>
-                <li className={step == 4 && 'active'}>Step 4 <span>Status</span></li>
-            </ul>
-        </div>
+    const formatDate = (dateData) => {
+        const date = new Date(dateData);
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2); // Add leading zero if needed
+        const day = ('0' + date.getDate()).slice(-2); // Add leading zero if needed
+        return `${year}-${month}-${day}`;
     }
 
     useEffect(() => {
-        if(defaultDocument)
-            setStep(defaultDocument.step || 1)
+        fetchDocuments()
     }, []);
+    useEffect(() => {
+        fetchDocuments()
+    }, [requirementId])
   
     return (
-        <div id='study-load'>
+        <div id='endorsement-letter'>
+            {!check && 
+                <>
+                    {selectedFilter && 
+                        <h1>{selectedFilter.charAt(0).toUpperCase() + selectedFilter.slice(1)} Request</h1>
+                    }
+                    {documents && showTable()}
 
-            {showSteps()}
-
-            { step && step == 1 &&
-                <div>{step1()}</div>
+                    
+                </>
             }
-            { step && step == 2 &&
-                <div>{step2()}</div>
+            {check && showDocument()}
+            {isStatusModalOpen && (
+                <StatusModal closeModal={closeStatusModal} />
+            )}
+            {isUploadModalOpen && (
+                <UploadModal closeModal={closeUploadModal} title={"Upload Document"} />
+            )}
+            {commentModal && 
+                <CustomModal show={true} onHide={(val) => setCommentModal(val)}>
+                    <div id='check-modal'>
+                        {/* <a href={`http://localhost:8080/file/download/${checkInfo.id}`} target='_blank' rel='noopener noreferrer'>Download</a> */}
+                        <label>Enter Comments</label>
+                        <textarea onChange={(e) => setComment(e.target.value)}></textarea>
+                        <div className='modal-footer'>
+                            <button onClick={() => setCommentModal(false)}>Cancel</button>
+                            <button onClick={() => handleDocumentStatus(selectedDocument.id)}>{documentStatus == "Declined" ? "Decline" : "Approve"}</button>
+                        </div>
+                    </div>
+                </CustomModal>
             }
-            { step && step == 3 &&
-                <div>{step3()}</div>
-            }
-            { step && step == 4 &&
-                <div>{step4()}</div>
-            }
-
         </div>
     );
   }

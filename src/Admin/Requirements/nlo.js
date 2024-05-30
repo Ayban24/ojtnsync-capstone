@@ -8,6 +8,7 @@ import DeedOfUndertaking from './processing/DeedOfUndertaking';
 import ConfirmationLetter from './processing/ConfirmationLetter';
 import Waiver from './processing/Waiver';
 import CertificateOfCompletion from './processing/CertificateOfCompletion';
+import NloEndorsementLetter from './processing/NloEndorsementLetter';
 import CustomModal from '../../common/Modal'
 
 export default function Submission() {
@@ -47,18 +48,18 @@ export default function Submission() {
             try {
                 const result = await response.json();
                 setRequirements(result)
-                if(result && result.length > 0) {
-                    console.log("test: ",result[0])
-                }
                 result.forEach(item => {
                     switch(item.title) {
                         case 'EL: Endorsement Letter':
+                            if(JSON.parse(auth).adminType.toLowerCase() === 'nlo')
+                                setSelectedRequirement(item)
                             if(item?.documents[0]?.step) {
                                 setElDoc(item.documents[0])
                             }
                             break;
                         case 'OSL: Official Study Load':
-                            setSelectedRequirement(item)
+                            if(JSON.parse(auth).adminType.toLowerCase() !== 'nlo')
+                                setSelectedRequirement(item)
                             if(item?.documents[0]?.step) {
                                 setOslDoc(item.documents[0])
                             }
@@ -136,7 +137,9 @@ export default function Submission() {
                     <ul>
                         { requirements && requirements.length > 0 &&
                             requirements
-                            .filter(req => !['MOA: Memorandum of Agreement','OC: Orientation Certificate', 'LOU: Letter of Undertaking'].includes(req.title))
+                            .filter(req => JSON.parse(auth).adminType.toLowerCase() === 'nlo' 
+                                ? req.title === 'EL: Endorsement Letter' 
+                                : !['MOA: Memorandum of Agreement','OC: Orientation Certificate', 'LOU: Letter of Undertaking'].includes(req.title))
                             .sort((a, b) => nloRequirements[a.title][3] - nloRequirements[b.title][3])
                             .map((req, index) => {
                                 return <li 
@@ -167,8 +170,23 @@ export default function Submission() {
                     {requirements && showNloRequirements()}
                 </div>
 
-                { selectedRequirement && /* selectedRequirement.title == "EL: Endorsement Letter" && */
-                    <EndorsementLetter requirementId={selectedRequirement.id} />
+                { selectedRequirement && selectedRequirement.title == "EL: Endorsement Letter" && 
+                    (JSON.parse(auth).adminType.toLowerCase() === 'nlo' ? <NloEndorsementLetter requirementId={selectedRequirement.id} /> : <EndorsementLetter requirementId={selectedRequirement.id} />)
+                }
+                { selectedRequirement && selectedRequirement.title == "OSL: Official Study Load" && 
+                    <StudyLoad requirementId={selectedRequirement.id} />
+                }
+                { selectedRequirement && selectedRequirement.title == "DOU: Deed of Undertaking" && 
+                    <DeedOfUndertaking requirementId={selectedRequirement.id} />
+                }
+                { selectedRequirement && selectedRequirement.title == "CL: Confirmation Letter" && 
+                    <ConfirmationLetter requirementId={selectedRequirement.id} />
+                }
+                { selectedRequirement && selectedRequirement.title == "W: Waiver" && 
+                    <Waiver requirementId={selectedRequirement.id} />
+                }
+                { selectedRequirement && selectedRequirement.title == "COC: Certificate of Completion" && 
+                    <CertificateOfCompletion requirementId={selectedRequirement.id} />
                 }
             </div>
             
