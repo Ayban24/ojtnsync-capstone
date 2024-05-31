@@ -339,6 +339,7 @@ export default function Submission() {
     return (
         <div id='requirements-view'>
             <div className='wrapper'>
+                <a className='back' onClick={() => {window.history.back()}}><img src="/icons/back.png" /></a>
                 <div className='profile requirement-section'>
                     <section><img src="/images/profile_placeholder.png" /></section>
                     <section>

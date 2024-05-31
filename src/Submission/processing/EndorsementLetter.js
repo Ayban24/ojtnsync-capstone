@@ -24,7 +24,7 @@ export default function EndorsementLetter({onGenerate, document, onDocChange}) {
 
     const [subjectCode, setSubjectCode] = useState (null)
     const [ojtHours, setOjtHours] = useState (null)
-    const [ojtTrainingEnv, setOjtTrainingEnv] = useState (null)
+    const [ojtTrainingEnv, setOjtTrainingEnv] = useState ('Virtual')
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
     const handleSubmit = (event) => {
@@ -49,24 +49,6 @@ export default function EndorsementLetter({onGenerate, document, onDocChange}) {
             step : 2
         })
     };
-    
-
-    // Create styles
-    const styles = StyleSheet.create({
-        page: {
-            flexDirection: 'column',
-            backgroundColor: '#E4E4E4',
-            padding: 10,
-        },
-        section: {
-            margin: 10,
-            padding: 10,
-            flexGrow: 1
-        },
-        paragraph: {
-            marginBottom: '20px'
-        }
-    });
 
     const step1 = () => {
         return <>
@@ -302,15 +284,53 @@ export default function EndorsementLetter({onGenerate, document, onDocChange}) {
         )
     }
 
+    const getCurrentDate = () => {
+        const currentDate = new Date();
+        const options = { month: 'long', day: 'numeric', year: 'numeric' };
+        return currentDate.toLocaleDateString('en-US', options);
+      }
+
+      // Create styles
+    const styles = StyleSheet.create({
+        page: {
+            flexDirection: 'column',
+            backgroundColor: '#fff',
+            padding: '20 50',
+            fontSize: '13px'
+        },
+        section: {
+            margin: 10,
+            padding: 10,
+            flexGrow: 1
+        },
+        paragraph: {
+            marginBottom: '20px'
+        },
+        logo: {
+            width: "70%",
+            margin:"0 auto"
+        },
+        sign: {
+            // borderTop: "2px solid #000",
+            marginTop:"30px",
+            display: "inline-block",
+        },
+        address: {
+            marginTop:"30px",
+            fontSize: "8px",
+            textAlign: "center"
+        }
+    });
+
     const MyDocument = () => (
         <Document pageMode='fullScreen' title='mypdf.pdf'>
           <Page size="A4" style={styles.page}>
             <View style={styles.paragraph}>
-                <Image src='/images/cit_logo.png' />
-                <Text>{degree}</Text>
+                <Image style={styles.logo} src='/images/cit_logo.png' />
+                <Text style={{textAlign:'center'}}>{degree}</Text>
             </View>
             <View style={styles.paragraph}>
-                <Text>January 6, 2024</Text>
+                <Text>{getCurrentDate()}</Text>
             </View>
             <View style={styles.paragraph}>
                 <Text>{salutation2} {contactPerson}</Text>
@@ -319,43 +339,42 @@ export default function EndorsementLetter({onGenerate, document, onDocChange}) {
                 <Text>{companyAddress}</Text>
             </View>
             <View style={styles.paragraph}>
-                <Text>Dear Mr. llad,</Text>
+                <Text>Dear {salutation2} {contactPerson},</Text>
             </View>
             <View>
-                <Text style={styles.paragraph}>
-                    In connection with the prescribed curriculum for the {degree} program in
-                    Cebu Institute of Technology-University, we would like to request your office to accommodate
-                    our student, {salutation} {firstName} {middleInitial}. {lastName} to undergo the required {ojtHours} hours (minimum) of On-the-Job 
-                    Training for the subject/course {subjectCode}, which will be taken this {numberToOrdinal(auth.yearSemesterSemester)} Semester S.Y. {auth.yearSemesterYear} on a Virtual training environment.
-                </Text>
+                <View style={{textAlign: 'justify'}}>
+                    <Text style={styles.paragraph}>
+                        In connection with the prescribed curriculum for the {degree} program in
+                        Cebu Institute of Technology-University, we would like to request your office to accommodate
+                        our student, {salutation} {firstName} {middleInitial}. {lastName} to undergo the required {ojtHours} hours (minimum) of On-the-Job 
+                        Training for the subject/course {subjectCode}, which will be taken this {numberToOrdinal(auth.yearSemesterSemester)} Semester S.Y. {auth.yearSemesterYear} on a Virtual training environment.
+                    </Text>
 
-                <Text style={styles.paragraph}>
-                    Attached is information about the OJT Program, which includes among others, our requested
-                    areas of training and the training requirements we impose on our students.
-                </Text>
+                    <Text style={styles.paragraph}>
+                        Attached is information about the OJT Program, which includes among others, our requested areas of training and the training requirements we impose on our students.
+                    </Text>
 
-                <Text>If our request is favorably granted, Mr. Cafiete, can start anytime this month. Furthermore, we</Text>
+                    <Text>If our request is favorably granted, {salutation} {lastName}, can start anytime this month. Furthermore, we</Text>
 
-                <Text style={styles.paragraph}>
-                    would like to request you to accomplish and return the attached confirmation letter to us in pdf,
-                    through email: nlof@citedu; cc: cstaromana@citedu, cheryl.pantaleon@citedu and
-                    patrick _bacalso@cit.edu for proper documentation.
-                </Text>
+                    <Text style={styles.paragraph}>
+                        would like to request you to accomplish and return the attached confirmation letter to us in pdf, through email: nlof@citedu; cc: cstaromana@citedu, cheryl.pantaleon@citedu and patrick _bacalso@cit.edu for proper documentation.
+                    </Text>
+                </View>
 
                 <Text style={styles.paragraph}>Thank you very much.</Text>
 
                 <Text style={styles.paragraph}>Very truly yours,</Text>
             </View>
-            <View style={styles.paragraph}>
+            <View style={[styles.paragraph, styles.sign]}>
                 <Text>Cheryl B. Pantaleon</Text>
                 <Text>Chair, IT Department</Text>
             </View>
-            <View style={styles.paragraph}>
+            <View style={[styles.paragraph, styles.sign]}>
                 <Text>Cherry Lyn C. Sta. Romana</Text>
                 <Text>Dean, College of Computer Studies</Text>
             </View>
-            <View style={styles.paragraph}>
-                <Text>A. Bacako Avende, Cebu City G10, Philippines</Text>
+            <View style={styles.address}>
+                <Text>A. Bacalso Avenue, Cebu City G10, Philippines</Text>
                 <Text>Tel. No. 201.7741, Faxbel No. 261-7743</Text>
                 <Text>www.cit.edu</Text>
             </View>

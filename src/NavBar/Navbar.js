@@ -17,9 +17,7 @@ const Navbar = () => {
     };
 
     const logout = () => {
-        localStorage.removeItem('auth');
-        Cookies.remove('ys');
-        window.location.replace("/")
+        window.location.replace("/?logout=1")
     }
 
     return(
