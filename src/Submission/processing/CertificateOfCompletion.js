@@ -124,8 +124,11 @@ export default function CertificateOfCompletion({requirement, defaultDocument, o
     }
 
     useEffect(() => {
-        if(defaultDocument)
+        if(defaultDocument) {
             setStep(defaultDocument.step || 1)
+            if(defaultDocument.status.toLowerCase() === 'declined')
+                setIsReUpload(true)
+        }
     }, []);
   
     return (

@@ -89,34 +89,22 @@ export default function Submission() {
                     if(doc) {
                         switch(item.title) {
                             case 'EL: Endorsement Letter':
-                                if(doc.step) {
-                                    setElDoc(doc)
-                                }
+                                setElDoc(doc)
                                 break;
                             case 'OSL: Official Study Load':
-                                if(doc.step) {
-                                    setOslDoc(doc)
-                                }
+                                setOslDoc(doc)
                                 break;
                             case 'DOU: Deed of Undertaking':
-                                if(doc.step) {
-                                    setDouDoc(doc)
-                                }
+                                setDouDoc(doc)
                                 break;
                             case 'CL: Confirmation Letter':
-                                if(doc.step) {
-                                    setClDoc(doc)
-                                }
+                                setClDoc(doc)
                                 break;
                             case 'W: Waiver':
-                                if(doc.step) {
-                                    setWDoc(doc)
-                                }
+                                setWDoc(doc)
                                 break;
                             case 'COC: Certificate of Completion':
-                                if(doc.step) {
-                                    setCocDoc(doc)
-                                }
+                                setCocDoc(doc)
                                 break;
                         }
                     }
@@ -282,14 +270,24 @@ export default function Submission() {
     }
 
     const endorsementLetterHandler = async (file) => {
+        
         try {
             const formData = new FormData();
             let uploadUrl = "http://localhost:8080/file/upload"
-            formData.append('file', file, 'myfile.pdf');
-            formData.append('userId',JSON.parse(auth).userid);
-            formData.append('requirementId', selectedRequirement.id);
+            
             formData.append('step',2)
-            formData.append('isReUpload',isReUpload)
+            if(!elDoc || elDoc.status.toLowerCase() !== 'declined') {
+                formData.append('file', file, 'myfile.pdf');
+                formData.append('userId',JSON.parse(auth).userid);
+                formData.append('requirementId', selectedRequirement.id);
+                formData.append('isReUpload',isReUpload)
+            }
+            else {
+                formData.append('file',  file, 'myfile.pdf');
+                formData.append('documentId', elDoc.id)
+                formData.append('userId',JSON.parse(auth).userid);
+                uploadUrl = "http://localhost:8080/file/reupload"
+            }
     
             const response = await fetch(uploadUrl, {
                 method: 'POST',

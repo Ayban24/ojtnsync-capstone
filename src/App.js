@@ -22,6 +22,7 @@ import AddStudent from './Admin/Students/Add';
 import DeleteStudent from './Admin/Students/Delete';
 import StudentDocuments from './Admin/Students/Documents';
 import Dashboard from './Admin/Dashboard';
+import NloDashboard from './Admin/Dashboard/nlo';
 import Profile from './Profile';
 import YearSemester from './Admin/YearSemester';
 import StudentRecords from './Records';
@@ -60,17 +61,18 @@ function App() {
 						<Route path="/submission" element={<Submission/>} />
 						<Route path='/submission/nlo' element={<NloSubmission/>} />
 						{/* <Route path="/admin/homepage" element={<AdminHomepage />} /> */}
-						<Route path="/admin/homepage" element={<Dashboard />} />
 						<Route path="/admin/submission" element={<AdminSubmission />} />
 						<Route path="/admin/validate" element={<Validate />} />
 						{ (JSON.parse(auth).adminType && JSON.parse(auth).adminType.toLowerCase() == 'nlo')
 							? <>
 								<Route path="/admin/requirements" element={<NLORequirements />} />
 								<Route path="/admin/requirements/view" element={<ViewNLORequirements />} />
+								<Route path="/admin/homepage" element={<NloDashboard />} />
 							  </>
 							: <>
 								<Route path="/admin/requirements" element={<Requirements />} />
 								<Route path="/admin/requirements/view" element={<ViewNLORequirements />} />
+								<Route path="/admin/homepage" element={<Dashboard />} />
 							  </>
 						}
 						<Route path="/admin/students" element={<Students />} />
