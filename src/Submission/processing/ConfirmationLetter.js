@@ -137,8 +137,11 @@ export default function ConfirmationLetter({requirement, defaultDocument, onDocC
     }
 
     useEffect(() => {
-        if(defaultDocument)
+        if(defaultDocument) {
             setStep(defaultDocument.step || 1)
+            if(defaultDocument.status.toLowerCase() === 'declined')
+                setIsReUpload(true)
+        }
     }, []);
   
     return (

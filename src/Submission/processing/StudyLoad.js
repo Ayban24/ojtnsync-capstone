@@ -124,8 +124,11 @@ export default function StudyLoad({requirement, defaultDocument, onDocChange}) {
     }
 
     useEffect(() => {
-        if(defaultDocument)
+        if(defaultDocument) {
             setStep(defaultDocument.step || 1)
+            if(defaultDocument.status.toLowerCase() === 'declined')
+                setIsReUpload(true)
+        }
     }, []);
   
     return (

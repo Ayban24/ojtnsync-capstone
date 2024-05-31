@@ -38,6 +38,15 @@ public class DocumentController {
         return ResponseEntity.ok(documents);
     }
 
+    @GetMapping("/ys/{ysId}")
+    public ResponseEntity<List<Document>> getDocumentsBySemester(@PathVariable int ysId) {
+        List<Document> documents = documentService.getAllDocuments()
+        .stream()
+        .filter(d -> d != null && d.getRequirement().getYearSemester() != null && d.getRequirement().getYearSemester().getId() == ysId)
+        .collect(Collectors.toList());
+        return ResponseEntity.ok(documents);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Document> getDocumentById(@PathVariable int id) {
         Document document = documentService.getDocumentById(id);

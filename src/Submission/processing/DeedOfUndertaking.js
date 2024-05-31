@@ -137,8 +137,11 @@ export default function DeedOfUndertaking({requirement, defaultDocument, onDocCh
     }
 
     useEffect(() => {
-        if(defaultDocument)
+        if(defaultDocument) {
             setStep(defaultDocument.step || 1)
+            if(defaultDocument.status.toLowerCase() === 'declined')
+                setIsReUpload(true)
+        }
     }, []);
   
     return (

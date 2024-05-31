@@ -278,6 +278,7 @@ export default function Submission() {
         try {
             const formData = new FormData();
             let uploadUrl = "http://localhost:8080/file/upload"
+            formData.append('step',2)
             if(!isReUpload) {
                 formData.append('file', document);
                 formData.append('userId',JSON.parse(auth).userid);
