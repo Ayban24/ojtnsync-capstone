@@ -45,10 +45,10 @@ export default function ConfirmationLetter({requirementId}) {
                     </div>
                 </div>
                 {selectedDocument.extName == "pdf" 
-                    ?   <Document file={`http://localhost:8080/file/download/${selectedDocument.id}`} >
+                    ?   <Document file={`${process.env.REACT_APP_API_URL}/file/download/${selectedDocument.id}`} >
                             <Page pageNumber={1} />
                         </Document>
-                    :   <figure><img src={`http://localhost:8080/file/download/${selectedDocument.id}`} /></figure>
+                    :   <figure><img src={`${process.env.REACT_APP_API_URL}/file/download/${selectedDocument.id}`} /></figure>
                 }
             </div>
         </div>
@@ -75,7 +75,7 @@ export default function ConfirmationLetter({requirementId}) {
                         </tr>
                         <tr>
                             <td>File</td>
-                            <td><a href={`http://localhost:8080/file/download/${selectedDocument.id}`}>{selectedDocument.fileName}</a></td>
+                            <td><a href={`${process.env.REACT_APP_API_URL}/file/download/${selectedDocument.id}`}>{selectedDocument.fileName}</a></td>
                         </tr>
                         <tr>
                             <td>Comments</td>
@@ -140,7 +140,7 @@ export default function ConfirmationLetter({requirementId}) {
             formData.append('userId',selectedDocument.submittedBy.userid);
             formData.append('status', 'Pending')
             formData.append('step', selectedDocument.step)
-            const uploadUrl = "http://localhost:8080/file/admin/reupload"
+            const uploadUrl = `${process.env.REACT_APP_API_URL}/file/admin/reupload`
     
             const response = await fetch(uploadUrl, {
                 method: 'POST',
@@ -183,7 +183,7 @@ export default function ConfirmationLetter({requirementId}) {
     };
 
     const fetchDocuments = async (filterStatus = 'pending') => {
-        const response = await fetch(`http://localhost:8080/api/documents/requirement/${requirementId}/ys/${ys.id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/documents/requirement/${requirementId}/ys/${ys.id}`, {
             method: 'GET',
         })
 
@@ -251,7 +251,7 @@ export default function ConfirmationLetter({requirementId}) {
         formData.append('comment', comment)
         formData.append('status', documentStatus)
         formData.append('step', selectedDocument.step + 1)
-        const response = await fetch(`http://localhost:8080/api/documents/${documentId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/documents/${documentId}`, {
             method: 'PUT',
             body: formData,
         })
@@ -309,7 +309,7 @@ export default function ConfirmationLetter({requirementId}) {
             {commentModal && 
                 <CustomModal show={true} onHide={(val) => setCommentModal(val)}>
                     <div id='check-modal'>
-                        {/* <a href={`http://localhost:8080/file/download/${checkInfo.id}`} target='_blank' rel='noopener noreferrer'>Download</a> */}
+                        {/* <a href={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`} target='_blank' rel='noopener noreferrer'>Download</a> */}
                         <label>Enter Comments</label>
                         <textarea onChange={(e) => setComment(e.target.value)}></textarea>
                         <div className='modal-footer'>

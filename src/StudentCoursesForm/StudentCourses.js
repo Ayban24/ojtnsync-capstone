@@ -12,7 +12,7 @@ export default function ActionAreaCard() {
 	const fetchDepartments = async () => {
 		let response = null
 		if(JSON.parse(auth).userid) {
-			response = await fetch(`http://localhost:8080/department/user/${JSON.parse(auth).userid}`, {
+			response = await fetch(`${process.env.REACT_APP_API_URL}/department/user/${JSON.parse(auth).userid}`, {
 				method: 'GET',
 			})
 		}
@@ -55,7 +55,7 @@ export default function ActionAreaCard() {
     }
 
 	const fetchRequirements = async (departmentId) => {
-        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${departmentId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/requirements/admin/department/${departmentId}`, {
             method: 'GET',
         })
 

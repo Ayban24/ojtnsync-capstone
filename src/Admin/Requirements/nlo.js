@@ -40,7 +40,7 @@ export default function Submission() {
 
     const fetchRequirements = async () => {
 
-        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/1`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/requirements/admin/department/1`, {
             method: 'GET',
         })
 

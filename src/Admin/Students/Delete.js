@@ -13,7 +13,7 @@ const Students = () => {
     const [successModal, setSuccessModal] = useState(false)
 
     const handleSearch = async () => {
-        const response = await fetch(`http://localhost:8080/searchUserAttributes?departmentName=${program}&firstName=${firstName}&lastName=${lastName}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/searchUserAttributes?departmentName=${program}&firstName=${firstName}&lastName=${lastName}`, {
             method: 'GET',
         })
 
@@ -41,7 +41,7 @@ const Students = () => {
     }
 
     const fetchStudents = async () => {
-        const response = await fetch(`http://localhost:8080/users`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
             method: 'GET',
         })
 
@@ -69,7 +69,7 @@ const Students = () => {
     }
 
     const handleDeleteStudent = async (index) => {
-        // const response = await fetch(`http://localhost:8080/user/${students[index].studentID}`, {
+        // const response = await fetch(`${process.env.REACT_APP_API_URL}/user/${students[index].studentID}`, {
         //     method: 'DELETE',
         // })
 
@@ -77,7 +77,7 @@ const Students = () => {
         formData.append('status', 'inactive');
         // Add other form fields as needed
 
-        const response = await fetch(`http://localhost:8080/user/update/${students[index].studentID}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/user/update/${students[index].studentID}`, {
             method: 'PUT',
             body: formData,
         });

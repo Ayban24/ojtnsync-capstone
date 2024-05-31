@@ -13,7 +13,7 @@ const Students = () => {
     const [successModal, setSuccessModal] = useState(false)
 
     const handleSearch = async () => {
-        const response = await fetch(`http://localhost:8080/searchUserAttributes?courseName=${program}&firstName=${firstName}&lastName=${lastName}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/searchUserAttributes?courseName=${program}&firstName=${firstName}&lastName=${lastName}`, {
             method: 'GET',
         })
 
@@ -41,7 +41,7 @@ const Students = () => {
     }
 
     const fetchStudents = async () => {
-        const response = await fetch(`http://localhost:8080/users`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
             method: 'GET',
         })
 
@@ -69,7 +69,7 @@ const Students = () => {
     }
 
     const handleAddStudent = async (index) => {
-        const response = await fetch(`http://localhost:8080/user/${students[index].studentID}/verify`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/user/${students[index].studentID}/verify`, {
             method: 'PUT',
         })
 

@@ -26,7 +26,7 @@ const SignupForm = () => {
 	}, []);
 	
 	const fetchDepartments = async () => {
-		const response = await fetch('http://localhost:8080/department', {
+		const response = await fetch(`${process.env.REACT_APP_API_URL}/department`, {
 			method: 'GET',
 		});
 	
@@ -77,7 +77,7 @@ const SignupForm = () => {
 		formData.append('password', password);
 
     try {
-      const response = await fetch('http://localhost:8080/adminsignup', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/adminsignup`, {
         method: 'POST',
 				body: formData,
       });

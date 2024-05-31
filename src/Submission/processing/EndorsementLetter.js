@@ -270,14 +270,14 @@ export default function EndorsementLetter({onGenerate, document, onDocChange}) {
                 <div className='header'>
                     <h4>{checkInfo.submittedBy.firstName} {checkInfo.submittedBy.lastName}</h4>
                     <div className='actions'>
-                        <a href={`http://localhost:8080/file/download/${checkInfo.id}`}>Download</a>
+                        <a href={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`}>Download</a>
                     </div>
                 </div>
                 {checkInfo.extName == "pdf" 
-                    ?   <ViewerDocument file={`http://localhost:8080/file/download/${checkInfo.id}`} >
+                    ?   <ViewerDocument file={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`} >
                             <ViewerPage pageNumber={1} />
                         </ViewerDocument>
-                    :   <figure><img src={`http://localhost:8080/file/download/${checkInfo.id}`} /></figure>
+                    :   <figure><img src={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`} /></figure>
                 }
             </div>
         </div>

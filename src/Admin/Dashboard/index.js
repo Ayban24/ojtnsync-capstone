@@ -16,7 +16,7 @@ export default function Dashboard() {
     const ys = JSON.parse(Cookies.get('ys'));
 
     const fetchStudents = async () => {
-        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${JSON.parse(auth).departmentId}&ysId=${ys.id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/courses/get?departmentId=${JSON.parse(auth).departmentId}&ysId=${ys.id}`, {
             method: 'GET',
         })
 
@@ -44,7 +44,7 @@ export default function Dashboard() {
     }
 
     const fetchRequirements = async () => {
-        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${JSON.parse(auth).departmentId}/ys/${ys.id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/requirements/admin/department/${JSON.parse(auth).departmentId}/ys/${ys.id}`, {
             method: 'GET',
         })
 

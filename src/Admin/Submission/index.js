@@ -14,7 +14,7 @@ export default function Submission() {
         
         const departmentId = searchParams.get('department');
 
-        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/${departmentId}?userid=${JSON.parse(auth).adminid}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/requirements/admin/department/${departmentId}?userid=${JSON.parse(auth).adminid}`, {
             method: 'GET',
         })
 

@@ -29,7 +29,7 @@ const SignupForm = () => {
 	}, []);
 	
 	const fetchCourses = async () => {
-		const response = await fetch('http://localhost:8080/courses', {
+		const response = await fetch(`${process.env.REACT_APP_API_URL}/courses`, {
 			method: 'GET',
 		});
 	
@@ -55,7 +55,7 @@ const SignupForm = () => {
 	}
 
 	const fetchYearSemesters = async () => {
-        const response = await fetch(`http://localhost:8080/yearSemesters`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/yearSemesters`, {
             method: 'GET',
         })
 
@@ -115,7 +115,7 @@ const SignupForm = () => {
 		formData.append('ysId', selectedYearSemester.id);
 
 		try {
-			const response = await fetch('http://localhost:8080/signup', {
+			const response = await fetch(`${process.env.REACT_APP_API_URL}/signup`, {
 				method: 'POST',
 				body: formData,
 			});

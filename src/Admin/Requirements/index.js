@@ -25,7 +25,7 @@ export default function Submission() {
         
         const departmentId = searchParams.get('department');
 
-        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${departmentId}&ysId=${ys.id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/courses/get?departmentId=${departmentId}&ysId=${ys.id}`, {
             method: 'GET',
         })
 
@@ -61,8 +61,8 @@ export default function Submission() {
         const departmentId = searchParams.get('department');
 
         let url = (courseId && !isNlo)
-            ? `http://localhost:8080/api/requirements/admin/department/${departmentId}/course/${courseId}?userid=${auth.adminid}&ysId=${ys.id}`
-            : `http://localhost:8080/api/requirements/admin/department/nlo?adminId=${auth.adminid}`
+            ? `${process.env.REACT_APP_API_URL}/api/requirements/admin/department/${departmentId}/course/${courseId}?userid=${auth.adminid}&ysId=${ys.id}`
+            : `${process.env.REACT_APP_API_URL}/api/requirements/admin/department/nlo?adminId=${auth.adminid}`
         const response = await fetch(url, {
             method: 'GET',
         })
@@ -91,7 +91,7 @@ export default function Submission() {
     }
 
     const fetchYearSemesters = async () => {
-        const response = await fetch(`http://localhost:8080/yearSemesters`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/yearSemesters`, {
             method: 'GET',
         })
 
@@ -119,7 +119,7 @@ export default function Submission() {
     }
 
     const handleDelete = async (id) => {
-        const response = await fetch(`http://localhost:8080/api/requirements/${id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/requirements/${id}`, {
             method: 'DELETE',
         })
 
@@ -232,7 +232,7 @@ export default function Submission() {
         if(selectedCourse != null)
             formData.append('courseId', selectedCourse.id)
 
-        const response = await fetch("http://localhost:8080/api/requirements", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/requirements`, {
             method: 'POST',
             body: formData,
         })

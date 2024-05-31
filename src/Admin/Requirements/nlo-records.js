@@ -23,7 +23,7 @@ export default function Submission() {
         
         const departmentId = searchParams.get('department');
 
-        const response = await fetch(`http://localhost:8080/courses/get?departmentId=${departmentId}&ysId=${ys.id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/courses/get?departmentId=${departmentId}&ysId=${ys.id}`, {
             method: 'GET',
         })
 
@@ -57,8 +57,8 @@ export default function Submission() {
         const departmentId = searchParams.get('department');
 
         let url = (courseId && !isNlo)
-            ? `http://localhost:8080/api/requirements/admin/department/${departmentId}/course/${courseId}?userid=${auth.adminid}`
-            : `http://localhost:8080/api/requirements/admin/department/nlo?adminId=${auth.adminid}`
+            ? `${process.env.REACT_APP_API_URL}/api/requirements/admin/department/${departmentId}/course/${courseId}?userid=${auth.adminid}`
+            : `${process.env.REACT_APP_API_URL}/api/requirements/admin/department/nlo?adminId=${auth.adminid}`
         const response = await fetch(url, {
             method: 'GET',
         })
@@ -129,7 +129,7 @@ export default function Submission() {
     //     const formData = new FormData();
     //     formData.append('comment', comment)
     //     formData.append('status', documentStatus)
-    //     const response = await fetch(`http://localhost:8080/api/documents/${documentId}`, {
+    //     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/documents/${documentId}`, {
     //         method: 'PUT',
     //         body: formData,
     //     })

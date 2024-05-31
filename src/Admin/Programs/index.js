@@ -13,7 +13,7 @@ export default function ActionAreaCard() {
 		let response = null
         let response2 = null
 		if(JSON.parse(auth).adminid) {
-            response = await fetch(`http://localhost:8080/courses/get/department/${JSON.parse(auth).departmentId}`, {
+            response = await fetch(`${process.env.REACT_APP_API_URL}/courses/get/department/${JSON.parse(auth).departmentId}`, {
 				method: 'GET',
 			})
 		}

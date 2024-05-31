@@ -30,7 +30,7 @@ const handleLogin = async () => {
       return;
     }
 
-    const response = await fetch(`http://localhost:8080/login?studentID=${studentID}&password=${password}`);
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/login?studentID=${studentID}&password=${password}`);
     const data = await response.json();
 
     if (response.ok) {

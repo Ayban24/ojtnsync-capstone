@@ -29,7 +29,7 @@ export default function Profile() {
             formData.append('email', profile.email);
 
             try {
-                const response = await fetch(`http://localhost:8080/user/update/${profile.studentID}`, {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/user/update/${profile.studentID}`, {
                     method: 'PUT',
                     body: formData,
                 });
@@ -70,7 +70,7 @@ export default function Profile() {
     }
 
     const fetchUser = async (userId) => {
-        const response = await fetch(`http://localhost:8080/userByID/${userId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/userByID/${userId}`, {
             method: 'GET',
         })
         if (response && response.ok) {

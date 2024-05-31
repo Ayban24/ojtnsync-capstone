@@ -14,7 +14,7 @@ export default function DeedOfUndertaking({requirement, defaultDocument, onDocCh
     const submitHandler = async () => {
         try {
             const formData = new FormData();
-            let uploadUrl = "http://localhost:8080/file/upload"
+            let uploadUrl = `${process.env.REACT_APP_API_URL}/file/upload`
             formData.append('step',3)
             if(!isReUpload) {
                 formData.append('file', document);
@@ -26,7 +26,7 @@ export default function DeedOfUndertaking({requirement, defaultDocument, onDocCh
                 formData.append('file', document);
                 formData.append('documentId', selectedRequirement.documents[0].id)
                 formData.append('userId',auth.userid);
-                uploadUrl = "http://localhost:8080/file/reupload"
+                uploadUrl = `${process.env.REACT_APP_API_URL}/file/reupload`
             }
     
             const response = await fetch(uploadUrl, {

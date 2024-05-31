@@ -13,7 +13,7 @@ export default function Templates() {
     const auth = JSON.parse(localStorage.getItem('auth'));
 
     const fetchTemplates = async () => {
-        const response = await fetch('http://localhost:8080/templates/all', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/templates/all`, {
             method: 'GET',
         })
 
@@ -41,7 +41,7 @@ export default function Templates() {
     }
 
     const deleteTemplate = async (templateId) => {
-        const response = await fetch(`http://localhost:8080/templates/delete/${templateId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/templates/delete/${templateId}`, {
             method: 'DELETE',
         })
 
@@ -66,7 +66,7 @@ export default function Templates() {
             templates && <ul>
                 {templates.map((item, index) => (
                     <li key={index}> 
-                        <a href={`http://localhost:8080/templates/download/${item.id}`} target='_blank' rel='noopener noreferrer'>{item.title}</a>
+                        <a href={`${process.env.REACT_APP_API_URL}/templates/download/${item.id}`} target='_blank' rel='noopener noreferrer'>{item.title}</a>
                         { auth.adminid && auth.adminType && auth.adminType.toLowerCase() != 'nlo' &&
                             <a className='template-delete-btn' onClick={() => deleteTemplate(item.id)}>Delete</a>
                         }
@@ -86,7 +86,7 @@ export default function Templates() {
     const submitHandler = async () => {
         try {
             const formData = new FormData();
-            let uploadUrl = "http://localhost:8080/templates/upload"
+            let uploadUrl = `${process.env.REACT_APP_API_URL}/templates/upload`
             formData.append('title', title)
             formData.append('file', file);
             formData.append('adminid',auth.adminid);

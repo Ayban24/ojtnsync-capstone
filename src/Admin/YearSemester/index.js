@@ -14,7 +14,7 @@ const YearSemester = () => {
     const navigate = useNavigate();
 
     const fetchYearSemesters = async () => {
-        const response = await fetch(`http://localhost:8080/yearSemesters`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/yearSemesters`, {
             method: 'GET',
         })
 
@@ -58,7 +58,7 @@ const YearSemester = () => {
 		formData.append('year', yearInput);
 		formData.append('semester', semesterInput);
 
-        const response = await fetch(`http://localhost:8080/yearSemesters`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/yearSemesters`, {
             method: 'POST',
             body: formData,
         })

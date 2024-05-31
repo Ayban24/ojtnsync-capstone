@@ -40,7 +40,7 @@ export default function Submission() {
     const fetchDepartments = async () => {
 		let response = null
 		if(JSON.parse(auth).userid) {
-			response = await fetch(`http://localhost:8080/department/user/${JSON.parse(auth).userid}`, {
+			response = await fetch(`${process.env.REACT_APP_API_URL}/department/user/${JSON.parse(auth).userid}`, {
 				method: 'GET',
 			})
 		}
@@ -71,7 +71,7 @@ export default function Submission() {
 
     const fetchRequirements = async () => {
 
-        const response = await fetch(`http://localhost:8080/api/requirements/admin/department/1`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/requirements/admin/department/1`, {
             method: 'GET',
         })
 
@@ -130,7 +130,7 @@ export default function Submission() {
 
     const fetchDepartment = async (departmentId = searchParams.get('department')) => {
 
-        const response = await fetch(`http://localhost:8080/department/${departmentId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/department/${departmentId}`, {
             method: 'GET',
         })
 
@@ -222,7 +222,7 @@ export default function Submission() {
     const submitHandler = async () => {
         try {
             const formData = new FormData();
-            let uploadUrl = "http://localhost:8080/file/upload"
+            let uploadUrl = `${process.env.REACT_APP_API_URL}/file/upload`
             if(!isReUpload) {
                 formData.append('file', document);
                 formData.append('userId',JSON.parse(auth).userid);
@@ -233,7 +233,7 @@ export default function Submission() {
                 formData.append('file', document);
                 formData.append('documentId', selectedRequirement.documents[0].id)
                 formData.append('userId',JSON.parse(auth).userid);
-                uploadUrl = "http://localhost:8080/file/reupload"
+                uploadUrl = `${process.env.REACT_APP_API_URL}/file/reupload`
             }
     
             const response = await fetch(uploadUrl, {
@@ -273,7 +273,7 @@ export default function Submission() {
         
         try {
             const formData = new FormData();
-            let uploadUrl = "http://localhost:8080/file/upload"
+            let uploadUrl = `${process.env.REACT_APP_API_URL}/file/upload`
             
             formData.append('step',2)
             if(!elDoc || elDoc.status.toLowerCase() !== 'declined') {
@@ -286,7 +286,7 @@ export default function Submission() {
                 formData.append('file',  file, 'myfile.pdf');
                 formData.append('documentId', elDoc.id)
                 formData.append('userId',JSON.parse(auth).userid);
-                uploadUrl = "http://localhost:8080/file/reupload"
+                uploadUrl = `${process.env.REACT_APP_API_URL}/file/reupload`
             }
     
             const response = await fetch(uploadUrl, {

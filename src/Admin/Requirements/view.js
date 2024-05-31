@@ -22,7 +22,7 @@ export default function Submission() {
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
     const fetchUser = async () => {
-        const response = await fetch(`http://localhost:8080/userByID/${searchParams.get('userid')}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/userByID/${searchParams.get('userid')}`, {
             method: 'GET',
         })
 
@@ -58,7 +58,7 @@ export default function Submission() {
         formData.append('status', status)
         formData.append('documentId', documentId ? documentId : 0)
 
-        const response = await fetch(`http://localhost:8080/api/documents/nlo/create-or-update`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/documents/nlo/create-or-update`, {
             method: 'POST',
             body: formData,
         })
@@ -87,7 +87,7 @@ export default function Submission() {
     }
 
     const fetchRequirements = async (student, departmentId, isNlo) => {
-        const response = await fetch(`http://localhost:8080/api/requirements?userid=${student.userid}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/requirements?userid=${student.userid}`, {
             method: 'GET',
         })
 
@@ -266,7 +266,7 @@ export default function Submission() {
         const formData = new FormData();
         formData.append('remarks', remarks);
 
-        const response = await fetch(`http://localhost:8080/user/remarks/update/${searchParams.get('userid')}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/user/remarks/update/${searchParams.get('userid')}`, {
             method: 'PUT',
             body: formData,
         })
@@ -312,14 +312,14 @@ export default function Submission() {
                 <div className='header'>
                     <h4>{checkInfo.submittedBy.firstName} {checkInfo.submittedBy.lastName}</h4>
                     <div className='actions'>
-                        <a href={`http://localhost:8080/file/download/${checkInfo.id}`}>Download</a>
+                        <a href={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`}>Download</a>
                     </div>
                 </div>
                 {checkInfo.extName == "pdf" 
-                    ?   <Document file={`http://localhost:8080/file/download/${checkInfo.id}`} >
+                    ?   <Document file={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`} >
                             <Page pageNumber={1} />
                         </Document>
-                    :   <figure><img src={`http://localhost:8080/file/download/${checkInfo.id}`} /></figure>
+                    :   <figure><img src={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`} /></figure>
                 }
             </div>
         </div>

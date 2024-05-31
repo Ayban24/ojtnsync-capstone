@@ -11,7 +11,7 @@ export default function Records() {
     const location = useLocation();
     
     const fetchDocuments = async () => {
-        const response = await fetch(`http://localhost:8080/api/documents/user/${auth.userid}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/documents/user/${auth.userid}`, {
             method: 'GET',
         })
         if (response && response.ok) {
@@ -53,7 +53,7 @@ export default function Records() {
                 ]} 
                 data={getDocumentsBy(activeNav === 0 ? auth.course.department.name : 'nlo').map((doc, index) => {
                         return [
-                            <Link to={`http://localhost:8080/file/download/${doc.id}`}>{doc.fileName}</Link>,
+                            <Link to={`${process.env.REACT_APP_API_URL}/file/download/${doc.id}`}>{doc.fileName}</Link>,
                             <p style={{textAlign:'left'}}>{doc.requirement.title}</p>,
                             <p style={{textAlign:'left'}}>{doc.status}</p>
                         ]

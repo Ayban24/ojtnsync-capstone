@@ -26,7 +26,7 @@ const handleLogin = async () => {
       return;
     }
 
-    const response = await fetch(`http://localhost:8080/admin/login?facultyId=${facultyId}&password=${password}`);
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/login?facultyId=${facultyId}&password=${password}`);
     const data = await response.json();
 
     if (response.ok) {

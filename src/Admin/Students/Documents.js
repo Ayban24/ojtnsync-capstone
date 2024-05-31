@@ -23,13 +23,13 @@ const StudentDocuments = () => {
     const fetchDocuments = async () => {
         const userId = searchParams.get('userid');
         const courseId = searchParams.get('course');
-        const response = await fetch(`http://localhost:8080/api/documents/user/${userId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/documents/user/${userId}`, {
             method: 'GET',
         })
-        const response2 = await fetch(`http://localhost:8080/courses?departmentId=${auth.departmentId}`, {
+        const response2 = await fetch(`${process.env.REACT_APP_API_URL}/courses?departmentId=${auth.departmentId}`, {
             method: 'GET',
         })
-        const response3 = await fetch(`http://localhost:8080/userByID/${userId}`, {
+        const response3 = await fetch(`${process.env.REACT_APP_API_URL}/userByID/${userId}`, {
             method: 'GET',
         })
 
@@ -86,14 +86,14 @@ const StudentDocuments = () => {
                 <div className='header'>
                     <h4>{checkInfo.submittedBy.firstName} {checkInfo.submittedBy.lastName}</h4>
                     <div className='actions'>
-                        <a href={`http://localhost:8080/file/download/${checkInfo.id}`}>Download</a>
+                        <a href={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`}>Download</a>
                     </div>
                 </div>
                 {checkInfo.extName == "pdf" 
-                    ?   <Document file={`http://localhost:8080/file/download/${checkInfo.id}`} >
+                    ?   <Document file={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`} >
                             <Page pageNumber={1} />
                         </Document>
-                    :   <figure><img src={`http://localhost:8080/file/download/${checkInfo.id}`} /></figure>
+                    :   <figure><img src={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`} /></figure>
                 }
             </div>
         </div>

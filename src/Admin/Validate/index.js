@@ -24,7 +24,7 @@ const Validate = () => {
 
     const fetchDocuments = async (status = "pending") => {
         setFilter(status)
-        const response = await fetch(`http://localhost:8080/api/requirements/${requirementId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/requirements/${requirementId}`, {
             method: 'GET',
         })
         if(response && response.ok) {
@@ -99,7 +99,7 @@ const Validate = () => {
         const formData = new FormData();
         formData.append('comment', comment)
         formData.append('status', documentStatus)
-        const response = await fetch(`http://localhost:8080/api/documents/${documentId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/documents/${documentId}`, {
             method: 'PUT',
             body: formData,
         })
@@ -133,10 +133,10 @@ const Validate = () => {
                     </div>
                 </div>
                 {checkInfo.extName == "pdf" 
-                    ?   <Document file={`http://localhost:8080/file/download/${checkInfo.id}`} >
+                    ?   <Document file={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`} >
                             <Page pageNumber={1} />
                         </Document>
-                    :   <figure><img src={`http://localhost:8080/file/download/${checkInfo.id}`} /></figure>
+                    :   <figure><img src={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`} /></figure>
                 }
             </div>
         </div>
@@ -162,7 +162,7 @@ const Validate = () => {
             (check && checkInfo && commentModal) && 
                 <CustomModal show={true} onHide={(val) => setCommentModal(val)}>
                     <div id='check-modal'>
-                        {/* <a href={`http://localhost:8080/file/download/${checkInfo.id}`} target='_blank' rel='noopener noreferrer'>Download</a> */}
+                        {/* <a href={`${process.env.REACT_APP_API_URL}/file/download/${checkInfo.id}`} target='_blank' rel='noopener noreferrer'>Download</a> */}
                         <label>Enter Comments</label>
                         <textarea onChange={(e) => setComment(e.target.value)}></textarea>
                         <div className='modal-footer'>
