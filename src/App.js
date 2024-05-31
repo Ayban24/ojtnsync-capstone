@@ -37,7 +37,7 @@ function App() {
 
 	// Conditionally render the Nav component
 	const renderNav = () => {
-		if (!isSignupOrLogin && auth && currentPath != '/') {
+		if (!isSignupOrLogin && auth && (currentPath != '/' && currentPath != '/admin/' &&  currentPath != '/admin/')) {
 			return <Navbar />;
 		}
 		return null;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import './login.css'
@@ -10,7 +10,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import Cookies from 'js-cookie';
-import { Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const LoginForm = () => {
   const [studentID, setStudentID] = useState('');
@@ -19,6 +19,10 @@ const LoginForm = () => {
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 const navigate=useNavigate();
+
+	const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+
 const handleLogin = async () => {
   try {
     if (!studentID || !password) {
@@ -46,6 +50,14 @@ const handleLogin = async () => {
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+ 	useEffect(() => {
+		const logout = searchParams.get('logout');
+		if(logout === '1') {
+			localStorage.removeItem('auth');
+			Cookies.remove('ys');
+		}
+	}, []);
 
   return (
     <div className= "App1">
