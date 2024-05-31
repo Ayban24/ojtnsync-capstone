@@ -291,23 +291,7 @@ public class UserController {
 
         public LoginResponse(String message, UserEntity user) {
             this.message = message;
-            this.user = new UserWithCourseDTO(
-                user.getUserid(),
-                user.getStudentID(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getCompanyName(),
-                user.getCompanyAddress(),
-                user.getContactPerson(),
-                user.getDesignation(),
-                user.getDateStarted(),
-                user.getPhone(),
-                user.getEmail(),
-                user.getCourse(),
-                user.getRemarks(),
-                user.getYearSemester().getId(),
-                user.isVerified()
-            );
+            this.user = new UserWithCourseDTO(user);
         }
 
         public String getMessage() {

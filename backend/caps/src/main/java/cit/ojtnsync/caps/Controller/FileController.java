@@ -172,6 +172,8 @@ public class FileController {
 
     @PostMapping("/admin/reupload")
     public ResponseEntity<UploadResponse> handleAdminFileReupload(
+            String status,
+            int step,
             @RequestParam("file") MultipartFile file,
             @RequestParam("documentId") int documentId,
             @RequestParam("userId") Long userId) {
@@ -199,8 +201,8 @@ public class FileController {
             existingDocument.setFileName(fileName);
             existingDocument.setExtName(fileExt);
             existingDocument.setSubmittedBy(submittedBy);
-            existingDocument.setStatus("Approved");
-            existingDocument.setStep(existingDocument.getStep()+1);
+            existingDocument.setStatus(status);
+            existingDocument.setStep(step);
 
             String hashedFileName = "";
             try {

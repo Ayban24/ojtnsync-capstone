@@ -87,7 +87,7 @@ export default function Submission() {
     }
 
     const fetchRequirements = async (student, departmentId, isNlo) => {
-        const response = await fetch(`http://localhost:8080/api/requirements/department/${departmentId}/course/${student.course.id}?userid=${student.userid}&ysId=${ys.id}`, {
+        const response = await fetch(`http://localhost:8080/api/requirements?userid=${student.userid}`, {
             method: 'GET',
         })
 
@@ -201,7 +201,8 @@ export default function Submission() {
                                                         if(activeEditRecords) {
                                                             const req = requirements.find(item => item.title == key)
                                                             const newStatus = (value[1] == 'approved') ? 'Disapproved' : 'Approved'
-                                                            toggleNloRecords(req.id, newStatus, value[3])
+                                                            if(['OC: Orientation Certificate', 'MOA: Memorandum of Agreement', 'LOU: Letter of Undertaking'].includes(req.title))
+                                                                toggleNloRecords(req.id, newStatus, value[3])
                                                         }
                                                     }}></a>
                                                 </td>

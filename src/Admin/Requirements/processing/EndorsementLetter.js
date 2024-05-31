@@ -28,6 +28,7 @@ export default function EndorsementLetter({requirementId}) {
     const closeUploadModal = () => {setUploadModalOpen(false)};
 
     const auth = JSON.parse(localStorage.getItem('auth'));
+    const ys = JSON.parse(Cookies.get('ys'));
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 
@@ -37,15 +38,17 @@ export default function EndorsementLetter({requirementId}) {
             <button className='back-btn' onClick={() => setCheck(false)}>&lsaquo;</button>
             <div className='document-info'>
                 <div className='header'>
-                    <h4>{selectedDocument.submittedBy.firstName} {selectedDocument.submittedBy.lastName}</h4>
+                    <a href={`http://localhost:8080/file/download/${selectedDocument.id}`} style={{background:"unset"}}>Download</a>
                     <div className='actions'>
+                        <button onClick={() => {openUploadModal()}}>Re-Upload</button>
                         <button onClick={() => {setDocumentStatus("Declined");setCommentModal(true)}}>Decline</button>
-                        <button onClick={() => {setDocumentStatus("Approved");setCommentModal(true)}}>Approve</button>
+                        <button onClick={() => {setDocumentStatus("Approved");setCommentModal(true)}}>Submit to NLO</button>
                     </div>
                 </div>
                 {selectedDocument.extName == "pdf" 
                     ?   <Document file={`http://localhost:8080/file/download/${selectedDocument.id}`} >
                             <Page pageNumber={1} />
+                            <Page pageNumber={2} />
                         </Document>
                     :   <figure><img src={`http://localhost:8080/file/download/${selectedDocument.id}`} /></figure>
                 }
@@ -137,6 +140,8 @@ export default function EndorsementLetter({requirementId}) {
             formData.append('file', document);
             formData.append('documentId', selectedDocument.id)
             formData.append('userId',selectedDocument.submittedBy.userid);
+            formData.append('status', 'Pending')
+            formData.append('step', selectedDocument.step)
             const uploadUrl = "http://localhost:8080/file/admin/reupload"
     
             const response = await fetch(uploadUrl, {
@@ -180,7 +185,7 @@ export default function EndorsementLetter({requirementId}) {
     };
 
     const fetchDocuments = async (filterStatus = 'pending') => {
-        const response = await fetch(`http://localhost:8080/api/documents/requirement/${requirementId}`, {
+        const response = await fetch(`http://localhost:8080/api/documents/requirement/${requirementId}/ys/${ys.id}`, {
             method: 'GET',
         })
 
@@ -188,7 +193,7 @@ export default function EndorsementLetter({requirementId}) {
             try {
                 let result = await response.json();
                 setSelectedFilter(filterStatus)
-                result = result.filter(res => res.status.toLowerCase() === filterStatus)
+                result = result.filter(res => ((filterStatus === 'pending' && res.status.toLowerCase() === 'pending' && res.step === 2) || (res.status.toLowerCase() === filterStatus && filterStatus === 'declined')))
                 setDocuments(result)
                 showTable()
                 console.log("documents: ",result)
@@ -246,9 +251,8 @@ export default function EndorsementLetter({requirementId}) {
     const handleDocumentStatus = async (documentId = null) => {
         const formData = new FormData();
         formData.append('comment', comment)
-        formData.append('status', documentStatus)
-        if(documentStatus.toLowerCase() === 'approved')
-            formData.append('step', 3)
+        formData.append('status', documentStatus.toLowerCase() === 'approved' ? 'Pending' : documentStatus)
+        formData.append('step', selectedDocument.step + 1)
         const response = await fetch(`http://localhost:8080/api/documents/${documentId}`, {
             method: 'PUT',
             body: formData,

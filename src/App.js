@@ -24,6 +24,7 @@ import StudentDocuments from './Admin/Students/Documents';
 import Dashboard from './Admin/Dashboard';
 import Profile from './Profile';
 import YearSemester from './Admin/YearSemester';
+import StudentRecords from './Records';
 import './App.css';
 
 function App() {
@@ -78,6 +79,7 @@ function App() {
 						<Route path="/admin/student/documents" element={<StudentDocuments />} />
 						<Route path="/admin/yearSemester" element={<YearSemester />} />
 						<Route path="/admin/requirements/nlo" element={<AdminNloRequirements />} />
+						<Route path="/records" element={<StudentRecords />} />
 					</>
 					)
 					}

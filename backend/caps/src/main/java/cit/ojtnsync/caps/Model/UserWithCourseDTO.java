@@ -20,6 +20,8 @@ public class UserWithCourseDTO {
     private Course course;
     private String remarks;
     private int yearSemesterId;
+    private String yearSemesterYear;
+    private int yearSemesterSemester;
     private boolean isVerified;
 
     public UserWithCourseDTO(Long userid, String studentID, String firstName, String lastName, String companyName, String companyAddress, String contactPerson, String designation, Date dateStarted, String phone, String email, Course course, String remarks, int yearSemesterId, boolean isVerified) {
@@ -56,6 +58,24 @@ public class UserWithCourseDTO {
         this.remarks = userEntity.getRemarks();
         this.yearSemesterId = userEntity.getYearSemester().getId();
         this.isVerified = userEntity.isVerified();
+        this.yearSemesterYear = userEntity.getYearSemester().getYear();
+        this.yearSemesterSemester = userEntity.getYearSemester().getSemester();
+    }
+
+    public String getYearSemesterYear() {
+        return this.yearSemesterYear;
+    }
+
+    public void setYearSemesterYear(String yearSemesterYear) {
+        this.yearSemesterYear = yearSemesterYear;
+    }
+
+    public int getYearSemesterSemester() {
+        return this.yearSemesterSemester;
+    }
+
+    public void setYearSemesterSemester(int yearSemesterSemester) {
+        this.yearSemesterSemester = yearSemesterSemester;
     }
 
     public Long getUserid() {

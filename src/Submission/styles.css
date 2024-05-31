@@ -115,6 +115,7 @@
     border-radius: 23px;
     padding: 63px 40px 40px;
     box-sizing: border-box;
+    z-index: 2;
   }
   .modal-container::before {
     content: "";

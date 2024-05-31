@@ -29,6 +29,12 @@ const Navbar = () => {
                 {(ys || JSON.parse(auth).userid) &&
                     <div className={`nav-items ${isOpen && "open"}`}>
                         <Link to={JSON.parse(auth).adminid ? `/admin/homepage` : '/homepage'} className={isPathActive(`/admin/homepage`) || isPathActive(`/homepage`) ? 'active' : ''}>Dashboard</Link>
+                        {JSON.parse(auth).adminid && JSON.parse(auth).adminType && JSON.parse(auth).adminType == 'faculty' && 
+                            <>
+                                <Link to={`/admin/students`} className={isPathActive(`/admin/students`) ? 'active' : ''}>Records</Link>
+                                
+                            </>
+                        }
                         {JSON.parse(auth).adminid && 
                             <Link to={`/admin/requirements?department=${JSON.parse(auth).departmentId}`} className={isPathActive(`/admin/requirements`) ? 'active' : ''}>{JSON.parse(auth).adminType && JSON.parse(auth).adminType == 'faculty' ? 'Requirements' : 'Records'}</Link>
                         }
@@ -38,17 +44,14 @@ const Navbar = () => {
                         {JSON.parse(auth).userid && 
                             <Link to={`/submission/nlo?department=${JSON.parse(auth).course.department.id}`} className={isPathActive(`/submission/nlo`) ? 'active' : ''}>NLO Requirements</Link>
                         }
-                        {JSON.parse(auth).adminid && JSON.parse(auth).adminType && JSON.parse(auth).adminType == 'faculty' && 
-                            <>
-                                <Link to={`/admin/students`} className={isPathActive(`/admin/students`) ? 'active' : ''}>Records</Link>
-                                
-                            </>
-                        }
                         {JSON.parse(auth).adminid && 
                             <>
                                 <Link to={`/admin/requirements/nlo`} className={isPathActive(`/admin/requirements/nlo`) ? 'active' : ''}>NLO Requirements</Link>
                                 
                             </>
+                        }
+                        {JSON.parse(auth).userid && 
+                            <Link to={`/records`} className={isPathActive(`/records`) ? 'active' : ''}>Records</Link>
                         }
                         {/* {!(JSON.parse(auth).adminType && JSON.parse(auth).adminType == 'nlo') && 
                             <Link to="/templates" className={isPathActive(`/templates`) ? 'active' : ''}>Templates</Link>
