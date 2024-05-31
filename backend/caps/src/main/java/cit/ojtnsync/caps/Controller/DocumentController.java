@@ -93,11 +93,9 @@ public class DocumentController {
             documentWithCourseDTOs.add(new DocumentWithCourseDTO(doc));
         }
 
-        if (!documents.isEmpty()) {
-            return ResponseEntity.ok(documentWithCourseDTOs);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+
+        return ResponseEntity.ok(documentWithCourseDTOs);
+
     }
 
     @PostMapping("/nlo/create-or-update")

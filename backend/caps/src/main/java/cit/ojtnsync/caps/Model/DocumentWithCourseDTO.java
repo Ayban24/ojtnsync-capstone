@@ -20,6 +20,8 @@ public class DocumentWithCourseDTO {
     private UserEntity submittedBy;
     private int courseId;
     private String courseName;
+    private int departmentId;
+    private String departmentName;
 
     // Constructors, getters, and setters (omitted for brevity)
 
@@ -41,6 +43,8 @@ public class DocumentWithCourseDTO {
         this.courseId = document.getSubmittedBy().getCourse().getId();
         this.courseName = document.getSubmittedBy().getCourse().getName();
         this.step = document.getStep();
+        this.departmentId = document.getRequirement().getDepartment().getId();
+        this.departmentName = document.getRequirement().getDepartment().getName();
     }
 
     // Getters and Setters (generated using your IDE)
@@ -139,5 +143,21 @@ public class DocumentWithCourseDTO {
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    public int getDepartmentId() {
+        return this.departmentId;
+    }
+
+    public void setDeparmentId(int departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public String getDepartmentName() {
+        return this.departmentName;
+    }
+
+    public void setDeparmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 }
