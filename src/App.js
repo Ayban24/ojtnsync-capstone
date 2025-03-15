@@ -45,7 +45,7 @@ function App() {
 
 	return (
 		<div id='main-content' className={renderNav() && 'with-nav'}>
-			<Router>
+			<Router basename="/ojtnsync">
 				{renderNav()}
 				<Routes>
 					<Route path="/" element={<Login />} /> 
