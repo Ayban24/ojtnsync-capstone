@@ -66,7 +66,7 @@ export default function NloEndorsementLetter({requirementId}) {
             formData.append('step', selectedDocument.step)
             formData.append('file',  file, 'myfile.pdf');
             formData.append('documentId', selectedDocument.id)
-            formData.append('userId',auth.adminid);
+            formData.append('userId',selectedDocument.submittedBy.userid);
             
     
             const response = await fetch(uploadUrl, {

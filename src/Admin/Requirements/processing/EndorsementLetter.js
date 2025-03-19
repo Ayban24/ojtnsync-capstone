@@ -7,6 +7,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import DataTable from '../../../common/DataTable';
 import CustomModal from '../../../common/Modal'
+import PDFWithSignature from '../../../common/PDFWithSignature';
 
 export default function EndorsementLetter({requirementId}) {
 
@@ -20,6 +21,7 @@ export default function EndorsementLetter({requirementId}) {
     const [check, setCheck] = useState(false)
     const [documentStatus, setDocumentStatus] = useState("pending")
     const [selectedFilter, setSelectedFilter] = useState('pending')
+    const [pdfKey, setPdfKey] = useState("1");
 
     const openStatusModal = () => setStatusModalOpen(true);
     const closeStatusModal = () => setStatusModalOpen(false);
@@ -45,16 +47,63 @@ export default function EndorsementLetter({requirementId}) {
                         <button onClick={() => {setDocumentStatus("Approved");setCommentModal(true)}}>Submit to NLO</button>
                     </div>
                 </div>
-                {selectedDocument.extName == "pdf" 
-                    ?   <Document file={`${process.env.REACT_APP_API_URL}/file/download/${selectedDocument.id}`} >
-                            <Page pageNumber={1} />
-                            <Page pageNumber={2} />
-                        </Document>
-                    :   <figure><img src={`${process.env.REACT_APP_API_URL}/file/download/${selectedDocument.id}`} /></figure>
+                {
+                    // selectedDocument.extName == "pdf" 
+                    // ?   <Document file={`${process.env.REACT_APP_API_URL}/file/download/${selectedDocument.id}`} >
+                    //         <Page pageNumber={1} />
+                    //         <Page pageNumber={2} />
+                    //     </Document>
+                    // :   <figure><img src={`${process.env.REACT_APP_API_URL}/file/download/${selectedDocument.id}`} /></figure>
+                    <PDFWithSignature key={pdfKey} file={`${process.env.REACT_APP_API_URL}/file/download/${selectedDocument.id}`} onSave={saveSignature} />
                 }
             </div>
         </div>
         )
+    }
+
+    const saveSignature = async (file) => {
+        try {
+            const formData = new FormData();
+            let uploadUrl = `${process.env.REACT_APP_API_URL}/file/reupload`            
+            formData.append('step', selectedDocument.step)
+            formData.append('file',  file, 'myfile.pdf');
+            formData.append('documentId', selectedDocument.id)
+            formData.append('userId',selectedDocument.submittedBy.userid);
+            
+    
+            const response = await fetch(uploadUrl, {
+                method: 'POST',
+                body: formData,
+            })
+    
+            if (response.ok) {
+                try {
+                    const result = await response.json();
+                    console.log("response: ",result.document)
+                    setSelectedDocument(result.document)
+                    setDocument(result.document)
+                    setPdfKey(Date.now())
+                    // window.location.reload();
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    // Handle unexpected JSON parsing error
+                }
+            } else {
+                console.error('Upload failed:', response.status, response.statusText);
+                try {
+                    const result = await response.json();
+                    // Access specific properties from the result if needed
+                    console.log('Error Message:', result.message);
+                    // Handle failure, e.g., display an error message to the user
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    // Handle unexpected JSON parsing error
+                }
+            }
+        } catch (error) {
+            console.error('Error during file upload:', error);
+            // Handle unexpected errors
+        }
     }
 
     const StatusModal = ({ closeModal, children }) => {

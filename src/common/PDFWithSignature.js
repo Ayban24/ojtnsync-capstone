@@ -14,6 +14,9 @@ const PDFWithDirectSignature = ({ file, onSave }) => {
   const [isSignatureEnabled, setIsSignatureEnabled] = useState(false); // Enable/Disable E-Signature
   const [isMoveMode, setIsMoveMode] = useState(false); // Move Mode vs. Sign Mode
 
+  const signatureImageWidth = 150
+  const signatureImageHeight = 50
+
   // Load PDF pages
   const onDocumentLoadSuccess = ({ numPages }) => setNumPages(numPages);
 
@@ -22,8 +25,8 @@ const PDFWithDirectSignature = ({ file, onSave }) => {
     if (!pdfContainerRef.current || !isSignatureEnabled) return;
 
     const rect = pdfContainerRef.current.getBoundingClientRect();
-    const offsetX = event.clientX - rect.left - 75;
-    const offsetY = event.clientY - rect.top;
+    const offsetX = event.clientX - rect.left - (signatureImageWidth / 2);
+    const offsetY = event.clientY - rect.top - signatureImageHeight;
 
     setCanvasPosition({ left: offsetX, top: offsetY });
   };
@@ -54,16 +57,15 @@ const PDFWithDirectSignature = ({ file, onSave }) => {
 
     // Convert position to PDF coordinates
     const pdfX = (canvasPosition.left / containerWidth) * pdfWidth;
-    // const pdfY = pdfHeight - (canvasPosition.top / containerHeight) * pdfHeight;
-    const pdfY = (pdfHeight - (canvasPosition.top / containerHeight) * pdfHeight) + 25;
+    const pdfY = (pdfHeight - ((canvasPosition.top + signatureImageHeight) / containerHeight) * pdfHeight)
 
     // Embed signature
     const signatureImage = await pdfDoc.embedPng(signatureDataUrl);
     page.drawImage(signatureImage, {
       x: pdfX,
-      y: pdfY - 50, // Adjust for signature box height
-      width: 150,
-      height: 50,
+      y: pdfY, // Adjust for signature box height
+      width: signatureImageWidth,
+      height: signatureImageHeight,
     });
 
     // Save new PDF
@@ -115,8 +117,8 @@ const PDFWithDirectSignature = ({ file, onSave }) => {
             onMouseUp={stopPropagation}
             onClick={stopPropagation}
             canvasProps={{
-              width: 150,
-              height: 50,
+              width: signatureImageWidth,
+              height: signatureImageHeight,
               style: { touchAction: "none", cursor: "crosshair" },
             }}
           />
